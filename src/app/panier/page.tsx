@@ -86,14 +86,12 @@ export default function CartPage() {
           <span className="text-ink-soft">{subtotal.label}</span>
         </p>
 
-        <button
-          type="button"
-          disabled
-          title="La commande en ligne arrive bientôt"
-          className="w-full max-w-xs cursor-not-allowed rounded-sm border border-line bg-surface px-4 py-3 text-sm text-ink-soft"
+        <Link
+          href="/commande"
+          className="w-full max-w-xs rounded-sm bg-gold px-4 py-3 text-center text-sm font-medium text-bg transition-colors hover:bg-gold-bright"
         >
-          Passer la commande — bientôt disponible
-        </button>
+          Passer la commande
+        </Link>
       </div>
     </main>
   );

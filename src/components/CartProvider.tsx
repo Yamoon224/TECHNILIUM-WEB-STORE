@@ -19,6 +19,7 @@ interface CartContextValue {
   add: (item: Omit<CartItem, "quantity">, quantity?: number) => void;
   updateQuantity: (offerId: number, quantity: number) => void;
   remove: (offerId: number) => void;
+  clear: () => void;
 }
 
 const CartContext = createContext<CartContextValue | null>(null);
@@ -28,6 +29,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
+    // Deliberately deferred to after mount: localStorage isn't available
+    // during SSR, and reading it synchronously on the server render would
+    // produce a client/server markup mismatch.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setItems(loadCart());
     setHydrated(true);
   }, []);
@@ -45,6 +50,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     add: (item, quantity = 1) => setItems((current) => addToCart(current, item, quantity)),
     updateQuantity: (offerId, quantity) => setItems((current) => setQuantity(current, offerId, quantity)),
     remove: (offerId) => setItems((current) => removeFromCart(current, offerId)),
+    clear: () => setItems([]),
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

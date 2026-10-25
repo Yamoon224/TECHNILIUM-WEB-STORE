@@ -19,6 +19,7 @@
   --gold: #ee9e0b;
   --gold-bright: #f6cf3c;
   --gold-highlight: #fbf28c;
+  --danger: #f87171;
   --gold-gradient: linear-gradient(
     135deg,
     var(--gold-shadow) 0%,
@@ -39,6 +40,7 @@
   --color-gold: var(--gold);
   --color-gold-bright: var(--gold-bright);
   --color-gold-deep: var(--gold-deep);
+  --color-danger: var(--danger);
   --font-display: var(--font-space-grotesk);
   --font-sans: var(--font-plex-sans);
 }

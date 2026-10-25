@@ -40,7 +40,10 @@ npm run generate:api-client
 ## Pages
 
 - `/` — accueil catalogue : recherche, filtre par catégorie, grille produits (données réelles via l'API Catalog).
-- `/produits/[slug]` — fiche produit détaillée (prix, garantie, caractéristiques, vendeur).
+- `/produits/[slug]` — fiche produit détaillée (prix, garantie, caractéristiques, vendeur), ajout au panier respectant le stock.
+- `/panier` — panier (localStorage) : quantités, suppression, sous-total.
+- `/commande` — formulaire de livraison + confirmation, paiement à la livraison uniquement.
+- `/commande/[orderNumber]` — accusé de réception ; nécessite `?phone=` (celui saisi à la commande) pour consulter la commande — ce n'est pas qu'un identifiant dans l'URL, l'API l'exige comme preuve de possession.
 
 ## Identité visuelle
 
