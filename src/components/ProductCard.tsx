@@ -41,6 +41,8 @@ export function ProductCard({ product }: { product: Product }) {
         <p className="text-sm text-ink-soft">Bientôt disponible</p>
       )}
 
+      {offer && !offer.in_stock ? <p className="text-sm text-ink-soft">Rupture de stock</p> : null}
+
       <p className="text-sm text-ink-soft">{conditionLine}</p>
 
       {offer && offer.seller === "vendor" ? (

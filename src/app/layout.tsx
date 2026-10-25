@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Sans, Space_Grotesk } from "next/font/google";
+import { CartProvider } from "@/components/CartProvider";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -24,7 +25,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="fr" className={`${spaceGrotesk.variable} ${plexSans.variable} h-full`}>
-      <body className="min-h-full flex flex-col antialiased">{children}</body>
+      <body className="min-h-full flex flex-col antialiased">
+        <CartProvider>{children}</CartProvider>
+      </body>
     </html>
   );
 }

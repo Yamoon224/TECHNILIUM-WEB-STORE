@@ -30,6 +30,8 @@ export interface Offer {
   compare_at_price: Money | null;
   condition_grade: string | null;
   warranty_months: number;
+  stock_quantity: number;
+  in_stock: boolean;
   status: string;
 }
 

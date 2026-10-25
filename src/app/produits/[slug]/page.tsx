@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { AddToCartButton } from "@/components/AddToCartButton";
 import { ProductTile } from "@/components/ProductTile";
 import { formatMoneyParts } from "@/lib/money";
 import { getProduct } from "@/lib/catalog";
@@ -79,14 +80,17 @@ export default async function ProductPage({ params }: PageProps<"/produits/[slug
             </p>
           ) : null}
 
-          <button
-            type="button"
-            disabled
-            title="Le panier arrive bientôt"
-            className="w-full cursor-not-allowed rounded-sm border border-line bg-surface px-4 py-3 text-sm text-ink-soft"
-          >
-            Panier — bientôt disponible
-          </button>
+          {offer ? (
+            <AddToCartButton
+              offerId={offer.id}
+              productSlug={product.slug}
+              productName={product.name}
+              brand={product.brand}
+              priceAmount={offer.price.amount}
+              currency={offer.price.currency}
+              stockQuantity={offer.stock_quantity}
+            />
+          ) : null}
 
           {product.description ? (
             <p className="max-w-prose text-sm leading-relaxed text-ink-soft">{product.description}</p>
