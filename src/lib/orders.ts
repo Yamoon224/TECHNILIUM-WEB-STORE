@@ -36,6 +36,33 @@ export interface PlaceOrderInput {
 
 export class CheckoutError extends Error {}
 
+const LAST_ORDER_STORAGE_KEY = "technilium_last_order";
+
+/**
+ * Hands the just-placed order to the confirmation page via sessionStorage
+ * instead of the URL — putting the checkout phone in a query string would
+ * land it in browser history, server access logs and any shared link.
+ */
+export function rememberLastOrder(order: Order): void {
+  try {
+    window.sessionStorage.setItem(LAST_ORDER_STORAGE_KEY, JSON.stringify(order));
+  } catch {
+    // Storage unavailable — the confirmation page falls back to asking for the phone.
+  }
+}
+
+export function recallLastOrder(orderNumber: string): Order | null {
+  try {
+    const raw = window.sessionStorage.getItem(LAST_ORDER_STORAGE_KEY);
+    if (!raw) return null;
+
+    const order = JSON.parse(raw) as Order;
+    return order.order_number === orderNumber ? order : null;
+  } catch {
+    return null;
+  }
+}
+
 export async function placeOrder(input: PlaceOrderInput): Promise<Order> {
   const response = await fetch(`${API_BASE_URL}/orders`, {
     method: "POST",

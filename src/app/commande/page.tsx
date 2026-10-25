@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useCart } from "@/components/CartProvider";
 import { formatMoneyParts } from "@/lib/money";
-import { CheckoutError, placeOrder } from "@/lib/orders";
+import { CheckoutError, placeOrder, rememberLastOrder } from "@/lib/orders";
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -34,20 +34,20 @@ export default function CheckoutPage() {
     setError(null);
 
     const form = new FormData(event.currentTarget);
-    const phone = String(form.get("customer_phone") ?? "");
 
     try {
       const order = await placeOrder({
         items: items.map((item) => ({ offer_id: item.offerId, quantity: item.quantity })),
         customer_name: String(form.get("customer_name") ?? ""),
-        customer_phone: phone,
+        customer_phone: String(form.get("customer_phone") ?? ""),
         delivery_address: String(form.get("delivery_address") ?? ""),
         delivery_city: String(form.get("delivery_city") ?? "") || undefined,
         notes: String(form.get("notes") ?? "") || undefined,
       });
 
+      rememberLastOrder(order);
       clear();
-      router.push(`/commande/${order.order_number}?phone=${encodeURIComponent(phone)}`);
+      router.push(`/commande/${order.order_number}`);
     } catch (caught) {
       setError(caught instanceof CheckoutError ? caught.message : "La commande n'a pas pu être enregistrée.");
       setSubmitting(false);
