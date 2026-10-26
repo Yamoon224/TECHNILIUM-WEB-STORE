@@ -12,6 +12,8 @@ export interface AddToCartButtonProps {
   priceAmount: number;
   currency: CurrencyCode;
   stockQuantity: number;
+  /** Denser padding/label for grid cards, where space is tight. */
+  compact?: boolean;
 }
 
 export function AddToCartButton({
@@ -22,6 +24,7 @@ export function AddToCartButton({
   priceAmount,
   currency,
   stockQuantity,
+  compact = false,
 }: AddToCartButtonProps) {
   const { add, items } = useCart();
   const [added, setAdded] = useState(false);
@@ -29,6 +32,7 @@ export function AddToCartButton({
   const alreadyInCart = items.find((line) => line.offerId === offerId)?.quantity ?? 0;
   const outOfStock = stockQuantity <= 0;
   const atStockLimit = alreadyInCart >= stockQuantity;
+  const sizeClasses = compact ? "px-3 py-2 text-xs" : "px-4 py-3 text-sm";
 
   function handleClick() {
     add(
@@ -44,7 +48,7 @@ export function AddToCartButton({
       <button
         type="button"
         disabled
-        className="w-full cursor-not-allowed rounded-sm border border-line bg-surface px-4 py-3 text-sm text-ink-soft"
+        className={`w-full cursor-not-allowed rounded-sm border border-line bg-surface text-ink-soft ${sizeClasses}`}
       >
         Rupture de stock
       </button>
@@ -56,9 +60,9 @@ export function AddToCartButton({
       type="button"
       onClick={handleClick}
       disabled={atStockLimit}
-      className="w-full rounded-sm bg-gold px-4 py-3 text-sm font-medium text-bg transition-colors hover:bg-gold-bright disabled:cursor-not-allowed disabled:opacity-60"
+      className={`w-full rounded-sm bg-gold font-medium text-bg transition-colors hover:bg-gold-bright disabled:cursor-not-allowed disabled:opacity-60 ${sizeClasses}`}
     >
-      {atStockLimit ? "Stock maximum dans le panier" : added ? "Ajouté ✓" : "Ajouter au panier"}
+      {atStockLimit ? "Stock maximum" : added ? "Ajouté ✓" : "Ajouter au panier"}
     </button>
   );
 }

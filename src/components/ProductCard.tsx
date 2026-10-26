@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { formatMoneyParts } from "@/lib/money";
 import type { Product } from "@/lib/catalog";
+import { AddToCartButton } from "./AddToCartButton";
 import { ProductTile } from "./ProductTile";
 
 const CONDITION_LABEL: Record<Product["condition_state"], string> = {
@@ -21,33 +22,45 @@ export function ProductCard({ product }: { product: Product }) {
     .join(", ");
 
   return (
-    <Link
-      href={`/produits/${product.slug}`}
-      className="group flex flex-col gap-3 rounded-sm border border-line bg-surface p-3 transition-colors hover:border-gold"
-    >
-      <ProductTile id={product.id} brand={product.brand} categoryName={product.category?.name ?? null} />
+    <div className="group flex flex-col gap-3 rounded-sm border border-line bg-surface p-3 transition-colors hover:border-gold">
+      <Link href={`/produits/${product.slug}`} className="flex flex-col gap-3">
+        <ProductTile id={product.id} brand={product.brand} categoryName={product.category?.name ?? null} />
 
-      <div className="flex flex-col gap-1">
-        <p className="text-sm text-ink-soft">{product.brand}</p>
-        <h3 className="text-base font-medium leading-snug text-ink">{product.name}</h3>
-      </div>
+        <div className="flex flex-col gap-1">
+          <p className="text-sm text-ink-soft">{product.brand}</p>
+          <h3 className="text-base font-medium leading-snug text-ink">{product.name}</h3>
+        </div>
 
-      {price ? (
-        <p className="font-display leading-none">
-          <span className="gold-text text-2xl font-semibold">{price.amount}</span>{" "}
-          <span className="text-sm text-ink-soft">{price.label}</span>
-        </p>
-      ) : (
-        <p className="text-sm text-ink-soft">Bientôt disponible</p>
-      )}
+        {price ? (
+          <p className="font-display leading-none">
+            <span className="gold-text text-2xl font-semibold">{price.amount}</span>{" "}
+            <span className="text-sm text-ink-soft">{price.label}</span>
+          </p>
+        ) : (
+          <p className="text-sm text-ink-soft">Bientôt disponible</p>
+        )}
 
-      {offer && !offer.in_stock ? <p className="text-sm text-ink-soft">Rupture de stock</p> : null}
+        {offer && !offer.in_stock ? <p className="text-sm text-ink-soft">Rupture de stock</p> : null}
 
-      <p className="text-sm text-ink-soft">{conditionLine}</p>
+        <p className="text-sm text-ink-soft">{conditionLine}</p>
 
-      {offer && offer.seller === "vendor" ? (
-        <p className="text-xs text-gold">Vendu par un vendeur vérifié Technilium</p>
+        {offer && offer.seller === "vendor" ? (
+          <p className="text-xs text-gold">Vendu par un vendeur vérifié Technilium</p>
+        ) : null}
+      </Link>
+
+      {offer ? (
+        <AddToCartButton
+          offerId={offer.id}
+          productSlug={product.slug}
+          productName={product.name}
+          brand={product.brand}
+          priceAmount={offer.price.amount}
+          currency={offer.price.currency}
+          stockQuantity={offer.stock_quantity}
+          compact
+        />
       ) : null}
-    </Link>
+    </div>
   );
 }
