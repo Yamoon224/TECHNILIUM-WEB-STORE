@@ -43,7 +43,11 @@ npm run generate:api-client
 - `/produits/[slug]` — fiche produit détaillée (prix, garantie, caractéristiques, vendeur), ajout au panier respectant le stock.
 - `/panier` — panier (localStorage) : quantités, suppression, sous-total.
 - `/commande` — formulaire de livraison + confirmation, paiement à la livraison uniquement.
-- `/commande/[orderNumber]` — accusé de réception ; nécessite `?phone=` (celui saisi à la commande) pour consulter la commande — ce n'est pas qu'un identifiant dans l'URL, l'API l'exige comme preuve de possession.
+- `/commande/[orderNumber]` — accusé de réception, retrouvé via sessionStorage juste après la commande ; sinon un formulaire redemande le téléphone (jamais dans l'URL — voir plus bas).
+- `/connexion` — connexion et création de compte (un même formulaire, bascule entre les deux modes).
+- `/compte` — informations du compte et historique des commandes (`GET /orders/mine`, authentifié).
+
+Se connecter avant de passer commande rattache automatiquement la commande au compte (`customer_id`) sans rien changer au parcours invité, qui reste entièrement supporté.
 
 ## Identité visuelle
 

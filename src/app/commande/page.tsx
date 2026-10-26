@@ -3,12 +3,14 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useAuth } from "@/components/AuthProvider";
 import { useCart } from "@/components/CartProvider";
 import { formatMoneyParts } from "@/lib/money";
 import { CheckoutError, placeOrder, rememberLastOrder } from "@/lib/orders";
 
 export default function CheckoutPage() {
   const router = useRouter();
+  const { token, user } = useAuth();
   const { items, subtotalAmount, clear } = useCart();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -36,14 +38,17 @@ export default function CheckoutPage() {
     const form = new FormData(event.currentTarget);
 
     try {
-      const order = await placeOrder({
-        items: items.map((item) => ({ offer_id: item.offerId, quantity: item.quantity })),
-        customer_name: String(form.get("customer_name") ?? ""),
-        customer_phone: String(form.get("customer_phone") ?? ""),
-        delivery_address: String(form.get("delivery_address") ?? ""),
-        delivery_city: String(form.get("delivery_city") ?? "") || undefined,
-        notes: String(form.get("notes") ?? "") || undefined,
-      });
+      const order = await placeOrder(
+        {
+          items: items.map((item) => ({ offer_id: item.offerId, quantity: item.quantity })),
+          customer_name: String(form.get("customer_name") ?? ""),
+          customer_phone: String(form.get("customer_phone") ?? ""),
+          delivery_address: String(form.get("delivery_address") ?? ""),
+          delivery_city: String(form.get("delivery_city") ?? "") || undefined,
+          notes: String(form.get("notes") ?? "") || undefined,
+        },
+        token,
+      );
 
       rememberLastOrder(order);
       clear();
@@ -85,6 +90,7 @@ export default function CheckoutPage() {
           <input
             name="customer_name"
             required
+            defaultValue={user?.name}
             className="rounded-sm border border-line bg-surface px-3 py-2 text-ink focus:border-gold focus:outline-none"
           />
         </label>
@@ -95,6 +101,7 @@ export default function CheckoutPage() {
             name="customer_phone"
             type="tel"
             required
+            defaultValue={user?.phone ?? undefined}
             placeholder="07 00 00 00 00"
             className="rounded-sm border border-line bg-surface px-3 py-2 text-ink focus:border-gold focus:outline-none"
           />

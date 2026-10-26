@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AccountIndicator } from "./AccountIndicator";
 import { CartIndicator } from "./CartIndicator";
 import { LogoMark } from "./LogoMark";
 
@@ -26,6 +27,7 @@ export function SiteHeader({ defaultSearch }: { defaultSearch?: string }) {
           </button>
         </form>
 
+        <AccountIndicator />
         <CartIndicator />
       </div>
     </header>

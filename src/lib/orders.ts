@@ -63,10 +63,19 @@ export function recallLastOrder(orderNumber: string): Order | null {
   }
 }
 
-export async function placeOrder(input: PlaceOrderInput): Promise<Order> {
+/**
+ * `token` is optional: guest checkout (cahier §5.1) stays fully supported.
+ * When present, the backend attaches the order to that customer's account
+ * so it shows up in listMyOrders() — the whole reason this is a parameter
+ * here rather than a hardcoded anonymous request.
+ */
+export async function placeOrder(input: PlaceOrderInput, token?: string | null): Promise<Order> {
   const response = await fetch(`${API_BASE_URL}/orders`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
     body: JSON.stringify(input),
   });
 
@@ -76,6 +85,22 @@ export async function placeOrder(input: PlaceOrderInput): Promise<Order> {
   }
 
   return response.json() as Promise<Order>;
+}
+
+export class OrdersError extends Error {}
+
+export async function listMyOrders(token: string): Promise<Order[]> {
+  const response = await fetch(`${API_BASE_URL}/orders/mine`, {
+    headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw new OrdersError(`/orders/mine responded with ${response.status}`);
+  }
+
+  const body = (await response.json()) as { data: Order[] };
+  return body.data;
 }
 
 /**
