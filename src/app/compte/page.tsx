@@ -65,6 +65,13 @@ export default function AccountPage() {
         </button>
       </div>
 
+      <p className="text-sm text-ink-soft">
+        Un souci avec une commande ?{" "}
+        <Link href="/aide" className="text-gold underline-offset-4 hover:underline">
+          Contacter le support
+        </Link>
+      </p>
+
       <section className="flex flex-col gap-4">
         <h2 className="font-display text-lg font-semibold text-ink">Mes commandes</h2>
 

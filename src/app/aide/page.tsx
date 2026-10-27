@@ -1,0 +1,304 @@
+"use client";
+
+import { useCallback, useEffect, useState, type FormEvent } from "react";
+import Link from "next/link";
+import { useAuth } from "@/components/AuthProvider";
+import { listMyOrders, type Order } from "@/lib/orders";
+import {
+  CATEGORY_LABEL,
+  SupportError,
+  TICKET_STATUS_LABEL,
+  canReply,
+  getTicket,
+  listTickets,
+  needsYourReply,
+  openTicket,
+  replyToTicket,
+  type Ticket,
+  type TicketCategory,
+} from "@/lib/support";
+
+export default function HelpPage() {
+  const { status, token, user } = useAuth();
+  const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [selected, setSelected] = useState<Ticket | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const refresh = useCallback(() => {
+    if (!token) return;
+    listTickets(token)
+      .then(setTickets)
+      .catch((caught) => setError(caught instanceof SupportError ? caught.message : "Tickets indisponibles."));
+  }, [token]);
+
+  useEffect(() => {
+    refresh();
+  }, [refresh]);
+
+  useEffect(() => {
+    if (!token) return;
+    listMyOrders(token)
+      .then(setOrders)
+      .catch(() => setOrders([]));
+  }, [token]);
+
+  async function open(ticket: Ticket) {
+    if (!token) return;
+    setError(null);
+    try {
+      setSelected(await getTicket(token, ticket.id));
+    } catch (caught) {
+      setError(caught instanceof SupportError ? caught.message : "Conversation indisponible.");
+    }
+  }
+
+  if (status === "checking") {
+    return <p className="px-4 py-16 text-center text-sm text-ink-soft">Vérification de la session…</p>;
+  }
+
+  if (!user || !token) {
+    return (
+      <main className="flex min-h-screen flex-1 flex-col items-center justify-center gap-3 px-4">
+        <p className="text-ink-soft">Connectez-vous pour contacter le support.</p>
+        <Link href="/connexion" className="text-sm text-gold underline-offset-4 hover:underline">
+          Se connecter
+        </Link>
+      </main>
+    );
+  }
+
+  return (
+    <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-8 px-4 py-8 pb-16">
+      <div className="flex items-center justify-between">
+        <h1 className="font-display text-2xl font-semibold text-ink">Aide et support</h1>
+        <Link href="/compte" className="text-sm text-gold underline-offset-4 hover:underline">
+          Mon compte
+        </Link>
+      </div>
+
+      {error ? <p className="text-sm text-danger">{error}</p> : null}
+
+      {selected ? (
+        <Conversation
+          ticket={selected}
+          onBack={() => {
+            setSelected(null);
+            refresh();
+          }}
+          onReply={async (body) => {
+            setSelected(await replyToTicket(token, selected.id, body));
+          }}
+        />
+      ) : (
+        <>
+          <NewTicketForm
+            orders={orders}
+            onSubmit={async (input) => {
+              const created = await openTicket(token, input);
+              refresh();
+              setSelected(created);
+            }}
+          />
+
+          <section className="flex flex-col gap-3">
+            <h2 className="font-display text-lg font-semibold text-ink">Mes demandes</h2>
+            {tickets.length === 0 ? (
+              <p className="text-sm text-ink-soft">Aucune demande pour l&apos;instant.</p>
+            ) : (
+              <ul className="flex flex-col divide-y divide-line border-y border-line text-sm">
+                {tickets.map((ticket) => (
+                  <li key={ticket.id}>
+                    <button
+                      type="button"
+                      onClick={() => open(ticket)}
+                      className="flex w-full items-center justify-between gap-3 py-3 text-left"
+                    >
+                      <span className="flex flex-col gap-0.5">
+                        <span className="text-ink">{ticket.subject}</span>
+                        <span className="text-xs text-ink-soft">
+                          {ticket.number} · {CATEGORY_LABEL[ticket.category]}
+                        </span>
+                      </span>
+                      <span className={`text-xs ${needsYourReply(ticket.status) ? "text-gold-bright" : "text-ink-soft"}`}>
+                        {TICKET_STATUS_LABEL[ticket.status]}
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        </>
+      )}
+    </main>
+  );
+}
+
+function NewTicketForm({
+  orders,
+  onSubmit,
+}: {
+  orders: Order[];
+  onSubmit: (input: { subject: string; category: TicketCategory; message: string; order_number?: string }) => Promise<void>;
+}) {
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    setSubmitting(true);
+    setError(null);
+
+    try {
+      await onSubmit({
+        subject: String(data.get("subject") ?? ""),
+        category: String(data.get("category") ?? "other") as TicketCategory,
+        message: String(data.get("message") ?? ""),
+        order_number: String(data.get("order_number") ?? "") || undefined,
+      });
+      form.reset();
+    } catch (caught) {
+      setError(caught instanceof SupportError ? caught.message : "Votre demande n'a pas pu être envoyée.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  const field = "rounded-sm border border-line bg-surface px-3 py-2 text-ink focus:border-gold focus:outline-none";
+
+  return (
+    <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+      <h2 className="font-display text-lg font-semibold text-ink">Nouvelle demande</h2>
+
+      <label className="flex flex-col gap-1 text-sm text-ink-soft">
+        Sujet
+        <input name="subject" required minLength={3} maxLength={150} className={field} />
+      </label>
+
+      <div className="grid gap-3 sm:grid-cols-2">
+        <label className="flex flex-col gap-1 text-sm text-ink-soft">
+          Catégorie
+          <select name="category" defaultValue="other" className={field}>
+            {Object.entries(CATEGORY_LABEL).map(([value, label]) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className="flex flex-col gap-1 text-sm text-ink-soft">
+          Commande concernée (optionnel)
+          <select name="order_number" defaultValue="" className={field}>
+            <option value="">Aucune</option>
+            {orders.map((order) => (
+              <option key={order.order_number} value={order.order_number}>
+                {order.order_number}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+
+      <label className="flex flex-col gap-1 text-sm text-ink-soft">
+        Votre message
+        <textarea name="message" required minLength={3} maxLength={5000} rows={4} className={field} />
+      </label>
+
+      {error ? <p className="text-sm text-danger">{error}</p> : null}
+
+      <button
+        type="submit"
+        disabled={submitting}
+        className="self-start rounded-sm bg-gold px-4 py-2 text-sm font-medium text-bg transition-colors hover:bg-gold-bright disabled:opacity-60"
+      >
+        {submitting ? "Envoi…" : "Envoyer"}
+      </button>
+    </form>
+  );
+}
+
+function Conversation({
+  ticket,
+  onBack,
+  onReply,
+}: {
+  ticket: Ticket;
+  onBack: () => void;
+  onReply: (body: string) => Promise<void>;
+}) {
+  const [body, setBody] = useState("");
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleSubmit(event: FormEvent) {
+    event.preventDefault();
+    if (!body.trim()) return;
+    setSending(true);
+    setError(null);
+    try {
+      await onReply(body.trim());
+      setBody("");
+    } catch (caught) {
+      setError(caught instanceof SupportError ? caught.message : "Le message n'a pas pu être envoyé.");
+    } finally {
+      setSending(false);
+    }
+  }
+
+  return (
+    <section className="flex flex-col gap-4">
+      <button type="button" onClick={onBack} className="self-start text-sm text-gold underline-offset-4 hover:underline">
+        ← Mes demandes
+      </button>
+
+      <div>
+        <h2 className="font-display text-lg font-semibold text-ink">{ticket.subject}</h2>
+        <p className="text-xs text-ink-soft">
+          {ticket.number} · {TICKET_STATUS_LABEL[ticket.status]}
+          {ticket.order_number ? ` · commande ${ticket.order_number}` : ""}
+        </p>
+      </div>
+
+      <ul className="flex flex-col gap-3">
+        {(ticket.messages ?? []).map((message) => (
+          <li
+            key={message.id}
+            className={`max-w-[85%] rounded-sm border border-line p-3 text-sm ${
+              message.from === "customer" ? "self-end bg-surface" : "self-start"
+            }`}
+          >
+            <p className="mb-1 text-xs text-ink-soft">{message.from === "customer" ? "Vous" : "Support Technilium"}</p>
+            <p className="whitespace-pre-wrap text-ink">{message.body}</p>
+          </li>
+        ))}
+      </ul>
+
+      {canReply(ticket.status) ? (
+        <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+          <textarea
+            value={body}
+            onChange={(event) => setBody(event.target.value)}
+            rows={3}
+            maxLength={5000}
+            placeholder={ticket.status === "resolved" ? "Répondre rouvrira la demande…" : "Votre réponse…"}
+            className="rounded-sm border border-line bg-surface px-3 py-2 text-ink focus:border-gold focus:outline-none"
+          />
+          {error ? <p className="text-sm text-danger">{error}</p> : null}
+          <button
+            type="submit"
+            disabled={sending || !body.trim()}
+            className="self-start rounded-sm bg-gold px-4 py-2 text-sm font-medium text-bg transition-colors hover:bg-gold-bright disabled:opacity-60"
+          >
+            {sending ? "Envoi…" : "Répondre"}
+          </button>
+        </form>
+      ) : (
+        <p className="text-sm text-ink-soft">Cette demande est close. Ouvrez-en une nouvelle si besoin.</p>
+      )}
+    </section>
+  );
+}
