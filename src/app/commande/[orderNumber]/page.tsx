@@ -3,7 +3,7 @@
 import { use, useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { formatMoneyParts } from "@/lib/money";
-import { getOrder, recallLastOrder, type Order } from "@/lib/orders";
+import { getOrder, recallLastOrder, showDeliveryCode, type Order } from "@/lib/orders";
 
 export default function OrderConfirmationPage({ params }: PageProps<"/commande/[orderNumber]">) {
   const { orderNumber } = use(params);
@@ -103,6 +103,16 @@ function OrderSummary({ order }: { order: Order }) {
           Commande <span className="text-ink">{order.order_number}</span> — paiement à la livraison.
         </p>
       </div>
+
+      {showDeliveryCode(order) ? (
+        <div className="flex flex-col gap-1 rounded-sm border border-gold-deep p-4">
+          <p className="text-sm text-ink-soft">Code de confirmation de livraison</p>
+          <p className="font-display text-3xl tracking-[0.3em] text-gold-bright">{order.delivery_code}</p>
+          <p className="text-xs text-ink-soft">
+            Ne le communiquez au livreur qu&apos;au moment de recevoir votre colis : c&apos;est votre preuve de remise.
+          </p>
+        </div>
+      ) : null}
 
       <ul className="flex flex-col divide-y divide-line border-y border-line text-sm">
         {order.items.map((item) => {

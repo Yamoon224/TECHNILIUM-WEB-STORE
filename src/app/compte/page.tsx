@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/components/AuthProvider";
 import { formatMoneyParts } from "@/lib/money";
-import { listMyOrders, OrdersError, type Order } from "@/lib/orders";
+import { listMyOrders, OrdersError, partialLabel, showDeliveryCode, type Order } from "@/lib/orders";
 
 export default function AccountPage() {
   const router = useRouter();
@@ -90,8 +90,20 @@ export default function AccountPage() {
                     <span className="text-xs text-ink-soft">
                       {order.items.length} article{order.items.length > 1 ? "s" : ""}
                     </span>
+                    {showDeliveryCode(order) ? (
+                      <span className="text-xs text-gold-bright">Code de livraison : {order.delivery_code}</span>
+                    ) : null}
+                    {order.partial
+                      ? order.sub_orders?.map((parcel, index) => (
+                          <span key={parcel.id} className="text-xs text-ink-soft">
+                            Colis {index + 1} : {STATUS_LABEL[parcel.status] ?? parcel.status}
+                          </span>
+                        ))
+                      : null}
                   </div>
-                  <span className="text-ink-soft">{STATUS_LABEL[order.status] ?? order.status}</span>
+                  <span className="text-ink-soft">
+                    {partialLabel(order) ?? STATUS_LABEL[order.status] ?? order.status}
+                  </span>
                   <span className="text-ink">
                     {subtotal.amount} {subtotal.label}
                   </span>

@@ -11,6 +11,15 @@ export interface OrderItem {
   line_total: { amount: number; currency: CurrencyCode };
 }
 
+/** One seller's parcel within an order, with its own status (cahier §5.7). */
+export interface SubOrder {
+  id: number;
+  vendor_id: number | null;
+  status: string;
+  subtotal: { amount: number; currency: CurrencyCode };
+  delivered_at: string | null;
+}
+
 export interface Order {
   order_number: string;
   status: string;
@@ -22,7 +31,30 @@ export interface Order {
   notes: string | null;
   subtotal: { amount: number; currency: CurrencyCode };
   items: OrderItem[];
+  sub_orders?: SubOrder[];
+  /** Six-digit code to give the courier at handover — keep it private until then. */
+  delivery_code?: string | null;
+  /** True when the parcels are at different stages. */
+  partial?: boolean;
   created_at: string | null;
+}
+
+/** The code is only useful until the parcel is handed over. */
+export function showDeliveryCode(order: Pick<Order, "delivery_code" | "status">): boolean {
+  return Boolean(order.delivery_code) && order.status !== "delivered" && order.status !== "cancelled";
+}
+
+/**
+ * The status line shown to the customer: "Partiellement livrée / expédiée"
+ * when the parcels of a multi-seller order are at different stages,
+ * otherwise null (the plain order status applies).
+ */
+export function partialLabel(order: Pick<Order, "partial" | "sub_orders">): string | null {
+  if (!order.partial) return null;
+  const statuses = (order.sub_orders ?? []).map((subOrder) => subOrder.status);
+  if (statuses.includes("delivered")) return "Partiellement livrée";
+  if (statuses.includes("shipped")) return "Partiellement expédiée";
+  return null;
 }
 
 export interface PlaceOrderInput {
