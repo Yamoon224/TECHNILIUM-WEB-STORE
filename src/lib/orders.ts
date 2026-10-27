@@ -29,7 +29,10 @@ export interface Order {
   delivery_address: string;
   delivery_city: string | null;
   notes: string | null;
+  /** What the customer owes, after any coupon. */
   subtotal: { amount: number; currency: CurrencyCode };
+  discount?: { amount: number; currency: CurrencyCode };
+  coupon_code?: string | null;
   items: OrderItem[];
   sub_orders?: SubOrder[];
   /** Six-digit code to give the courier at handover — keep it private until then. */
@@ -64,6 +67,7 @@ export interface PlaceOrderInput {
   delivery_address: string;
   delivery_city?: string;
   notes?: string;
+  coupon_code?: string;
 }
 
 export class CheckoutError extends Error {}

@@ -42,7 +42,7 @@ npm run generate:api-client
 - `/` — accueil catalogue : recherche, filtre par catégorie, grille produits (données réelles via l'API Catalog).
 - `/produits/[slug]` — fiche produit détaillée (prix, garantie, caractéristiques, vendeur), ajout au panier respectant le stock.
 - `/panier` — panier (localStorage) : quantités, suppression, sous-total.
-- `/commande` — formulaire de livraison + confirmation, paiement à la livraison uniquement.
+- `/commande` — champ **code promotionnel** avec aperçu de la remise et du total avant confirmation (le code est revalidé côté serveur à la commande) ; formulaire de livraison + confirmation, paiement à la livraison uniquement.
 - `/commande/[orderNumber]` — accusé de réception, retrouvé via sessionStorage juste après la commande ; sinon un formulaire redemande le téléphone (jamais dans l'URL — voir plus bas).
 - Après la commande (`/commande/[orderNumber]`) et dans `/compte` : le **code de confirmation de livraison** à ne donner au livreur qu'à la remise du colis ; « Partiellement expédiée / livrée » et statut de chaque colis pour une commande multi-vendeurs.
 - `/connexion` — connexion et création de compte (un même formulaire, bascule entre les deux modes).

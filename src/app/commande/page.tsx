@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/components/AuthProvider";
 import { useCart } from "@/components/CartProvider";
 import { formatMoneyParts } from "@/lib/money";
+import { CouponError, quoteCoupon, totalAfterDiscount, type CouponQuote } from "@/lib/coupons";
 import { CheckoutError, placeOrder, rememberLastOrder } from "@/lib/orders";
 
 export default function CheckoutPage() {
@@ -14,6 +15,11 @@ export default function CheckoutPage() {
   const { items, subtotalAmount, clear } = useCart();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const [couponInput, setCouponInput] = useState("");
+  const [quote, setQuote] = useState<CouponQuote | null>(null);
+  const [couponError, setCouponError] = useState<string | null>(null);
+  const [checkingCoupon, setCheckingCoupon] = useState(false);
 
   if (items.length === 0) {
     return (
@@ -29,6 +35,32 @@ export default function CheckoutPage() {
 
   const currency = items[0]?.currency ?? "XOF";
   const subtotal = formatMoneyParts({ amount: subtotalAmount, currency });
+  const discount = quote ? formatMoneyParts({ amount: quote.discount_amount, currency }) : null;
+  const total = formatMoneyParts({ amount: totalAfterDiscount(subtotalAmount, quote?.discount_amount ?? 0), currency });
+
+  async function handleApplyCoupon() {
+    if (!couponInput.trim()) return;
+    setCheckingCoupon(true);
+    setCouponError(null);
+
+    // The phone, when already typed, enables per-customer limits in the preview.
+    const phone = formRef.current ? String(new FormData(formRef.current).get("customer_phone") ?? "") : "";
+
+    try {
+      setQuote(await quoteCoupon(couponInput, subtotalAmount, phone));
+    } catch (caught) {
+      setQuote(null);
+      setCouponError(caught instanceof CouponError ? caught.message : "Code indisponible, réessayez.");
+    } finally {
+      setCheckingCoupon(false);
+    }
+  }
+
+  function handleRemoveCoupon() {
+    setQuote(null);
+    setCouponInput("");
+    setCouponError(null);
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -46,6 +78,7 @@ export default function CheckoutPage() {
           delivery_address: String(form.get("delivery_address") ?? ""),
           delivery_city: String(form.get("delivery_city") ?? "") || undefined,
           notes: String(form.get("notes") ?? "") || undefined,
+          coupon_code: quote?.code,
         },
         token,
       );
@@ -79,12 +112,56 @@ export default function CheckoutPage() {
         })}
       </ul>
 
-      <p className="self-end font-display text-lg">
-        Sous-total : <span className="gold-text font-semibold">{subtotal.amount}</span>{" "}
-        <span className="text-ink-soft">{subtotal.label}</span>
-      </p>
+      <div className="flex flex-col gap-2 rounded-sm border border-line p-3">
+        <label className="flex flex-col gap-1 text-sm text-ink-soft">
+          Code promotionnel
+          <span className="flex gap-2">
+            <input
+              value={couponInput}
+              onChange={(event) => setCouponInput(event.target.value)}
+              disabled={quote !== null}
+              placeholder="BIENVENUE10"
+              className="flex-1 rounded-sm border border-line bg-surface px-3 py-2 uppercase text-ink focus:border-gold focus:outline-none disabled:opacity-60"
+            />
+            {quote ? (
+              <button
+                type="button"
+                onClick={handleRemoveCoupon}
+                className="rounded-sm border border-line px-3 py-2 text-sm text-ink transition-colors hover:border-gold"
+              >
+                Retirer
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={handleApplyCoupon}
+                disabled={checkingCoupon || !couponInput.trim()}
+                className="rounded-sm border border-gold px-3 py-2 text-sm text-gold transition-colors disabled:opacity-50"
+              >
+                Appliquer
+              </button>
+            )}
+          </span>
+        </label>
+        {couponError ? <p className="text-sm text-danger">{couponError}</p> : null}
+        {quote && discount ? (
+          <p className="text-sm text-ink-soft">
+            Code {quote.code} appliqué : −{discount.amount} {discount.label}
+          </p>
+        ) : null}
+      </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <div className="flex flex-col items-end gap-1">
+        <p className="text-sm text-ink-soft">
+          Sous-total : {subtotal.amount} {subtotal.label}
+        </p>
+        <p className="font-display text-lg">
+          Total : <span className="gold-text font-semibold">{total.amount}</span>{" "}
+          <span className="text-ink-soft">{total.label}</span>
+        </p>
+      </div>
+
+      <form ref={formRef} onSubmit={handleSubmit} className="flex flex-col gap-4">
         <label className="flex flex-col gap-1 text-sm text-ink-soft">
           Nom complet
           <input

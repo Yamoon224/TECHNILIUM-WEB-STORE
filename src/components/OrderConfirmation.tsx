@@ -135,6 +135,13 @@ function OrderSummary({ order }: { order: Order }) {
         })}
       </ul>
 
+      {order.discount && order.discount.amount > 0 ? (
+        <p className="self-end text-sm text-ink-soft">
+          Remise{order.coupon_code ? ` (${order.coupon_code})` : ""} : −{formatMoneyParts(order.discount).amount}{" "}
+          {formatMoneyParts(order.discount).label}
+        </p>
+      ) : null}
+
       <p className="self-end font-display text-lg">
         Total : <span className="gold-text font-semibold">{subtotal.amount}</span>{" "}
         <span className="text-ink-soft">{subtotal.label}</span>
