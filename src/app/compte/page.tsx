@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/components/AuthProvider";
+import { OrderInvoices } from "@/components/OrderInvoices";
 import { formatMoneyParts } from "@/lib/money";
 import { listMyOrders, OrdersError, partialLabel, showDeliveryCode, type Order } from "@/lib/orders";
 
@@ -91,7 +92,7 @@ export default function AccountPage() {
             {orders.map((order) => {
               const subtotal = formatMoneyParts(order.subtotal);
               return (
-                <li key={order.order_number} className="flex items-center justify-between py-3">
+                <li key={order.order_number} className="flex items-center justify-between gap-3 py-3">
                   <div className="flex flex-col gap-0.5">
                     <span className="text-ink">{order.order_number}</span>
                     <span className="text-xs text-ink-soft">
@@ -107,6 +108,9 @@ export default function AccountPage() {
                           </span>
                         ))
                       : null}
+                    {order.status !== "pending" && order.status !== "cancelled" ? (
+                      <OrderInvoices token={token} orderNumber={order.order_number} />
+                    ) : null}
                   </div>
                   <span className="text-ink-soft">
                     {partialLabel(order) ?? STATUS_LABEL[order.status] ?? order.status}

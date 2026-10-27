@@ -48,7 +48,7 @@ npm run generate:api-client
 - Sur `/produits/[slug]` : **avis clients** — note moyenne, répartition par étoiles, liste des avis avec la mention « Achat vérifié » ; un client connecté qui a reçu le produit peut donner son avis (publié aussitôt, ou après vérification s'il est signalé).
 - `/aide` — support (connecté) : ouvrir une demande (catégorie, commande concernée choisie parmi ses commandes), suivre ses demandes et leur statut, échanger avec le support. Lien depuis `/compte`.
 - `/connexion` — connexion et création de compte (un même formulaire, bascule entre les deux modes).
-- `/compte` — informations du compte et historique des commandes (`GET /orders/mine`, authentifié).
+- `/compte` — informations du compte et historique des commandes (`GET /orders/mine`, authentifié) ; « Mes factures » sur chaque commande confirmée : liste des factures et avoirs et téléchargement du PDF (`/customer/...`, limité à ses propres commandes).
 
 Se connecter avant de passer commande rattache automatiquement la commande au compte (`customer_id`) sans rien changer au parcours invité, qui reste entièrement supporté.
 
