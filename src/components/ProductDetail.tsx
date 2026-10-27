@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { AddToCartButton } from "@/components/AddToCartButton";
+import { ProductReviews } from "@/components/ProductReviews";
 import { ProductTile } from "@/components/ProductTile";
 import { formatMoneyParts } from "@/lib/money";
 import { getProduct } from "@/lib/catalog";
@@ -109,6 +110,8 @@ export async function ProductDetail({ params }: Pick<PageProps<"/produits/[slug]
           ) : null}
         </div>
       </div>
+
+      <ProductReviews productId={product.id} />
     </main>
   );
 }
