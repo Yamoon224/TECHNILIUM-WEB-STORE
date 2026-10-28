@@ -72,7 +72,7 @@ export function ProductReviews({ productId }: { productId: number }) {
                   {review.body ? <p className="whitespace-pre-wrap text-ink-soft">{review.body}</p> : null}
                   <p className="text-xs text-ink-soft">
                     {review.author_name}
-                    {review.verified_purchase ? <Tr> · Achat vérifié</Tr> : ""}
+                    {review.verified_purchase ? <>{" · "}<Tr>Achat vérifié</Tr></> : ""}
                     {review.published_at ? ` · ${review.published_at.slice(0, 10)}` : ""}
                   </p>
                 </li>

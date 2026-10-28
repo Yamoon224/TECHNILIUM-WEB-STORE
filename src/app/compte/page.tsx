@@ -137,7 +137,7 @@ function OrderCard({ order, token }: { order: Order; token: string }) {
         <Tr>Suivre cette commande en détail</Tr>
       </Link>
 
-      {headline ? <p className="text-sm font-medium text-gold-bright">{headline}</p> : null}
+      {headline ? <p className="text-sm font-medium text-gold-bright"><Tr>{headline}</Tr></p> : null}
       {order.partial
         ? order.sub_orders?.map((parcel, index) => (
             <p key={parcel.id} className="-mt-2 text-xs text-ink-soft">

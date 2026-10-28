@@ -9,7 +9,7 @@ import { OrderInvoices } from "./OrderInvoices";
 import { OrderReturns } from "./OrderReturns";
 import { OrderTimeline } from "./OrderTimeline";
 import { formatMoneyParts } from "@/lib/money";
-import { getMyOrder, parcelLabel, partialLabel, showDeliveryCode, type Order } from "@/lib/orders";
+import { getMyOrder, partialLabel, showDeliveryCode, type Order } from "@/lib/orders";
 import { formatOrderDate } from "@/lib/orderTimeline";
 
 /**
@@ -79,6 +79,7 @@ function Tracking({ order, token }: { order: Order; token: string }) {
   const placedOn = formatOrderDate(order.created_at);
   const parcels = order.sub_orders ?? [];
   const split = parcels.length > 1;
+  const headline = partialLabel(order);
 
   return (
     <>
@@ -95,7 +96,7 @@ function Tracking({ order, token }: { order: Order; token: string }) {
 
         <OrderTimeline status={order.status} history={order.status_history} />
 
-        {partialLabel(order) ? <p className="text-sm font-medium text-gold-bright">{partialLabel(order)}</p> : null}
+        {headline ? <p className="text-sm font-medium text-gold-bright"><Tr>{headline}</Tr></p> : null}
 
         {showDeliveryCode(order) ? (
           <p className="rounded-sm bg-gold-highlight px-3 py-2 text-sm text-gold-bright">
@@ -111,7 +112,8 @@ function Tracking({ order, token }: { order: Order; token: string }) {
             return (
               <section key={parcel.id} className="flex flex-col gap-3 rounded-sm bg-surface p-4 shadow-sm sm:p-6">
                 <div className="flex flex-wrap items-start justify-between gap-2">
-                  <h2 className="font-display text-base font-semibold text-ink">{parcelLabel(parcel, index)}</h2>
+                  <h2 className="font-display text-base font-semibold text-ink"><Tr>Colis</Tr> {index + 1} — <Tr>{parcel.vendor_id === null ? "expédié par Technilium" : "vendeur vérifié"}</Tr>
+                  </h2>
                   <p className="text-sm font-medium text-ink">
                     {subtotal.amount} {subtotal.label}
                   </p>
