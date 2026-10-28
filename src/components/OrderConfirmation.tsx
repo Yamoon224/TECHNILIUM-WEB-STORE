@@ -2,6 +2,7 @@
 
 import { use, useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
+import { OrderTimeline } from "./OrderTimeline";
 import { formatMoneyParts } from "@/lib/money";
 import { getOrder, recallLastOrder, showDeliveryCode, type Order } from "@/lib/orders";
 
@@ -108,6 +109,8 @@ function OrderSummary({ order }: { order: Order }) {
           Commande <span className="text-ink">{order.order_number}</span> — paiement à la livraison.
         </p>
       </div>
+
+      <OrderTimeline status={order.status} />
 
       {showDeliveryCode(order) ? (
         <div className="flex flex-col gap-1 rounded-sm border border-gold-deep p-4">

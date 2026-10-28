@@ -1,12 +1,15 @@
 "use client";
 
+import { LogOut, Package } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/components/AuthProvider";
 import { OrderInvoices } from "@/components/OrderInvoices";
+import { OrderTimeline } from "@/components/OrderTimeline";
 import { formatMoneyParts } from "@/lib/money";
 import { listMyOrders, OrdersError, partialLabel, showDeliveryCode, type Order } from "@/lib/orders";
+import { formatOrderDate } from "@/lib/orderTimeline";
 
 export default function AccountPage() {
   const router = useRouter();
@@ -51,80 +54,110 @@ export default function AccountPage() {
   }
 
   return (
-    <main className="mx-auto my-4 flex w-[calc(100%-2rem)] max-w-2xl flex-1 flex-col gap-8 rounded-sm bg-surface p-5 shadow-sm sm:p-8">
-      <div className="flex items-center justify-between">
+    <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-4 px-4 py-4">
+      <section className="flex flex-wrap items-center justify-between gap-3 rounded-sm bg-surface p-4 shadow-sm sm:p-6">
         <div>
           <h1 className="font-display text-2xl font-semibold text-ink">{user.name}</h1>
           {user.email ? <p className="text-sm text-ink-soft">{user.email}</p> : null}
         </div>
-        <button
-          type="button"
-          onClick={handleLogout}
-          className="rounded-sm border border-line px-3 py-1.5 text-sm text-ink transition-colors hover:border-gold"
-        >
-          Se déconnecter
-        </button>
+        <div className="flex items-center gap-3">
+          <Link href="/aide" className="text-sm font-medium text-gold-bright underline-offset-4 hover:underline">
+            Un souci ? Contacter le support
+          </Link>
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="flex items-center gap-1.5 rounded-sm border border-line px-3 py-1.5 text-sm text-ink transition-colors hover:border-gold"
+          >
+            <LogOut className="h-4 w-4" aria-hidden /> Se déconnecter
+          </button>
+        </div>
+      </section>
+
+      <h2 className="flex items-center gap-2 px-1 font-display text-lg font-semibold text-ink">
+        <Package className="h-5 w-5 text-gold" aria-hidden /> Mes commandes
+      </h2>
+
+      {error ? <p className="text-sm text-danger">{error}</p> : null}
+
+      {loading ? (
+        <p className="text-sm text-ink-soft">Chargement…</p>
+      ) : orders.length === 0 ? (
+        <p className="rounded-sm bg-surface p-6 text-sm text-ink-soft shadow-sm">
+          Aucune commande pour l&apos;instant.{" "}
+          <Link href="/" className="text-gold-bright underline-offset-4 hover:underline">
+            Voir le catalogue
+          </Link>
+        </p>
+      ) : (
+        <ul className="flex flex-col gap-4">
+          {orders.map((order) => (
+            <OrderCard key={order.order_number} order={order} token={token} />
+          ))}
+        </ul>
+      )}
+    </main>
+  );
+}
+
+function OrderCard({ order, token }: { order: Order; token: string }) {
+  const total = formatMoneyParts(order.subtotal);
+  const placedOn = formatOrderDate(order.created_at);
+  const headline = partialLabel(order);
+
+  return (
+    <li className="flex flex-col gap-4 rounded-sm bg-surface p-4 shadow-sm sm:p-6">
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <div>
+          <p className="font-medium text-ink">Commande {order.order_number}</p>
+          <p className="text-xs text-ink-soft">
+            {placedOn ? `Passée le ${placedOn} · ` : ""}
+            {order.items.length} article{order.items.length > 1 ? "s" : ""}
+          </p>
+        </div>
+        <p className="text-lg font-semibold text-ink">
+          {total.amount} {total.label}
+        </p>
       </div>
 
-      <p className="text-sm text-ink-soft">
-        Un souci avec une commande ?{" "}
-        <Link href="/aide" className="text-gold underline-offset-4 hover:underline">
-          Contacter le support
-        </Link>
-      </p>
+      <OrderTimeline status={order.status} />
 
-      <section className="flex flex-col gap-4">
-        <h2 className="font-display text-lg font-semibold text-ink">Mes commandes</h2>
+      {headline ? <p className="text-sm font-medium text-gold-bright">{headline}</p> : null}
+      {order.partial
+        ? order.sub_orders?.map((parcel, index) => (
+            <p key={parcel.id} className="-mt-2 text-xs text-ink-soft">
+              Colis {index + 1} : {STATUS_LABEL[parcel.status] ?? parcel.status}
+            </p>
+          ))
+        : null}
 
-        {error ? <p className="text-sm text-danger">{error}</p> : null}
+      {showDeliveryCode(order) ? (
+        <p className="rounded-sm bg-gold-highlight px-3 py-2 text-sm text-gold-bright">
+          Code de livraison : <span className="font-display font-semibold tracking-widest">{order.delivery_code}</span>
+          <span className="block text-xs">À ne donner au livreur qu&apos;à la remise du colis.</span>
+        </p>
+      ) : null}
 
-        {loading ? (
-          <p className="text-sm text-ink-soft">Chargement…</p>
-        ) : orders.length === 0 ? (
-          <p className="text-sm text-ink-soft">
-            Aucune commande pour l&apos;instant.{" "}
-            <Link href="/" className="text-gold underline-offset-4 hover:underline">
-              Voir le catalogue
-            </Link>
-          </p>
-        ) : (
-          <ul className="flex flex-col divide-y divide-line border-y border-line text-sm">
-            {orders.map((order) => {
-              const subtotal = formatMoneyParts(order.subtotal);
-              return (
-                <li key={order.order_number} className="flex items-center justify-between gap-3 py-3">
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-ink">{order.order_number}</span>
-                    <span className="text-xs text-ink-soft">
-                      {order.items.length} article{order.items.length > 1 ? "s" : ""}
-                    </span>
-                    {showDeliveryCode(order) ? (
-                      <span className="text-xs text-gold-bright">Code de livraison : {order.delivery_code}</span>
-                    ) : null}
-                    {order.partial
-                      ? order.sub_orders?.map((parcel, index) => (
-                          <span key={parcel.id} className="text-xs text-ink-soft">
-                            Colis {index + 1} : {STATUS_LABEL[parcel.status] ?? parcel.status}
-                          </span>
-                        ))
-                      : null}
-                    {order.status !== "pending" && order.status !== "cancelled" ? (
-                      <OrderInvoices token={token} orderNumber={order.order_number} />
-                    ) : null}
-                  </div>
-                  <span className="text-ink-soft">
-                    {partialLabel(order) ?? STATUS_LABEL[order.status] ?? order.status}
-                  </span>
-                  <span className="text-ink">
-                    {subtotal.amount} {subtotal.label}
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-      </section>
-    </main>
+      <ul className="flex flex-col divide-y divide-line border-y border-line text-sm">
+        {order.items.map((item) => {
+          const line = formatMoneyParts(item.line_total);
+          return (
+            <li key={item.offer_id} className="flex items-center justify-between gap-3 py-2">
+              <span className="text-ink">
+                {item.brand} {item.product_name} <span className="text-ink-soft">× {item.quantity}</span>
+              </span>
+              <span className="shrink-0 text-ink-soft">
+                {line.amount} {line.label}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+
+      {order.status !== "pending" && order.status !== "cancelled" ? (
+        <OrderInvoices token={token} orderNumber={order.order_number} />
+      ) : null}
+    </li>
   );
 }
 
