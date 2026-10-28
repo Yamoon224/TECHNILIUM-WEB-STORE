@@ -51,6 +51,8 @@ export interface Product {
   description: string | null;
   /** Photo uploaded by the catalogue team; null until there is one. */
   image_url: string | null;
+  /** The whole gallery, cover first (product page only needs more than the cover). */
+  images?: { id: number; url: string }[];
   attributes: Record<string, string | number> | null;
   condition_state: "neuf" | "reconditionne" | "occasion";
   category: Category | null;

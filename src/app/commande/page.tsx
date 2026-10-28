@@ -1,10 +1,12 @@
 "use client";
 
+import { MapPin, Tag, Wallet } from "lucide-react";
 import { useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/components/AuthProvider";
 import { useCart } from "@/components/CartProvider";
+import { ProductTile } from "@/components/ProductTile";
 import { formatMoneyParts } from "@/lib/money";
 import { CouponError, quoteCoupon, totalAfterDiscount, type CouponQuote } from "@/lib/coupons";
 import { CheckoutError, placeOrder, rememberLastOrder } from "@/lib/orders";
@@ -12,7 +14,7 @@ import { CheckoutError, placeOrder, rememberLastOrder } from "@/lib/orders";
 export default function CheckoutPage() {
   const router = useRouter();
   const { token, user } = useAuth();
-  const { items, subtotalAmount, clear } = useCart();
+  const { items, subtotalAmount, clear, count } = useCart();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -94,149 +96,187 @@ export default function CheckoutPage() {
   }
 
   return (
-    <main className="mx-auto my-4 flex w-[calc(100%-2rem)] max-w-3xl flex-1 flex-col gap-6 rounded-sm bg-surface p-5 shadow-sm sm:p-8">
+    <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-4 px-4 py-4">
       <h1 className="font-display text-2xl font-semibold text-ink">Finaliser la commande</h1>
 
-      <ul className="flex flex-col divide-y divide-line border-y border-line text-sm">
-        {items.map((item) => {
-          const lineTotal = formatMoneyParts({ amount: item.priceAmount * item.quantity, currency: item.currency });
-          return (
-            <li key={item.offerId} className="flex items-center justify-between py-2">
-              <span className="text-ink">
-                {item.productName} <span className="text-ink-soft">× {item.quantity}</span>
+      <div className="grid items-start gap-4 lg:grid-cols-[1fr_360px]">
+        <section className="flex flex-col gap-4 rounded-sm bg-surface p-4 shadow-sm sm:p-6">
+          <h2 className="flex items-center gap-2 font-display text-base font-semibold text-ink">
+            <MapPin className="h-5 w-5 text-gold" aria-hidden /> Livraison
+          </h2>
+
+          <form id="checkout-form" ref={formRef} onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <label className="flex flex-col gap-1 text-sm text-ink-soft">
+                Nom complet
+                <input
+                  name="customer_name"
+                  required
+                  defaultValue={user?.name}
+                  className="rounded-sm border border-line bg-surface px-3 py-2 text-ink focus:border-gold focus:outline-none"
+                />
+              </label>
+
+              <label className="flex flex-col gap-1 text-sm text-ink-soft">
+                Téléphone
+                <input
+                  name="customer_phone"
+                  type="tel"
+                  required
+                  defaultValue={user?.phone ?? undefined}
+                  placeholder="07 00 00 00 00"
+                  className="rounded-sm border border-line bg-surface px-3 py-2 text-ink focus:border-gold focus:outline-none"
+                />
+              </label>
+            </div>
+
+            <label className="flex flex-col gap-1 text-sm text-ink-soft">
+              E-mail (facultatif — pour recevoir le suivi de votre commande)
+              <input
+                name="customer_email"
+                type="email"
+                defaultValue={user?.email ?? undefined}
+                placeholder="vous@exemple.com"
+                className="rounded-sm border border-line bg-surface px-3 py-2 text-ink focus:border-gold focus:outline-none"
+              />
+            </label>
+
+            <label className="flex flex-col gap-1 text-sm text-ink-soft">
+              Adresse de livraison (quartier, repères)
+              <textarea
+                name="delivery_address"
+                required
+                rows={2}
+                placeholder="Ex : Cocody Angré, non loin de la pharmacie du carrefour"
+                className="rounded-sm border border-line bg-surface px-3 py-2 text-ink focus:border-gold focus:outline-none"
+              />
+            </label>
+
+            <label className="flex flex-col gap-1 text-sm text-ink-soft">
+              Ville
+              <input
+                name="delivery_city"
+                placeholder="Abidjan"
+                className="rounded-sm border border-line bg-surface px-3 py-2 text-ink focus:border-gold focus:outline-none"
+              />
+            </label>
+
+            <label className="flex flex-col gap-1 text-sm text-ink-soft">
+              Notes (optionnel)
+              <textarea
+                name="notes"
+                rows={2}
+                className="rounded-sm border border-line bg-surface px-3 py-2 text-ink focus:border-gold focus:outline-none"
+              />
+            </label>
+          </form>
+
+          <div className="flex items-center gap-3 rounded-sm bg-bg p-3 text-sm text-ink">
+            <Wallet className="h-5 w-5 shrink-0 text-gold" aria-hidden />
+            <span>
+              <span className="font-semibold">Paiement à la livraison.</span> Vous payez au livreur, à la remise du colis.
+            </span>
+          </div>
+        </section>
+
+        <aside className="flex flex-col gap-4 rounded-sm bg-surface p-4 shadow-sm lg:sticky lg:top-28">
+          <h2 className="font-display text-base font-semibold text-ink">Récapitulatif ({count})</h2>
+
+          <ul className="flex flex-col divide-y divide-line border-y border-line text-sm">
+            {items.map((item) => {
+              const lineTotal = formatMoneyParts({ amount: item.priceAmount * item.quantity, currency: item.currency });
+              return (
+                <li key={item.offerId} className="flex items-center gap-3 py-2">
+                  <div className="w-12 shrink-0">
+                    <ProductTile id={item.offerId} brand={item.brand} categoryName={null} imageUrl={item.imageUrl} alt={item.productName} />
+                  </div>
+                  <span className="flex-1 text-ink">
+                    {item.productName} <span className="text-ink-soft">× {item.quantity}</span>
+                  </span>
+                  <span className="text-ink">
+                    {lineTotal.amount} {lineTotal.label}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+
+          <div className="flex flex-col gap-2 rounded-sm border border-line p-3">
+            <label className="flex flex-col gap-1 text-sm text-ink-soft">
+              <span className="flex items-center gap-1.5">
+                <Tag className="h-4 w-4" aria-hidden /> Code promotionnel
               </span>
-              <span className="text-ink">
-                {lineTotal.amount} {lineTotal.label}
+              <span className="flex gap-2">
+                <input
+                  value={couponInput}
+                  onChange={(event) => setCouponInput(event.target.value)}
+                  disabled={quote !== null}
+                  placeholder="BIENVENUE10"
+                  className="min-w-0 flex-1 rounded-sm border border-line bg-surface px-3 py-2 uppercase text-ink focus:border-gold focus:outline-none disabled:opacity-60"
+                />
+                {quote ? (
+                  <button
+                    type="button"
+                    onClick={handleRemoveCoupon}
+                    className="rounded-sm border border-line px-3 py-2 text-sm text-ink transition-colors hover:border-gold"
+                  >
+                    Retirer
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleApplyCoupon}
+                    disabled={checkingCoupon || !couponInput.trim()}
+                    className="rounded-sm border border-gold px-3 py-2 text-sm text-gold transition-colors disabled:opacity-50"
+                  >
+                    Appliquer
+                  </button>
+                )}
               </span>
-            </li>
-          );
-        })}
-      </ul>
+            </label>
+            {couponError ? <p className="text-sm text-danger">{couponError}</p> : null}
+            {quote && discount ? (
+              <p className="text-sm text-ink-soft">
+                Code {quote.code} appliqué : −{discount.amount} {discount.label}
+              </p>
+            ) : null}
+          </div>
 
-      <div className="flex flex-col gap-2 rounded-sm border border-line p-3">
-        <label className="flex flex-col gap-1 text-sm text-ink-soft">
-          Code promotionnel
-          <span className="flex gap-2">
-            <input
-              value={couponInput}
-              onChange={(event) => setCouponInput(event.target.value)}
-              disabled={quote !== null}
-              placeholder="BIENVENUE10"
-              className="flex-1 rounded-sm border border-line bg-surface px-3 py-2 uppercase text-ink focus:border-gold focus:outline-none disabled:opacity-60"
-            />
-            {quote ? (
-              <button
-                type="button"
-                onClick={handleRemoveCoupon}
-                className="rounded-sm border border-line px-3 py-2 text-sm text-ink transition-colors hover:border-gold"
-              >
-                Retirer
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={handleApplyCoupon}
-                disabled={checkingCoupon || !couponInput.trim()}
-                className="rounded-sm border border-gold px-3 py-2 text-sm text-gold transition-colors disabled:opacity-50"
-              >
-                Appliquer
-              </button>
-            )}
-          </span>
-        </label>
-        {couponError ? <p className="text-sm text-danger">{couponError}</p> : null}
-        {quote && discount ? (
-          <p className="text-sm text-ink-soft">
-            Code {quote.code} appliqué : −{discount.amount} {discount.label}
-          </p>
-        ) : null}
+          <div className="flex flex-col gap-1 border-t border-line pt-3 text-sm">
+            <p className="flex justify-between text-ink-soft">
+              <span>Sous-total</span>
+              <span>
+                {subtotal.amount} {subtotal.label}
+              </span>
+            </p>
+            {quote && discount ? (
+              <p className="flex justify-between text-ink-soft">
+                <span>Remise</span>
+                <span>
+                  −{discount.amount} {discount.label}
+                </span>
+              </p>
+            ) : null}
+            <p className="flex justify-between text-lg font-semibold text-ink">
+              <span>Total</span>
+              <span>
+                {total.amount} {total.label}
+              </span>
+            </p>
+          </div>
+
+          {error ? <p className="text-sm text-danger">{error}</p> : null}
+
+          <button
+            type="submit"
+            form="checkout-form"
+            disabled={submitting}
+            className="rounded-sm bg-gold px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-gold-bright disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {submitting ? "Envoi…" : "Confirmer la commande"}
+          </button>
+        </aside>
       </div>
-
-      <div className="flex flex-col items-end gap-1">
-        <p className="text-sm text-ink-soft">
-          Sous-total : {subtotal.amount} {subtotal.label}
-        </p>
-        <p className="font-display text-lg">
-          Total : <span className="gold-text font-semibold">{total.amount}</span>{" "}
-          <span className="text-ink-soft">{total.label}</span>
-        </p>
-      </div>
-
-      <form ref={formRef} onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <label className="flex flex-col gap-1 text-sm text-ink-soft">
-          Nom complet
-          <input
-            name="customer_name"
-            required
-            defaultValue={user?.name}
-            className="rounded-sm border border-line bg-surface px-3 py-2 text-ink focus:border-gold focus:outline-none"
-          />
-        </label>
-
-        <label className="flex flex-col gap-1 text-sm text-ink-soft">
-          Téléphone
-          <input
-            name="customer_phone"
-            type="tel"
-            required
-            defaultValue={user?.phone ?? undefined}
-            placeholder="07 00 00 00 00"
-            className="rounded-sm border border-line bg-surface px-3 py-2 text-ink focus:border-gold focus:outline-none"
-          />
-        </label>
-
-        <label className="flex flex-col gap-1 text-sm text-ink-soft">
-          E-mail (facultatif — pour recevoir le suivi de votre commande)
-          <input
-            name="customer_email"
-            type="email"
-            defaultValue={user?.email ?? undefined}
-            placeholder="vous@exemple.com"
-            className="rounded-sm border border-line bg-surface px-3 py-2 text-ink focus:border-gold focus:outline-none"
-          />
-        </label>
-
-        <label className="flex flex-col gap-1 text-sm text-ink-soft">
-          Adresse de livraison (quartier, repères)
-          <textarea
-            name="delivery_address"
-            required
-            rows={2}
-            placeholder="Ex : Cocody Angré, non loin de la pharmacie du carrefour"
-            className="rounded-sm border border-line bg-surface px-3 py-2 text-ink focus:border-gold focus:outline-none"
-          />
-        </label>
-
-        <label className="flex flex-col gap-1 text-sm text-ink-soft">
-          Ville
-          <input
-            name="delivery_city"
-            placeholder="Abidjan"
-            className="rounded-sm border border-line bg-surface px-3 py-2 text-ink focus:border-gold focus:outline-none"
-          />
-        </label>
-
-        <label className="flex flex-col gap-1 text-sm text-ink-soft">
-          Notes (optionnel)
-          <textarea
-            name="notes"
-            rows={2}
-            className="rounded-sm border border-line bg-surface px-3 py-2 text-ink focus:border-gold focus:outline-none"
-          />
-        </label>
-
-        <p className="text-sm text-ink-soft">Paiement à la livraison.</p>
-
-        {error ? <p className="text-sm text-danger">{error}</p> : null}
-
-        <button
-          type="submit"
-          disabled={submitting}
-          className="rounded-sm bg-gold px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-gold-bright disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {submitting ? "Envoi…" : "Confirmer la commande"}
-        </button>
-      </form>
     </main>
   );
 }

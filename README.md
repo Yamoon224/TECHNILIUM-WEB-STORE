@@ -39,6 +39,7 @@ npm run generate:api-client
 
 ## Pages
 
+- Fiche produit (fil d'Ariane, prix et remise, engagements, détails), panier (liste + récapitulatif fixe) et pages compte/commande/aide/connexion en cartes blanches ; la photo suit le produit jusque dans le panier ; la fiche produit a une galerie (photo principale + vignettes) ; la commande est en deux colonnes (livraison à gauche, récapitulatif avec code promo et total à droite).
 - Icônes (lucide-react) : menu des catégories (pictogramme choisi d'après le nom/slug), en-tête, engagements, pied de page. Photos produit réelles (backoffice `/produits`).
 - `/` — accueil façon place de marché : menu des catégories à gauche, bannière et engagements, rayon « Ventes Flash » (offres avec prix barré et pastille -X %, plus forte remise d'abord), un rayon par catégorie avec « Voir plus » ; recherche et filtre affichent une grille de résultats. En-tête et pied de page communs à toutes les pages (layout).
 - `/produits/[slug]` — fiche produit détaillée (prix, garantie, caractéristiques, vendeur), ajout au panier respectant le stock.

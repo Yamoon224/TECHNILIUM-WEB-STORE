@@ -1,19 +1,24 @@
 "use client";
 
+import { ShoppingCart, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useCart } from "@/components/CartProvider";
 import { ProductTile } from "@/components/ProductTile";
 import { formatMoneyParts } from "@/lib/money";
 
 export default function CartPage() {
-  const { items, updateQuantity, remove, subtotalAmount } = useCart();
+  const { items, updateQuantity, remove, subtotalAmount, count } = useCart();
 
   if (items.length === 0) {
     return (
-      <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col items-start justify-center gap-3 px-4 py-16">
+      <main className="mx-auto my-4 flex w-[calc(100%-2rem)] max-w-3xl flex-col items-center gap-3 rounded-sm bg-surface p-10 text-center shadow-sm">
+        <ShoppingCart className="h-12 w-12 text-gold" aria-hidden />
         <h1 className="font-display text-2xl font-semibold text-ink">Votre panier est vide</h1>
         <p className="text-ink-soft">Parcourez le catalogue pour y ajouter des produits.</p>
-        <Link href="/" className="text-sm text-gold underline-offset-4 hover:underline">
+        <Link
+          href="/"
+          className="rounded-sm bg-gold px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-gold-bright"
+        >
           Voir le catalogue
         </Link>
       </main>
@@ -24,74 +29,93 @@ export default function CartPage() {
   const subtotal = formatMoneyParts({ amount: subtotalAmount, currency });
 
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-6 pb-16">
-      <h1 className="font-display text-2xl font-semibold text-ink">Votre panier</h1>
+    <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-4 px-4 py-4">
+      <div className="grid items-start gap-4 lg:grid-cols-[1fr_320px]">
+        <section className="overflow-hidden rounded-sm bg-surface shadow-sm">
+          <h1 className="border-b border-line px-4 py-3 font-display text-lg font-semibold text-ink">
+            Panier ({count})
+          </h1>
 
-      <ul className="flex flex-col divide-y divide-line border-y border-line">
-        {items.map((item) => {
-          const lineTotal = formatMoneyParts({ amount: item.priceAmount * item.quantity, currency: item.currency });
+          <ul className="flex flex-col divide-y divide-line">
+            {items.map((item) => {
+              const lineTotal = formatMoneyParts({ amount: item.priceAmount * item.quantity, currency: item.currency });
+              const unit = formatMoneyParts({ amount: item.priceAmount, currency: item.currency });
 
-          return (
-            <li key={item.offerId} className="flex items-center gap-4 py-4">
-              <div className="w-16 shrink-0">
-                <ProductTile id={item.offerId} brand={item.brand} categoryName={null} />
-              </div>
+              return (
+                <li key={item.offerId} className="flex items-start gap-4 p-4">
+                  <div className="w-20 shrink-0">
+                    <ProductTile
+                      id={item.offerId}
+                      brand={item.brand}
+                      categoryName={null}
+                      imageUrl={item.imageUrl}
+                      alt={item.productName}
+                    />
+                  </div>
 
-              <div className="flex flex-1 flex-col gap-1">
-                <Link href={`/produits/${item.productSlug}`} className="text-sm font-medium text-ink hover:text-gold">
-                  {item.productName}
-                </Link>
-                <p className="text-xs text-ink-soft">{item.brand}</p>
+                  <div className="flex flex-1 flex-col gap-1">
+                    <Link href={`/produits/${item.productSlug}`} className="text-sm font-medium text-ink hover:text-gold">
+                      {item.brand} {item.productName}
+                    </Link>
+                    <p className="text-xs text-ink-soft">
+                      Prix unitaire : {unit.amount} {unit.label}
+                    </p>
 
-                <div className="mt-1 flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => updateQuantity(item.offerId, item.quantity - 1)}
-                    className="h-7 w-7 rounded-sm border border-line text-ink hover:border-gold"
-                    aria-label="Diminuer la quantité"
-                  >
-                    −
-                  </button>
-                  <span className="w-6 text-center text-sm text-ink">{item.quantity}</span>
-                  <button
-                    type="button"
-                    onClick={() => updateQuantity(item.offerId, item.quantity + 1)}
-                    disabled={item.quantity >= item.maxQuantity}
-                    className="h-7 w-7 rounded-sm border border-line text-ink hover:border-gold disabled:cursor-not-allowed disabled:opacity-40"
-                    aria-label="Augmenter la quantité"
-                  >
-                    +
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => remove(item.offerId)}
-                    className="ml-2 text-xs text-ink-soft underline-offset-4 hover:text-gold hover:underline"
-                  >
-                    Retirer
-                  </button>
-                </div>
-              </div>
+                    <div className="mt-2 flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => updateQuantity(item.offerId, item.quantity - 1)}
+                        className="h-8 w-8 rounded-sm border border-line text-ink hover:border-gold"
+                        aria-label="Diminuer la quantité"
+                      >
+                        −
+                      </button>
+                      <span className="w-8 text-center text-sm text-ink">{item.quantity}</span>
+                      <button
+                        type="button"
+                        onClick={() => updateQuantity(item.offerId, item.quantity + 1)}
+                        disabled={item.quantity >= item.maxQuantity}
+                        className="h-8 w-8 rounded-sm border border-line text-ink hover:border-gold disabled:cursor-not-allowed disabled:opacity-40"
+                        aria-label="Augmenter la quantité"
+                      >
+                        +
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => remove(item.offerId)}
+                        className="ml-3 flex items-center gap-1 text-xs font-medium text-gold-bright underline-offset-4 hover:underline"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" aria-hidden /> Retirer
+                      </button>
+                    </div>
+                  </div>
 
-              <p className="font-display text-sm font-semibold text-ink">
-                {lineTotal.amount} {lineTotal.label}
-              </p>
-            </li>
-          );
-        })}
-      </ul>
+                  <p className="text-sm font-semibold text-ink">
+                    {lineTotal.amount} {lineTotal.label}
+                  </p>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
 
-      <div className="flex flex-col items-end gap-4">
-        <p className="font-display text-lg">
-          Sous-total : <span className="gold-text font-semibold">{subtotal.amount}</span>{" "}
-          <span className="text-ink-soft">{subtotal.label}</span>
-        </p>
+        <aside className="flex flex-col gap-3 rounded-sm bg-surface p-4 shadow-sm lg:sticky lg:top-28">
+          <h2 className="font-display text-base font-semibold text-ink">Récapitulatif</h2>
+          <div className="flex items-center justify-between border-b border-line pb-3 text-sm">
+            <span className="text-ink-soft">Sous-total</span>
+            <span className="text-lg font-semibold text-ink">
+              {subtotal.amount} {subtotal.label}
+            </span>
+          </div>
+          <p className="text-xs text-ink-soft">Paiement à la livraison. Le code promo se saisit à l&apos;étape suivante.</p>
 
-        <Link
-          href="/commande"
-          className="w-full max-w-xs rounded-sm bg-gold px-4 py-3 text-center text-sm font-medium text-white transition-colors hover:bg-gold-bright"
-        >
-          Passer la commande
-        </Link>
+          <Link
+            href="/commande"
+            className="rounded-sm bg-gold px-4 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-gold-bright"
+          >
+            Passer la commande
+          </Link>
+        </aside>
       </div>
     </main>
   );
