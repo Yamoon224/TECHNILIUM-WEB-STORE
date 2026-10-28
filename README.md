@@ -66,3 +66,14 @@ Se connecter avant de passer commande rattache automatiquement la commande au co
 ## Identité visuelle
 
 Thème clair façon marketplace : fond gris clair, cartes blanches, un seul accent orange (`#f68b1e`) pour prix, boutons et pastilles ; les noms de jetons (`gold`, etc.) sont conservés de l'ancien thème sombre. Aucun logo, nom ni visuel d'un tiers n'est repris.
+
+## Application installable (PWA)
+
+- `src/app/manifest.ts` : nom, icônes (dont maskable), raccourcis (panier, suivi, compte), thème `#f68b1e`.
+- `public/sw.js` : worker volontairement prudent. **Aucune page n'est mise en cache** (un téléphone partagé ne doit pas révéler le compte ou le panier d'un autre) ; les pages passent par le réseau et, hors ligne, `public/offline.html` s'affiche. Fichiers de build (`/_next/static`) et icônes : cache d'abord. API, autres origines et requêtes non-GET : réseau.
+- `PwaSetup` : enregistre le worker (production, HTTPS ou localhost seulement), propose « Installer » (redemandé après 14 jours), propose la mise à jour quand une nouvelle version attend, signale la perte de connexion.
+- Pour changer le worker : modifier `VERSION` dans `public/sw.js` si la liste de précache change.
+
+## Pages d'erreur
+
+`not-found.tsx` (404, statut HTTP 404), `error.tsx` (500, bouton Réessayer, référence `digest`), `global-error.tsx` (500 autonome si le layout lui-même casse, FR/EN), et `/erreur/[code]` pour 400, 401, 403, 404, 408, 429, 500, 502, 503, 504 (texte dans `src/lib/errors.ts`). `/erreur/[code]` répond en HTTP 200 (Cache Components n'autorise pas `dynamicParams`) : c'est une page d'affichage pour les redirections du serveur web (maintenance, 502/503/504), non indexée.
