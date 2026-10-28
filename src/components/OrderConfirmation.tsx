@@ -66,7 +66,7 @@ function PhoneLookupForm({
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center gap-4 px-4 py-16">
+    <main className="mx-auto my-8 flex w-[calc(100%-2rem)] max-w-sm flex-col gap-4 rounded-sm bg-surface p-5 shadow-sm sm:p-8">
       <h1 className="font-display text-xl font-semibold text-ink">Retrouver ma commande</h1>
       <p className="text-sm text-ink-soft">
         Commande <span className="text-ink">{orderNumber}</span>. Entrez le téléphone utilisé lors de la commande
@@ -98,7 +98,7 @@ function OrderSummary({ order }: { order: Order }) {
   const subtotal = formatMoneyParts(order.subtotal);
 
   return (
-    <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-6 px-4 py-10 pb-16">
+    <main className="mx-auto my-4 flex w-[calc(100%-2rem)] max-w-2xl flex-1 flex-col gap-6 rounded-sm bg-surface p-5 shadow-sm sm:p-8">
       <div className="flex flex-col gap-1">
         <p className="text-sm text-gold">Commande enregistrée</p>
         <h1 className="font-display text-2xl font-semibold text-ink">

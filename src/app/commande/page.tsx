@@ -94,7 +94,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-6 pb-16">
+    <main className="mx-auto my-4 flex w-[calc(100%-2rem)] max-w-3xl flex-1 flex-col gap-6 rounded-sm bg-surface p-5 shadow-sm sm:p-8">
       <h1 className="font-display text-2xl font-semibold text-ink">Finaliser la commande</h1>
 
       <ul className="flex flex-col divide-y divide-line border-y border-line text-sm">

@@ -12,6 +12,7 @@ export interface AddToCartButtonProps {
   priceAmount: number;
   currency: CurrencyCode;
   stockQuantity: number;
+  imageUrl?: string | null;
   /** Denser padding/label for grid cards, where space is tight. */
   compact?: boolean;
 }
@@ -24,6 +25,7 @@ export function AddToCartButton({
   priceAmount,
   currency,
   stockQuantity,
+  imageUrl,
   compact = false,
 }: AddToCartButtonProps) {
   const { add, items } = useCart();
@@ -36,7 +38,7 @@ export function AddToCartButton({
 
   function handleClick() {
     add(
-      { offerId, productSlug, productName, brand, priceAmount, currency, maxQuantity: stockQuantity },
+      { offerId, productSlug, productName, brand, priceAmount, currency, maxQuantity: stockQuantity, imageUrl },
       1,
     );
     setAdded(true);

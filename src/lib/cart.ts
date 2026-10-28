@@ -11,6 +11,8 @@ export interface CartItem {
   currency: CurrencyCode;
   maxQuantity: number;
   quantity: number;
+  /** Product photo captured when added; absent for older carts or products without one. */
+  imageUrl?: string | null;
 }
 
 export function loadCart(): CartItem[] {
