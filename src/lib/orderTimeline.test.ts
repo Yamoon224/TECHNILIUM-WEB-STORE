@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatOrderDate, timelineFor } from "./orderTimeline";
+import { formatOrderDate, formatStepDate, timelineFor } from "./orderTimeline";
 
 describe("timelineFor", () => {
   it("marks earlier steps done, the current one, and the rest upcoming", () => {
@@ -26,5 +26,31 @@ describe("formatOrderDate", () => {
   it("is null without a usable date", () => {
     expect(formatOrderDate(null)).toBeNull();
     expect(formatOrderDate("pas une date")).toBeNull();
+  });
+});
+
+describe("timeline dates", () => {
+  const history = [
+    { status: "pending", at: "2026-10-27T10:00:00Z" },
+    { status: "confirmed", at: "2026-10-27T15:00:00Z" },
+    { status: "confirmed", at: "2026-10-30T15:00:00Z" },
+  ];
+
+  it("attaches the first date each step was reached, null for steps not reached", () => {
+    expect(timelineFor("confirmed", history)?.map((step) => step.at)).toEqual([
+      "2026-10-27T10:00:00Z",
+      "2026-10-27T15:00:00Z",
+      null,
+      null,
+    ]);
+  });
+
+  it("works without any history", () => {
+    expect(timelineFor("shipped")?.every((step) => step.at === null)).toBe(true);
+  });
+
+  it("formats a short step date", () => {
+    expect(formatStepDate("2026-10-27T10:00:00Z")).toBe("27 oct.");
+    expect(formatStepDate(null)).toBeNull();
   });
 });

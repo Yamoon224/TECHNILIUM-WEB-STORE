@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Sans, Space_Grotesk } from "next/font/google";
 import { AuthProvider } from "@/components/AuthProvider";
 import { CartProvider } from "@/components/CartProvider";
@@ -22,6 +22,9 @@ export const metadata: Metadata = {
   title: "Technilium — Produits tech authentiques, livrés chez vous",
   description:
     "Smartphones, ordinateurs et accessoires vérifiés, avec garantie et paiement à la livraison.",
+};
+
+export const viewport: Viewport = {
   themeColor: "#f68b1e",
 };
 

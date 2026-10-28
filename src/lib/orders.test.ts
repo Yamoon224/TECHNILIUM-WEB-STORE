@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
-import { partialLabel, showDeliveryCode, type SubOrder } from "./orders";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { getMyOrder, parcelLabel, partialLabel, showDeliveryCode, type SubOrder } from "./orders";
 
 const parcel = (status: string, id = 1): SubOrder => ({
   id,
@@ -42,5 +42,36 @@ describe("showDeliveryCode", () => {
     expect(showDeliveryCode({ delivery_code: "482913", status: "cancelled" })).toBe(false);
     expect(showDeliveryCode({ delivery_code: null, status: "pending" })).toBe(false);
     expect(showDeliveryCode({ status: "pending" })).toBe(false);
+  });
+});
+
+describe("parcelLabel", () => {
+  it("numbers the parcel and names its seller", () => {
+    expect(parcelLabel({ vendor_id: null }, 0)).toBe("Colis 1 — expédié par Technilium");
+    expect(parcelLabel({ vendor_id: 7 }, 1)).toBe("Colis 2 — vendeur vérifié");
+  });
+});
+
+describe("getMyOrder", () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  it("sends the token and returns the order", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 200, json: async () => ({ order_number: "TCH-1" }) });
+    vi.stubGlobal("fetch", fetchMock);
+
+    expect((await getMyOrder("tok", "TCH 1"))?.order_number).toBe("TCH-1");
+    const [url, init] = fetchMock.mock.calls[0];
+    expect(url).toContain("/orders/mine/TCH%201");
+    expect(init.headers.Authorization).toBe("Bearer tok");
+  });
+
+  it("is null for an order that is not the customer's", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: false, status: 404 }));
+    expect(await getMyOrder("tok", "X")).toBeNull();
+  });
+
+  it("throws on a server error", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: false, status: 500 }));
+    await expect(getMyOrder("tok", "X")).rejects.toThrow();
   });
 });

@@ -39,7 +39,9 @@ npm run generate:api-client
 
 ## Pages
 
-- `/compte` : une carte par commande avec frise d'avancement (reçue, confirmée, expédiée, livrée, ou « annulée »), date, articles, total, code de livraison et factures ; la même frise sur la confirmation de commande. Elle se déduit du statut actuel (l'API n'expose pas d'historique horodaté).
+- `/compte/commandes/[orderNumber]` : suivi détaillé d'une commande (frise globale, une frise datée par colis avec ses articles quand la commande est répartie entre vendeurs, livraison, factures, support) ; lien « Suivre cette commande en détail » depuis `/compte`.
+- Retour d'articles : sur la page de suivi d'une commande livrée, liste des retours déjà demandés avec leur avancement (demandée, acceptée, reçue, remboursée, refusée) et formulaire (quantité par article, motif) ; le montant est calculé par le serveur.
+- `/compte` : une carte par commande avec frise d'avancement (reçue, confirmée, expédiée, livrée, ou « annulée »), date, articles, total, code de livraison et factures ; la même frise sur la confirmation de commande. Chaque étape affiche la date à laquelle la commande l'a atteinte (journal `status_history` de l'API).
 - Fiche produit (fil d'Ariane, prix et remise, engagements, détails), panier (liste + récapitulatif fixe) et pages compte/commande/aide/connexion en cartes blanches ; la photo suit le produit jusque dans le panier ; la fiche produit a une galerie (photo principale + vignettes) ; la commande est en deux colonnes (livraison à gauche, récapitulatif avec code promo et total à droite).
 - Icônes (lucide-react) : menu des catégories (pictogramme choisi d'après le nom/slug), en-tête, engagements, pied de page. Photos produit réelles (backoffice `/produits`).
 - `/` — accueil façon place de marché : menu des catégories à gauche, bannière et engagements, rayon « Ventes Flash » (offres avec prix barré et pastille -X %, plus forte remise d'abord), un rayon par catégorie avec « Voir plus » ; recherche et filtre affichent une grille de résultats. En-tête et pied de page communs à toutes les pages (layout).

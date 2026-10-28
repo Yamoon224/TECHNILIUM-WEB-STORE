@@ -110,7 +110,7 @@ function OrderSummary({ order }: { order: Order }) {
         </p>
       </div>
 
-      <OrderTimeline status={order.status} />
+      <OrderTimeline status={order.status} history={order.status_history} />
 
       {showDeliveryCode(order) ? (
         <div className="flex flex-col gap-1 rounded-sm border border-gold-deep p-4">

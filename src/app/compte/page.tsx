@@ -120,7 +120,14 @@ function OrderCard({ order, token }: { order: Order; token: string }) {
         </p>
       </div>
 
-      <OrderTimeline status={order.status} />
+      <OrderTimeline status={order.status} history={order.status_history} />
+
+      <Link
+        href={`/compte/commandes/${encodeURIComponent(order.order_number)}`}
+        className="self-start text-sm font-medium text-gold-bright underline-offset-4 hover:underline"
+      >
+        Suivre cette commande en détail
+      </Link>
 
       {headline ? <p className="text-sm font-medium text-gold-bright">{headline}</p> : null}
       {order.partial

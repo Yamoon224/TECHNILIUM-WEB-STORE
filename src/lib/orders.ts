@@ -18,6 +18,10 @@ export interface SubOrder {
   status: string;
   subtotal: { amount: number; currency: CurrencyCode };
   delivered_at: string | null;
+  /** What this parcel contains (tracking page). */
+  items?: { product_name: string; brand: string; quantity: number }[] | null;
+  /** When this parcel reached each status, oldest first. */
+  status_history?: { status: string; at: string }[] | null;
 }
 
 export interface Order {
@@ -39,6 +43,8 @@ export interface Order {
   delivery_code?: string | null;
   /** True when the parcels are at different stages. */
   partial?: boolean;
+  /** When each status was reached, oldest first (the tracking timeline). */
+  status_history?: { status: string; at: string }[];
   created_at: string | null;
 }
 
@@ -159,6 +165,24 @@ export async function getOrder(orderNumber: string, phone: string): Promise<Orde
   if (!response.ok) {
     throw new Error(`/orders/${orderNumber} responded with ${response.status}`);
   }
+
+  return response.json() as Promise<Order>;
+}
+
+/** "Colis 2 — vendeur vérifié" / "Colis 1 — Technilium": the parcel's seller, as the customer sees it. */
+export function parcelLabel(parcel: Pick<SubOrder, "vendor_id">, index: number): string {
+  return `Colis ${index + 1} — ${parcel.vendor_id === null ? "expédié par Technilium" : "vendeur vérifié"}`;
+}
+
+/** One order of the signed-in customer, with its parcels and histories; null when it is not theirs. */
+export async function getMyOrder(token: string, orderNumber: string): Promise<Order | null> {
+  const response = await fetch(`${API_BASE_URL}/orders/mine/${encodeURIComponent(orderNumber)}`, {
+    headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+    cache: "no-store",
+  });
+
+  if (response.status === 404) return null;
+  if (!response.ok) throw new OrdersError(`/orders/mine/${orderNumber} responded with ${response.status}`);
 
   return response.json() as Promise<Order>;
 }
