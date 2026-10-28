@@ -57,7 +57,7 @@ export default function ConnexionPage() {
         {mode === "register" ? (
           <label className="field">
             <input
-              placeholder=" "
+              placeholder={tr("Ex. Awa Diallo")}
               name="name"
               required
               className="rounded-sm border border-line bg-surface px-3 py-2 text-ink focus:border-gold focus:outline-none"
@@ -70,7 +70,7 @@ export default function ConnexionPage() {
 
         <label className="field">
           <input
-            placeholder=" "
+            placeholder="vous@exemple.com"
             name="email"
             type="email"
             required
@@ -89,6 +89,11 @@ export default function ConnexionPage() {
           autoComplete={mode === "login" ? "current-password" : "new-password"}
           label={<Tr>Mot de passe</Tr>}
         />
+        {mode === "login" ? (
+          <Link href="/mot-de-passe-oublie" className="-mt-2 self-end text-xs text-gold-bright underline-offset-4 hover:underline">
+            <Tr>Mot de passe oublié ?</Tr>
+          </Link>
+        ) : null}
         {mode === "register" ? (
           <p className="-mt-2 text-xs text-ink-soft">
             <Tr>8 caractères minimum, avec au moins une lettre et un chiffre.</Tr>

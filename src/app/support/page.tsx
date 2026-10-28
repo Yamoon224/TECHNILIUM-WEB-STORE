@@ -199,7 +199,7 @@ function NewTicketForm({
       </h2>
 
       <label className="field">
-        <input placeholder=" " name="subject" required minLength={3} maxLength={150} className={field} />
+        <input placeholder={tr("Ex. Ma commande n'est pas arrivée")} name="subject" required minLength={3} maxLength={150} className={field} />
         <span className="field-label">
           <Tr>Sujet</Tr>
         </span>
@@ -237,7 +237,7 @@ function NewTicketForm({
       </div>
 
       <label className="field">
-        <textarea placeholder=" " name="message" required minLength={3} maxLength={5000} rows={4} className={field} />
+        <textarea placeholder={tr("Décrivez votre demande")} name="message" required minLength={3} maxLength={5000} rows={4} className={field} />
         <span className="field-label">
           <Tr>Votre message</Tr>
         </span>
@@ -332,7 +332,7 @@ function Conversation({
               onChange={(event) => setBody(event.target.value)}
               rows={3}
               maxLength={5000}
-              placeholder=" "
+              placeholder={tr("Écrivez votre réponse…")}
               className="rounded-sm border border-line bg-surface px-3 py-2 text-ink focus:border-gold focus:outline-none"
             />
             <span className="field-label">

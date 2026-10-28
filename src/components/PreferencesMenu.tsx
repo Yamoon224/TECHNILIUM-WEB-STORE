@@ -15,7 +15,7 @@ const THEMES: { value: ThemeChoice; label: string; Icon: typeof Sun }[] = [
 
 const LANGUAGES: { value: Language; label: string }[] = [
   { value: "fr", label: "Français" },
-  { value: "en", label: "English" },
+  { value: "en", label: "English (US)" },
 ];
 
 /** Header menu: theme (light, dark, automatic), accent colour and language. */

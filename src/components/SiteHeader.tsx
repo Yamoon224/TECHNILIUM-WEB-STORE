@@ -32,7 +32,7 @@ export function SiteHeader() {
           <span id="home-link-title" className="sr-only">
             Technilium, <Tr>accueil</Tr>
           </span>
-          <LogoMark />
+          <LogoMark hideNameOnMobile />
         </Link>
 
         <div className="order-3 flex w-full sm:order-none sm:w-auto sm:flex-1">

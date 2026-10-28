@@ -130,7 +130,7 @@ export default function CheckoutPage() {
             <div className="grid gap-4 sm:grid-cols-2">
               <label className="field">
                 <input
-                  placeholder=" "
+                  placeholder={tr("Ex. Awa Diallo")}
                   name="customer_name"
                   required
                   defaultValue={user?.name}
@@ -200,7 +200,7 @@ export default function CheckoutPage() {
 
                 <label className="field">
                   <textarea
-                    placeholder=" "
+                    placeholder={tr("Ex. Appeler avant de livrer")}
                     name="notes"
                     rows={2}
                     className="rounded-sm border border-line bg-surface px-3 py-2 text-ink focus:border-gold focus:outline-none"

@@ -24,7 +24,7 @@ export function PasswordInput({ label, className = "", ...rest }: PasswordInputP
       <input
         {...rest}
         type={visible ? "text" : "password"}
-        placeholder=" "
+        placeholder="••••••••"
         className={`rounded-sm border border-line bg-surface px-3 pr-11 text-ink focus:border-gold focus:outline-none ${className}`}
       />
       <span className="field-label">{label}</span>

@@ -222,14 +222,14 @@ function ReviewForm({
       </fieldset>
 
       <label className="field">
-        <input placeholder=" " name="title" maxLength={120} className={field} />
+        <input placeholder={tr("Ex. Très bon produit")} name="title" maxLength={120} className={field} />
         <span className="field-label">
           <Tr>Titre (optionnel)</Tr>
         </span>
       </label>
 
       <label className="field">
-        <textarea placeholder=" " name="body" rows={3} maxLength={2000} className={field} />
+        <textarea placeholder={tr("Partagez votre expérience avec ce produit")} name="body" rows={3} maxLength={2000} className={field} />
         <span className="field-label">
           <Tr>Votre avis (optionnel)</Tr>
         </span>
