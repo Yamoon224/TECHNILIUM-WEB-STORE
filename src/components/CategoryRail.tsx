@@ -14,9 +14,12 @@ export function CategoryRail({
 }) {
   return (
     <nav
-      aria-label="Catégories"
-      className="flex gap-1 overflow-x-auto rounded-sm bg-surface p-2 shadow-card lg:flex-col lg:self-start lg:overflow-visible"
+      aria-labelledby="categories-nav-title"
+      className="flex gap-1 overflow-x-auto rounded-sm bg-surface p-2 shadow-card border-b-4 border-b-gold lg:flex-col lg:self-start lg:overflow-visible"
     >
+      <h2 id="categories-nav-title" className="sr-only">
+        <Tr>Catégories</Tr>
+      </h2>
       <Item href="/" active={!activeSlug} Icon={LayoutGrid}>
         <Tr>Tous les produits</Tr>
       </Item>

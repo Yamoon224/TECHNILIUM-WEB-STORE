@@ -66,7 +66,7 @@ export function ProductReviews({ productId }: { productId: number }) {
               {data.reviews.map((review) => (
                 <li key={review.id} className="flex flex-col gap-1 py-4 text-sm">
                   <p className="flex flex-wrap items-center gap-2">
-                    <span className="text-gold-bright" aria-label={`${review.rating} sur 5`}>
+                    <span className="text-gold-bright" aria-label={`${review.rating} ${tr("sur")} 5`}>
                       {stars(review.rating)}
                     </span>
                     {review.title ? <span className="font-medium text-ink">{review.title}</span> : null}
@@ -111,7 +111,7 @@ export function ProductReviews({ productId }: { productId: number }) {
             setEligibility({ can_review: false, reason: "already_reviewed" });
             setNotice(
               result.status === "pending"
-                ? "Merci ! Votre avis sera publié après vérification par notre équipe."
+                ? tr("Merci ! Votre avis sera publié après vérification par notre équipe.")
                 : tr("Merci ! Votre avis est publié."),
             );
             load();
@@ -178,7 +178,7 @@ function ReviewForm({
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (rating < 1) {
-      setError("Choisissez une note de 1 à 5.");
+      setError(tr("Choisissez une note de 1 à 5."));
       return;
     }
 

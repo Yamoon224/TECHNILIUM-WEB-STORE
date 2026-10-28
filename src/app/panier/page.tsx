@@ -14,7 +14,7 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <main className="mx-auto my-4 flex w-[calc(100%-2rem)] max-w-3xl flex-col items-center gap-3 rounded-sm bg-surface p-10 text-center shadow-card">
+      <main className="mx-auto my-4 flex w-[calc(100%-2rem)] max-w-3xl flex-col items-center gap-3 rounded-sm bg-surface p-10 text-center shadow-card border-b-4 border-b-gold">
         <ShoppingCart className="h-12 w-12 text-gold" aria-hidden />
         <h1 className="font-display text-2xl font-semibold text-ink"><Tr>Votre panier est vide</Tr></h1>
         <p className="text-ink-soft"><Tr>Parcourez le catalogue pour y ajouter des produits.</Tr></p>
@@ -34,7 +34,7 @@ export default function CartPage() {
   return (
     <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-4 px-4 py-4">
       <div className="grid items-start gap-4 lg:grid-cols-[1fr_320px]">
-        <section className="overflow-hidden rounded-sm bg-surface shadow-card">
+        <section className="overflow-hidden rounded-sm bg-surface shadow-card border-b-4 border-b-gold">
           <h1 className="border-b border-line px-4 py-3 font-display text-lg font-semibold text-ink">
             <Tr>Panier (</Tr>{count})
           </h1>
@@ -102,7 +102,7 @@ export default function CartPage() {
           </ul>
         </section>
 
-        <aside className="flex flex-col gap-3 rounded-sm bg-surface p-4 shadow-card lg:sticky lg:top-28">
+        <aside className="flex flex-col gap-3 rounded-sm bg-surface p-4 shadow-card border-b-4 border-b-gold lg:sticky lg:top-28">
           <h2 className="font-display text-base font-semibold text-ink"><Tr>Récapitulatif</Tr></h2>
           <div className="flex items-center justify-between border-b border-line pb-3 text-sm">
             <span className="text-ink-soft"><Tr>Sous-total</Tr></span>

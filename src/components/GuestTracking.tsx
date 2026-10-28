@@ -29,7 +29,7 @@ export function GuestTracking() {
   }
 
   return (
-    <main className="mx-auto my-8 flex w-[calc(100%-2rem)] max-w-md flex-col gap-4 rounded-sm bg-surface p-5 shadow-card sm:p-8">
+    <main className="mx-auto my-8 flex w-[calc(100%-2rem)] max-w-md flex-col gap-4 rounded-sm bg-surface p-5 shadow-card border-b-4 border-b-gold sm:p-8">
       <h1 className="flex items-center gap-2 font-display text-xl font-semibold text-ink">
         <Search className="h-5 w-5 text-gold" aria-hidden /> <Tr>Suivre ma commande</Tr>
       </h1>

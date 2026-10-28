@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   accentVariables,
@@ -10,7 +11,8 @@ import {
   saveAppearance,
   type Appearance,
 } from "@/lib/appearance";
-import { PHRASES_EN } from "@/lib/phrases";
+import { languageCookie, languageFromCookieString } from "@/lib/language";
+import { format, PHRASES_EN } from "@/lib/phrases";
 
 interface AppearanceContextValue {
   appearance: Appearance;
@@ -19,6 +21,8 @@ interface AppearanceContextValue {
   reset: () => void;
   /** Translates a French text (falls back to the French when there is no English). */
   tr: (french: string) => string;
+  /** Translates a French sentence with {name} placeholders, then fills them. */
+  trf: (french: string, values: Record<string, string | number>) => string;
 }
 
 const AppearanceContext = createContext<AppearanceContextValue | null>(null);
@@ -30,6 +34,7 @@ const AppearanceContext = createContext<AppearanceContextValue | null>(null);
  * script in the layout sets the theme before paint.
  */
 export function AppearanceProvider({ children }: { children: ReactNode }) {
+  const router = useRouter();
   const [appearance, setAppearance] = useState<Appearance>(DEFAULT_APPEARANCE);
   const [systemDark, setSystemDark] = useState(false);
 
@@ -55,9 +60,16 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
     root.dataset.theme = theme;
     root.lang = appearance.language;
 
+    // The server renders catalogue texts from this cookie: when it differs from the chosen
+    // language, correct it and ask Next to re-render the server parts in the right language.
+    if (languageFromCookieString(document.cookie) !== appearance.language) {
+      document.cookie = languageCookie(appearance.language);
+      router.refresh();
+    }
+
     for (const name of MANAGED_VARIABLES) root.style.removeProperty(name);
     for (const [name, value] of Object.entries(accentVariables(appearance.accent, theme))) root.style.setProperty(name, value);
-  }, [appearance, theme]);
+  }, [appearance, theme, router]);
 
   const update = useCallback((patch: Partial<Appearance>) => {
     setAppearance((current) => {
@@ -75,9 +87,11 @@ export function AppearanceProvider({ children }: { children: ReactNode }) {
   const language = appearance.language;
   const tr = useCallback((french: string) => (language === "en" ? (PHRASES_EN[french] ?? french) : french), [language]);
 
+  const trf = useCallback((french: string, values: Record<string, string | number>) => format(tr(french), values), [tr]);
+
   const value = useMemo<AppearanceContextValue>(
-    () => ({ appearance, theme, update, reset, tr }),
-    [appearance, theme, update, reset, tr],
+    () => ({ appearance, theme, update, reset, tr, trf }),
+    [appearance, theme, update, reset, tr, trf],
   );
 
   return <AppearanceContext.Provider value={value}>{children}</AppearanceContext.Provider>;

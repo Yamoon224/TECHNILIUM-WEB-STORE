@@ -10,7 +10,7 @@ import { SearchBox } from "./SearchBox";
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-30 bg-surface shadow-card">
+    <header className="sticky top-0 z-30 bg-surface shadow-card border-b-4 border-b-gold">
       <div className="bg-chrome text-xs text-white">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-1.5">
           <p className="flex flex-wrap items-center gap-x-4 gap-y-0.5">
@@ -28,7 +28,10 @@ export function SiteHeader() {
       </div>
 
       <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3">
-        <Link href="/" aria-label="Technilium, accueil" className="shrink-0">
+        <Link href="/" aria-labelledby="home-link-title" className="shrink-0">
+          <span id="home-link-title" className="sr-only">
+            Technilium, <Tr>accueil</Tr>
+          </span>
           <LogoMark />
         </Link>
 
@@ -38,7 +41,10 @@ export function SiteHeader() {
           </Suspense>
         </div>
 
-        <nav className="ml-auto flex items-center gap-1" aria-label="Compte et panier">
+        <nav className="ml-auto flex items-center gap-1" aria-labelledby="account-nav-title">
+          <h2 id="account-nav-title" className="sr-only">
+            <Tr>Compte et panier</Tr>
+          </h2>
           <AccountIndicator />
           <Link
             href="/aide"

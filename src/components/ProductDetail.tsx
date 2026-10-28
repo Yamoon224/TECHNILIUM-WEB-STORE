@@ -7,7 +7,9 @@ import { ProductReviews } from "@/components/ProductReviews";
 import { ProductGallery } from "@/components/ProductGallery";
 import { formatMoneyParts } from "@/lib/money";
 import { discountPercent } from "@/lib/pricing";
+import { cookies } from "next/headers";
 import { getProduct } from "@/lib/catalog";
+import { LANGUAGE_COOKIE, parseLanguage } from "@/lib/language";
 
 const CONDITION_LABEL: Record<string, string> = {
   neuf: "Neuf",
@@ -27,7 +29,8 @@ const LOW_STOCK_THRESHOLD = 5;
 /** Resolves `params` and the product inside the page's Suspense boundary (see HomeCatalog). */
 export async function ProductDetail({ params }: Pick<PageProps<"/produits/[slug]">, "params">) {
   const { slug } = await params;
-  const product = await getProduct(slug);
+  const language = parseLanguage((await cookies()).get(LANGUAGE_COOKIE)?.value);
+  const product = await getProduct(slug, language);
 
   if (!product) {
     notFound();
@@ -46,7 +49,10 @@ export async function ProductDetail({ params }: Pick<PageProps<"/produits/[slug]
 
   return (
     <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-4 px-4 py-4">
-      <nav aria-label="Fil d'Ariane" className="flex flex-wrap items-center gap-1.5 text-sm text-ink-soft">
+      <nav aria-labelledby="breadcrumb-title" className="flex flex-wrap items-center gap-1.5 text-sm text-ink-soft">
+        <h2 id="breadcrumb-title" className="sr-only">
+          <Tr>Fil d&apos;Ariane</Tr>
+        </h2>
         <Link href="/" className="hover:text-gold">
           <Tr>Accueil</Tr>
         </Link>
@@ -62,7 +68,7 @@ export async function ProductDetail({ params }: Pick<PageProps<"/produits/[slug]
         <span className="text-ink">{product.name}</span>
       </nav>
 
-      <div className="grid grid-cols-1 gap-6 rounded-sm bg-surface p-4 shadow-card md:grid-cols-[minmax(0,420px)_1fr] md:p-6">
+      <div className="grid grid-cols-1 gap-6 rounded-sm bg-surface p-4 shadow-card border-b-4 border-b-gold md:grid-cols-[minmax(0,420px)_1fr] md:p-6">
         <ProductGallery
           id={product.id}
           brand={product.brand}
@@ -153,7 +159,7 @@ export async function ProductDetail({ params }: Pick<PageProps<"/produits/[slug]
       </div>
 
       {hasDetails ? (
-        <section className="flex flex-col gap-4 rounded-sm bg-surface p-4 shadow-card md:p-6">
+        <section className="flex flex-col gap-4 rounded-sm bg-surface p-4 shadow-card border-b-4 border-b-gold md:p-6">
           <h2 className="font-display text-lg font-semibold text-ink"><Tr>Détails du produit</Tr></h2>
 
           {product.description ? (
@@ -173,7 +179,7 @@ export async function ProductDetail({ params }: Pick<PageProps<"/produits/[slug]
         </section>
       ) : null}
 
-      <div className="rounded-sm bg-surface p-4 shadow-card md:p-6">
+      <div className="rounded-sm bg-surface p-4 shadow-card border-b-4 border-b-gold md:p-6">
         <ProductReviews productId={product.id} />
       </div>
     </main>

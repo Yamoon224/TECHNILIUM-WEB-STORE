@@ -308,4 +308,26 @@ export const PHRASES_EN: Record<string, string> = {
   "Connectez-vous pour ouvrir une demande auprès du support.": "Sign in to open a request with support.",
   "Objectif de première réponse :": "First reply target:",
   "heures.": "hours.",
+  "Code indisponible, réessayez.": "Code unavailable, please try again.",
+  "Numéro de commande ou téléphone incorrect.": "Wrong order number or phone number.",
+  "La commande est momentanément indisponible. Réessayez dans un instant.": "The order is temporarily unavailable. Please try again in a moment.",
+  "Choisissez au moins un article à retourner.": "Choose at least one item to return.",
+  "Merci ! Votre avis sera publié après vérification par notre équipe.": "Thank you! Your review will be published after our team has checked it.",
+  "Choisissez une note de 1 à 5.": "Choose a rating from 1 to 5.",
+  "Produit introuvable": "Product not found",
+  "Ce produit n'existe pas ou n'est plus disponible.": "This product does not exist or is no longer available.",
+  "Retour au catalogue": "Back to the catalogue",
+  "Chargement du produit…": "Loading the product…",
+  "Compte et panier": "Account and cart",
+  "accueil": "home",
+  "Catégories": "Categories",
+  "Fil d'Ariane": "Breadcrumb",
+  "Reçus de paiement": "Payment receipts",
+  "Reçu": "Receipt",
+  "Reçus indisponibles.": "Receipts are unavailable.",
 };
+
+/** Fills {name} placeholders: format("Hello {who}", { who: "Awa" }) -> "Hello Awa". */
+export function format(text: string, values: Record<string, string | number>): string {
+  return text.replace(/\{(\w+)\}/g, (match, key: string) => (key in values ? String(values[key]) : match));
+}

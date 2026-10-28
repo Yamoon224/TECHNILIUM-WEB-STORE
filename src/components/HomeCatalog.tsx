@@ -3,7 +3,9 @@ import { Tr } from "@/components/Tr";
 import Link from "next/link";
 import { CategoryRail } from "@/components/CategoryRail";
 import { ProductCard } from "@/components/ProductCard";
+import { cookies } from "next/headers";
 import { getCategories, getProducts, type Category, type Product } from "@/lib/catalog";
+import { LANGUAGE_COOKIE, parseLanguage } from "@/lib/language";
 import { categoryRows, flashDeals } from "@/lib/home";
 
 /**
@@ -12,6 +14,7 @@ import { categoryRows, flashDeals } from "@/lib/home";
  */
 export async function HomeCatalog({ searchParams }: Pick<PageProps<"/">, "searchParams">) {
   const params = await searchParams;
+  const language = parseLanguage((await cookies()).get(LANGUAGE_COOKIE)?.value);
   const category = typeof params.category === "string" ? params.category : undefined;
   const search = typeof params.search === "string" ? params.search : undefined;
 
@@ -21,8 +24,8 @@ export async function HomeCatalog({ searchParams }: Pick<PageProps<"/">, "search
 
   try {
     [categories, products] = await Promise.all([
-      getCategories(),
-      getProducts({ category, search }),
+      getCategories(language),
+      getProducts({ category, search, language }),
     ]);
   } catch {
     catalogUnavailable = true;
@@ -69,10 +72,10 @@ const PROMISES: { title: string; text: string; Icon: LucideIcon }[] = [
 
 function Hero() {
   return (
-    <section className="grid gap-4 md:grid-cols-[1fr_220px]" aria-label="À la une">
+    <section className="grid gap-4 md:grid-cols-[1fr_220px]" aria-labelledby="hero-title">
       <div className="flex min-h-48 flex-col justify-center gap-3 rounded-sm bg-gold p-6 text-white sm:p-8">
         <p className="text-sm font-medium uppercase tracking-wide opacity-90"><Tr>Technilium</Tr></p>
-        <h1 className="font-display text-2xl font-bold leading-tight sm:text-4xl">
+        <h1 id="hero-title" className="font-display text-2xl font-bold leading-tight sm:text-4xl">
           <Tr>Le marché tech où chaque produit est authentique et garanti</Tr>
         </h1>
         <p className="max-w-md text-sm opacity-95">
@@ -82,7 +85,7 @@ function Hero() {
 
       <ul className="grid grid-cols-3 gap-2 md:grid-cols-1">
         {PROMISES.map(({ title, text, Icon }) => (
-          <li key={title} className="flex items-center gap-3 rounded-sm bg-surface p-3 shadow-card">
+          <li key={title} className="flex items-center gap-3 rounded-sm bg-surface p-3 shadow-card border-b-4 border-b-gold">
             <Icon className="hidden h-6 w-6 shrink-0 text-gold sm:block" aria-hidden />
             <span className="flex flex-col">
               <span className="text-sm font-semibold text-ink"><Tr>{title}</Tr></span>
@@ -129,7 +132,7 @@ function Shelf({
   suffix?: string;
 }) {
   return (
-    <section className="overflow-hidden rounded-sm bg-surface shadow-card">
+    <section className="overflow-hidden rounded-sm bg-surface shadow-card border-b-4 border-b-gold">
       <div className={`flex items-center justify-between px-4 py-2.5 ${accent ? "bg-gold text-white" : "border-b border-line text-ink"}`}>
         <h2 className="flex items-center gap-2 font-display text-base font-semibold">
           {Icon ? <Icon className="h-5 w-5" aria-hidden /> : null}
@@ -172,7 +175,7 @@ function EmptyState({ search, categoryName }: { search?: string; categoryName?: 
   );
 
   return (
-    <div className="flex flex-col items-start gap-2 rounded-sm bg-surface p-6 shadow-card">
+    <div className="flex flex-col items-start gap-2 rounded-sm bg-surface p-6 shadow-card border-b-4 border-b-gold">
       <p className="text-ink-soft">{message}</p>
       {search || categoryName ? (
         <Link href="/" className="text-sm text-gold-bright underline-offset-4 hover:underline">

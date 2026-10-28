@@ -59,7 +59,7 @@ export default function CheckoutPage() {
       setQuote(await quoteCoupon(couponInput, subtotalAmount, phone));
     } catch (caught) {
       setQuote(null);
-      setCouponError(caught instanceof CouponError ? caught.message : "Code indisponible, réessayez.");
+      setCouponError(caught instanceof CouponError ? caught.message : tr("Code indisponible, réessayez."));
     } finally {
       setCheckingCoupon(false);
     }
@@ -110,7 +110,7 @@ export default function CheckoutPage() {
       </h1>
 
       <div className="grid items-start gap-4 lg:grid-cols-[1fr_360px]">
-        <section className="flex flex-col gap-4 rounded-sm bg-surface p-4 shadow-card sm:p-6">
+        <section className="flex flex-col gap-4 rounded-sm bg-surface p-4 shadow-card border-b-4 border-b-gold sm:p-6">
           <h2 className="flex items-center gap-2 font-display text-base font-semibold text-ink">
             <MapPin className="h-5 w-5 text-gold" aria-hidden /> <Tr>Livraison</Tr>
           </h2>
@@ -224,7 +224,7 @@ export default function CheckoutPage() {
           </div>
         </section>
 
-        <aside className="flex flex-col gap-4 rounded-sm bg-surface p-4 shadow-card lg:sticky lg:top-28">
+        <aside className="flex flex-col gap-4 rounded-sm bg-surface p-4 shadow-card border-b-4 border-b-gold lg:sticky lg:top-28">
           <h2 className="font-display text-base font-semibold text-ink">
             <Tr>Récapitulatif (</Tr>
             {count})

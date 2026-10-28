@@ -3,6 +3,7 @@
 import { Tr } from "@/components/Tr";
 import { use, useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
+import { useAppearance } from "./AppearanceProvider";
 import { OrderTimeline } from "./OrderTimeline";
 import { formatMoneyParts } from "@/lib/money";
 import { getOrder, recallLastOrder, showDeliveryCode, type Order } from "@/lib/orders";
@@ -37,6 +38,7 @@ export function OrderConfirmation({ params }: Pick<PageProps<"/commande/[orderNu
 }
 
 function PhoneLookupForm({ orderNumber, onFound }: { orderNumber: string; onFound: (order: Order) => void }) {
+  const { tr } = useAppearance();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -50,19 +52,19 @@ function PhoneLookupForm({ orderNumber, onFound }: { orderNumber: string; onFoun
     try {
       const order = await getOrder(orderNumber, phone);
       if (!order) {
-        setError("Numéro de commande ou téléphone incorrect.");
+        setError(tr("Numéro de commande ou téléphone incorrect."));
         return;
       }
       onFound(order);
     } catch {
-      setError("La commande est momentanément indisponible. Réessayez dans un instant.");
+      setError(tr("La commande est momentanément indisponible. Réessayez dans un instant."));
     } finally {
       setSubmitting(false);
     }
   }
 
   return (
-    <main className="mx-auto my-8 flex w-[calc(100%-2rem)] max-w-sm flex-col gap-4 rounded-sm bg-surface p-5 shadow-card sm:p-8">
+    <main className="mx-auto my-8 flex w-[calc(100%-2rem)] max-w-sm flex-col gap-4 rounded-sm bg-surface p-5 shadow-card border-b-4 border-b-gold sm:p-8">
       <h1 className="font-display text-xl font-semibold text-ink">
         <Tr>Retrouver ma commande</Tr>
       </h1>
@@ -101,7 +103,7 @@ function OrderSummary({ order }: { order: Order }) {
   const subtotal = formatMoneyParts(order.subtotal);
 
   return (
-    <main className="mx-auto my-4 flex w-[calc(100%-2rem)] max-w-2xl flex-1 flex-col gap-6 rounded-sm bg-surface p-5 shadow-card sm:p-8">
+    <main className="mx-auto my-4 flex w-[calc(100%-2rem)] max-w-2xl flex-1 flex-col gap-6 rounded-sm bg-surface p-5 shadow-card border-b-4 border-b-gold sm:p-8">
       <div className="flex flex-col gap-1">
         <p className="text-sm text-gold">
           <Tr>Commande enregistrée</Tr>

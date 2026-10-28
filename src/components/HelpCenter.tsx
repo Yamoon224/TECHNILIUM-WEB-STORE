@@ -25,7 +25,7 @@ export function HelpCenter() {
 
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-4 px-4 py-4">
-      <section className="flex flex-col gap-2 rounded-sm bg-surface p-5 shadow-card sm:p-8">
+      <section className="flex flex-col gap-2 rounded-sm bg-surface p-5 shadow-card border-b-4 border-b-gold sm:p-8">
         <h1 className="flex items-center gap-2 font-display text-2xl font-semibold text-ink">
           <CircleHelp className="h-6 w-6 text-gold" aria-hidden /> <Tr>Centre d&apos;aide</Tr>
         </h1>
@@ -34,7 +34,7 @@ export function HelpCenter() {
         </p>
       </section>
 
-      <section className="flex flex-col divide-y divide-line rounded-sm bg-surface shadow-card">
+      <section className="flex flex-col divide-y divide-line rounded-sm bg-surface shadow-card border-b-4 border-b-gold">
         <Question id="commander" title={<Tr>Faut-il un compte pour commander ?</Tr>}>
           <Tr>Non. Pour commander, indiquez seulement votre nom complet, votre numéro de téléphone et le lieu de livraison. Un compte sert à retrouver vos commandes, vos factures et à demander un retour.</Tr>
         </Question>
@@ -81,7 +81,7 @@ export function HelpCenter() {
         </Question>
       </section>
 
-      <section id="contact" className="flex flex-col gap-3 rounded-sm bg-surface p-5 shadow-card sm:p-8">
+      <section id="contact" className="flex flex-col gap-3 rounded-sm bg-surface p-5 shadow-card border-b-4 border-b-gold sm:p-8">
         <h2 className="font-display text-lg font-semibold text-ink">
           <Tr>Besoin d&apos;aide supplémentaire ?</Tr>
         </h2>

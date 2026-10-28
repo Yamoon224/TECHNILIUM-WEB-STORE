@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { ACCENT_COLORS, type Language, type ThemeChoice } from "@/lib/appearance";
 import { useAppearance } from "./AppearanceProvider";
 import { useAuth } from "./AuthProvider";
+import { Flag } from "./Flag";
 
 const THEMES: { value: ThemeChoice; label: string; Icon: typeof Sun }[] = [
   { value: "light", label: "Clair", Icon: Sun },
@@ -50,6 +51,7 @@ export function PreferencesMenu() {
         className="flex items-center rounded-sm px-2 py-2 text-ink transition-colors hover:bg-bg"
       >
         <Palette className="h-5 w-5" aria-hidden />
+        <Flag language={appearance.language} className="ml-1.5 h-3.5 w-5" />
       </button>
 
       {open ? (
@@ -108,10 +110,11 @@ export function PreferencesMenu() {
                   type="button"
                   onClick={() => update({ language: value })}
                   aria-pressed={appearance.language === value}
-                  className={`rounded-sm border px-3 py-2 transition-colors ${
+                  className={`flex items-center justify-center gap-2 rounded-sm border px-3 py-2 transition-colors ${
                     appearance.language === value ? "border-gold bg-gold-highlight text-gold-bright" : "border-line hover:border-gold"
                   }`}
                 >
+                  <Flag language={value} />
                   {label}
                 </button>
               ))}

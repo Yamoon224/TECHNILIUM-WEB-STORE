@@ -5,6 +5,8 @@
  * hand-kept against the actual API Resources until that's closed.
  */
 
+import type { Language } from "./appearance";
+import { languageQuery } from "./language";
 import type { CurrencyCode } from "./money";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000/api/v1";
@@ -76,19 +78,23 @@ async function fetchJson<T>(path: string): Promise<T> {
   return response.json() as Promise<T>;
 }
 
-export async function getCategories(): Promise<Category[]> {
-  return fetchJson<Category[]>("/catalog/categories");
+export async function getCategories(language: Language = "fr"): Promise<Category[]> {
+  const lang = languageQuery(language);
+  return fetchJson<Category[]>(`/catalog/categories${lang ? `?${lang}` : ""}`);
 }
 
 export interface ProductFilters {
   category?: string;
   search?: string;
+  /** Texts (name, description) in this language when the catalogue has them. */
+  language?: Language;
 }
 
 export async function getProducts(filters: ProductFilters = {}): Promise<Product[]> {
   const params = new URLSearchParams();
   if (filters.category) params.set("category", filters.category);
   if (filters.search) params.set("search", filters.search);
+  if (filters.language === "en") params.set("lang", "en");
 
   const query = params.size > 0 ? `?${params.toString()}` : "";
   const page = await fetchJson<Paginated<Product>>(`/catalog/products${query}`);
@@ -96,8 +102,9 @@ export async function getProducts(filters: ProductFilters = {}): Promise<Product
 }
 
 /** Returns null when the product doesn't exist or isn't published (404). */
-export async function getProduct(slug: string): Promise<Product | null> {
-  const response = await fetch(`${API_BASE_URL}/catalog/products/${encodeURIComponent(slug)}`, {
+export async function getProduct(slug: string, language: Language = "fr"): Promise<Product | null> {
+  const lang = languageQuery(language);
+  const response = await fetch(`${API_BASE_URL}/catalog/products/${encodeURIComponent(slug)}${lang ? `?${lang}` : ""}`, {
     next: { revalidate: 60 },
   });
 

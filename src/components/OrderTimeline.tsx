@@ -1,6 +1,9 @@
+"use client";
+
 import { CheckCircle2, ClipboardCheck, PackageCheck, Truck, XCircle, type LucideIcon } from "lucide-react";
 import { Tr } from "@/components/Tr";
 import { formatStepDate, timelineFor, type TimelineStep } from "@/lib/orderTimeline";
+import { useAppearance } from "./AppearanceProvider";
 
 const STEP_ICON: Record<TimelineStep["status"], LucideIcon> = {
   pending: ClipboardCheck,
@@ -17,6 +20,7 @@ export function OrderTimeline({
   status: string;
   history?: readonly { status: string; at: string }[];
 }) {
+  const { tr } = useAppearance();
   const steps = timelineFor(status, history);
 
   if (steps === null) {
@@ -28,7 +32,7 @@ export function OrderTimeline({
   }
 
   return (
-    <ol className="grid grid-cols-4 gap-1" aria-label="Avancement de la commande">
+    <ol className="grid grid-cols-4 gap-1" aria-label={tr("Avancement de la commande")}>
       {steps.map((step) => {
         const Icon = STEP_ICON[step.status];
         const active = step.state !== "upcoming";
@@ -53,7 +57,7 @@ export function OrderTimeline({
             <span className={`text-xs ${active ? "font-medium text-ink" : "text-ink-soft"}`}><Tr>{step.label}</Tr></span>
             {formatStepDate(step.at) ? <span className="text-[11px] text-ink-soft">{formatStepDate(step.at)}</span> : null}
             <span className="sr-only">
-              {step.state === "done" ? "terminé" : step.state === "current" ? "en cours" : "à venir"}
+              {step.state === "done" ? tr("terminé") : step.state === "current" ? tr("en cours") : tr("à venir")}
             </span>
           </li>
         );

@@ -22,7 +22,7 @@ export function ProductCard({ product }: { product: Product }) {
   const percent = offer ? discountPercent(offer) : null;
 
   return (
-    <div className="group flex h-full flex-col gap-2 rounded-sm bg-surface p-2 shadow-card transition-shadow hover:shadow-card-hover">
+    <div className="group flex h-full flex-col gap-2 rounded-sm bg-surface p-2 shadow-card border-b-4 border-b-gold transition-shadow hover:shadow-card-hover">
       <Link href={`/produits/${product.slug}`} className="relative flex flex-1 flex-col gap-2">
         <div className="relative">
           <ProductTile

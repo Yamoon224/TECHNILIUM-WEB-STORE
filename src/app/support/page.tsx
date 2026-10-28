@@ -78,7 +78,7 @@ export default function HelpPage() {
   }
 
   return (
-    <main className="mx-auto my-4 flex w-[calc(100%-2rem)] max-w-2xl flex-1 flex-col gap-8 rounded-sm bg-surface p-5 shadow-card sm:p-8">
+    <main className="mx-auto my-4 flex w-[calc(100%-2rem)] max-w-2xl flex-1 flex-col gap-8 rounded-sm bg-surface p-5 shadow-card border-b-4 border-b-gold sm:p-8">
       <div className="flex items-center justify-between">
         <h1 className="font-display text-2xl font-semibold text-ink">
           <Tr>Aide et support</Tr>

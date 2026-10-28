@@ -65,7 +65,7 @@ export function AddToCartButton({
       disabled={atStockLimit}
       className={`w-full rounded-sm bg-gold font-medium text-white transition-colors hover:bg-gold-bright disabled:cursor-not-allowed disabled:opacity-60 ${sizeClasses}`}
     >
-      {atStockLimit ? <Tr>Stock maximum</Tr> : added ? "Ajouté ✓" : "Ajouter au panier"}
+      {atStockLimit ? <Tr>Stock maximum</Tr> : added ? <Tr>Ajouté ✓</Tr> : <Tr>Ajouter au panier</Tr>}
     </button>
   );
 }

@@ -58,7 +58,7 @@ export default function AccountPage() {
 
   return (
     <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-4 px-4 py-4">
-      <section className="flex flex-wrap items-center justify-between gap-3 rounded-sm bg-surface p-4 shadow-card sm:p-6">
+      <section className="flex flex-wrap items-center justify-between gap-3 rounded-sm bg-surface p-4 shadow-card border-b-4 border-b-gold sm:p-6">
         <div>
           <h1 className="font-display text-2xl font-semibold text-ink">{user.name}</h1>
           {user.email ? <p className="text-sm text-ink-soft">{user.email}</p> : null}
@@ -86,7 +86,7 @@ export default function AccountPage() {
       {loading ? (
         <p className="text-sm text-ink-soft"><Tr>Chargement…</Tr></p>
       ) : orders.length === 0 ? (
-        <p className="rounded-sm bg-surface p-6 text-sm text-ink-soft shadow-card">
+        <p className="rounded-sm bg-surface p-6 text-sm text-ink-soft shadow-card border-b-4 border-b-gold">
           <Tr>Aucune commande pour l&apos;instant.</Tr>{" "}
           <Link href="/" className="text-gold-bright underline-offset-4 hover:underline">
             <Tr>Voir le catalogue</Tr>
@@ -109,7 +109,7 @@ function OrderCard({ order, token }: { order: Order; token: string }) {
   const headline = partialLabel(order);
 
   return (
-    <li className="flex flex-col gap-4 rounded-sm bg-surface p-4 shadow-card sm:p-6">
+    <li className="flex flex-col gap-4 rounded-sm bg-surface p-4 shadow-card border-b-4 border-b-gold sm:p-6">
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div>
           <p className="font-medium text-ink"><Tr>Commande</Tr> {order.order_number}</p>

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { use, useEffect, useState } from "react";
 import { useAuth } from "./AuthProvider";
 import { OrderInvoices } from "./OrderInvoices";
+import { OrderReceipts } from "./OrderReceipts";
 import { OrderReturns } from "./OrderReturns";
 import { OrderTimeline } from "./OrderTimeline";
 import { formatMoneyParts } from "@/lib/money";
@@ -66,7 +67,7 @@ export function OrderTracking({ params }: Pick<PageProps<"/compte/commandes/[ord
 
       {state === "loading" ? <p className="text-sm text-ink-soft"><Tr>Chargement…</Tr></p> : null}
       {state === "missing" ? (
-        <p className="rounded-sm bg-surface p-6 text-sm text-ink-soft shadow-card"><Tr>Cette commande est introuvable dans votre compte.</Tr></p>
+        <p className="rounded-sm bg-surface p-6 text-sm text-ink-soft shadow-card border-b-4 border-b-gold"><Tr>Cette commande est introuvable dans votre compte.</Tr></p>
       ) : null}
       {state === "error" ? <p className="text-sm text-danger"><Tr>Le suivi est momentanément indisponible.</Tr></p> : null}
       {state === "ready" && order ? <Tracking order={order} token={token} /> : null}
@@ -83,11 +84,11 @@ function Tracking({ order, token }: { order: Order; token: string }) {
 
   return (
     <>
-      <section className="flex flex-col gap-4 rounded-sm bg-surface p-4 shadow-card sm:p-6">
+      <section className="flex flex-col gap-4 rounded-sm bg-surface p-4 shadow-card border-b-4 border-b-gold sm:p-6">
         <div className="flex flex-wrap items-start justify-between gap-2">
           <div>
             <h1 className="font-display text-xl font-semibold text-ink"><Tr>Commande</Tr> {order.order_number}</h1>
-            <p className="text-xs text-ink-soft">{placedOn ? `Passée le ${placedOn}` : ""}</p>
+            <p className="text-xs text-ink-soft">{placedOn ? <><Tr>Passée le</Tr> {placedOn}</> : ""}</p>
           </div>
           <p className="text-lg font-semibold text-ink">
             {total.amount} {total.label}
@@ -110,7 +111,7 @@ function Tracking({ order, token }: { order: Order; token: string }) {
         ? parcels.map((parcel, index) => {
             const subtotal = formatMoneyParts(parcel.subtotal);
             return (
-              <section key={parcel.id} className="flex flex-col gap-3 rounded-sm bg-surface p-4 shadow-card sm:p-6">
+              <section key={parcel.id} className="flex flex-col gap-3 rounded-sm bg-surface p-4 shadow-card border-b-4 border-b-gold sm:p-6">
                 <div className="flex flex-wrap items-start justify-between gap-2">
                   <h2 className="font-display text-base font-semibold text-ink"><Tr>Colis</Tr> {index + 1} — <Tr>{parcel.vendor_id === null ? "expédié par Technilium" : "vendeur vérifié"}</Tr>
                   </h2>
@@ -134,7 +135,7 @@ function Tracking({ order, token }: { order: Order; token: string }) {
             );
           })
         : (
-          <section className="rounded-sm bg-surface p-4 shadow-card sm:p-6">
+          <section className="rounded-sm bg-surface p-4 shadow-card border-b-4 border-b-gold sm:p-6">
             <h2 className="mb-3 font-display text-base font-semibold text-ink"><Tr>Articles</Tr></h2>
             <ul className="flex flex-col divide-y divide-line border-y border-line text-sm">
               {order.items.map((item) => {
@@ -156,7 +157,7 @@ function Tracking({ order, token }: { order: Order; token: string }) {
 
       <OrderReturns order={order} token={token} />
 
-      <section className="flex flex-col gap-3 rounded-sm bg-surface p-4 text-sm shadow-card sm:p-6">
+      <section className="flex flex-col gap-3 rounded-sm bg-surface p-4 text-sm shadow-card border-b-4 border-b-gold sm:p-6">
         <h2 className="flex items-center gap-2 font-display text-base font-semibold text-ink">
           <MapPin className="h-4 w-4 text-gold" aria-hidden /> <Tr>Livraison</Tr>
         </h2>
@@ -167,7 +168,10 @@ function Tracking({ order, token }: { order: Order; token: string }) {
           {order.delivery_city ? `, ${order.delivery_city}` : ""}
         </p>
         {order.status !== "pending" && order.status !== "cancelled" ? (
-          <OrderInvoices token={token} orderNumber={order.order_number} />
+          <>
+            <OrderInvoices token={token} orderNumber={order.order_number} />
+            <OrderReceipts token={token} orderNumber={order.order_number} />
+          </>
         ) : null}
         <p className="text-ink-soft">
           <Tr>Un souci avec cette commande ?</Tr>{" "}

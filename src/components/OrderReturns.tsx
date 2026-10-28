@@ -44,7 +44,7 @@ export function OrderReturns({ order, token }: { order: Order; token: string }) 
   const canReturnSomething = [...left.values()].some((quantity) => quantity > 0);
 
   return (
-    <section className="flex flex-col gap-4 rounded-sm bg-surface p-4 shadow-card sm:p-6">
+    <section className="flex flex-col gap-4 rounded-sm bg-surface p-4 shadow-card border-b-4 border-b-gold sm:p-6">
       <h2 className="flex items-center gap-2 font-display text-base font-semibold text-ink">
         <Undo2 className="h-4 w-4 text-gold" aria-hidden /> <Tr>Retour d&apos;articles</Tr>
       </h2>
@@ -121,7 +121,7 @@ function ReturnForm({
 
     const items = returnItemsPayload(quantities);
     if (items.length === 0) {
-      setFormError("Choisissez au moins un article à retourner.");
+      setFormError(tr("Choisissez au moins un article à retourner."));
       return;
     }
 
