@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { getMyOrder, parcelLabel, partialLabel, showDeliveryCode, type SubOrder } from "./orders";
+import { getMyOrder, normalizeOrderNumber, parcelLabel, partialLabel, showDeliveryCode, type SubOrder } from "./orders";
 
 const parcel = (status: string, id = 1): SubOrder => ({
   id,
@@ -73,5 +73,12 @@ describe("getMyOrder", () => {
   it("throws on a server error", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: false, status: 500 }));
     await expect(getMyOrder("tok", "X")).rejects.toThrow();
+  });
+});
+
+describe("normalizeOrderNumber", () => {
+  it("trims, upper-cases and removes inner spaces", () => {
+    expect(normalizeOrderNumber("  tch-2026 1025-abc123 ")).toBe("TCH-20261025-ABC123");
+    expect(normalizeOrderNumber("   ")).toBe("");
   });
 });

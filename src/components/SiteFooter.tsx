@@ -8,7 +8,7 @@ const COLUMNS: { title: string; Icon: LucideIcon; links: { label: string; href: 
     Icon: CircleHelp,
     links: [
       { label: "Centre d'aide et support", href: "/aide" },
-      { label: "Suivre ma commande", href: "/compte" },
+      { label: "Suivre ma commande", href: "/suivi" },
       { label: "Retours et remboursements", href: "/aide" },
     ],
   },

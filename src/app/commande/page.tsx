@@ -14,7 +14,7 @@ import { CouponError, quoteCoupon, totalAfterDiscount, type CouponQuote } from "
 import { CheckoutError, placeOrder, rememberLastOrder } from "@/lib/orders";
 
 export default function CheckoutPage() {
-  const { tr } = useAppearance();
+  const { tr, appearance } = useAppearance();
   const router = useRouter();
   const { token, user } = useAuth();
   const { items, subtotalAmount, clear, count } = useCart();
@@ -85,6 +85,7 @@ export default function CheckoutPage() {
           delivery_city: String(form.get("delivery_city") ?? "") || undefined,
           notes: String(form.get("notes") ?? "") || undefined,
           coupon_code: quote?.code,
+          locale: appearance.language,
         },
         token,
       );
@@ -107,6 +108,15 @@ export default function CheckoutPage() {
           <h2 className="flex items-center gap-2 font-display text-base font-semibold text-ink">
             <MapPin className="h-5 w-5 text-gold" aria-hidden /> <Tr>Livraison</Tr>
           </h2>
+
+          {user ? null : (
+            <p className="rounded-sm bg-gold-highlight px-3 py-2 text-sm text-gold-bright">
+              <Tr>Pas besoin de compte : indiquez seulement votre nom, votre numéro de téléphone et le lieu de livraison.</Tr>{" "}
+              <Link href="/connexion" className="font-medium underline underline-offset-4">
+                <Tr>J&apos;ai déjà un compte</Tr>
+              </Link>
+            </p>
+          )}
 
           <form id="checkout-form" ref={formRef} onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="grid gap-4 sm:grid-cols-2">
@@ -134,23 +144,28 @@ export default function CheckoutPage() {
             </div>
 
             <label className="flex flex-col gap-1 text-sm text-ink-soft">
-              <Tr>E-mail (facultatif — pour recevoir le suivi de votre commande)</Tr>
-              <input
-                name="customer_email"
-                type="email"
-                defaultValue={user?.email ?? undefined}
-                placeholder={tr("vous@exemple.com")}
-                className="rounded-sm border border-line bg-surface px-3 py-2 text-ink focus:border-gold focus:outline-none"
-              />
-            </label>
-
-            <label className="flex flex-col gap-1 text-sm text-ink-soft">
               <Tr>Adresse de livraison (quartier, repères)</Tr>
               <textarea
                 name="delivery_address"
                 required
                 rows={2}
                 placeholder={tr("Ex : Cocody Angré, non loin de la pharmacie du carrefour")}
+                className="rounded-sm border border-line bg-surface px-3 py-2 text-ink focus:border-gold focus:outline-none"
+              />
+            </label>
+
+            <details className="rounded-sm border border-line p-3 text-sm">
+              <summary className="cursor-pointer font-medium text-ink">
+                <Tr>Ajouter des précisions (ville, e-mail, notes)</Tr>
+              </summary>
+              <div className="mt-3 flex flex-col gap-4">
+            <label className="flex flex-col gap-1 text-sm text-ink-soft">
+              <Tr>E-mail (facultatif — pour recevoir le suivi de votre commande)</Tr>
+              <input
+                name="customer_email"
+                type="email"
+                defaultValue={user?.email ?? undefined}
+                placeholder={tr("vous@exemple.com")}
                 className="rounded-sm border border-line bg-surface px-3 py-2 text-ink focus:border-gold focus:outline-none"
               />
             </label>
@@ -172,6 +187,8 @@ export default function CheckoutPage() {
                 className="rounded-sm border border-line bg-surface px-3 py-2 text-ink focus:border-gold focus:outline-none"
               />
             </label>
+              </div>
+            </details>
           </form>
 
           <div className="flex items-center gap-3 rounded-sm bg-bg p-3 text-sm text-ink">

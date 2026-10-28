@@ -76,6 +76,8 @@ export interface PlaceOrderInput {
   delivery_city?: string;
   notes?: string;
   coupon_code?: string;
+  /** Language of the SMS / e-mails about this order. */
+  locale?: "fr" | "en";
 }
 
 export class CheckoutError extends Error {}
@@ -185,4 +187,9 @@ export async function getMyOrder(token: string, orderNumber: string): Promise<Or
   if (!response.ok) throw new OrdersError(`/orders/mine/${orderNumber} responded with ${response.status}`);
 
   return response.json() as Promise<Order>;
+}
+
+/** What a visitor typed as an order number: trimmed, upper-cased, inner spaces removed ("tch 2026..." -> "TCH2026..."). */
+export function normalizeOrderNumber(input: string): string {
+  return input.replace(/\s+/g, "").toUpperCase();
 }

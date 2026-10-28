@@ -265,4 +265,12 @@ export const PHRASES_EN: Record<string, string> = {
   "En attente de votre réponse": "Waiting for your reply",
   "Résolu": "Resolved",
   "Clos": "Closed",
+  // Order without an account, guest tracking
+  "Ajouter des précisions (ville, e-mail, notes)": "Add details (city, email, notes)",
+  "Pas besoin de compte : indiquez seulement votre nom, votre numéro de téléphone et le lieu de livraison.": "No account needed: just give your name, your phone number and where to deliver.",
+  "J'ai déjà un compte": "I already have an account",
+  "Saisissez le numéro de votre commande.": "Enter your order number.",
+  "Numéro de commande": "Order number",
+  "Pas de compte nécessaire : entrez le numéro de votre commande, puis le téléphone utilisé pour la passer.": "No account needed: enter your order number, then the phone number used to place it.",
+  "Continuer": "Continue",
 };
