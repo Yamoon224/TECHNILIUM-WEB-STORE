@@ -1,6 +1,9 @@
 import Link from "next/link";
+import { LayoutGrid, type LucideIcon } from "lucide-react";
 import type { Category } from "@/lib/catalog";
+import { categoryIcon } from "@/lib/categoryIcons";
 
+/** Vertical category menu on large screens, a scrolling strip on small ones. */
 export function CategoryRail({
   categories,
   activeSlug,
@@ -9,37 +12,46 @@ export function CategoryRail({
   activeSlug?: string;
 }) {
   return (
-    <nav aria-label="Catégories" className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1">
-      <Pill href="/" active={!activeSlug}>
+    <nav
+      aria-label="Catégories"
+      className="flex gap-1 overflow-x-auto rounded-sm bg-surface p-2 shadow-sm lg:flex-col lg:self-start lg:overflow-visible"
+    >
+      <Item href="/" active={!activeSlug} Icon={LayoutGrid}>
         Tous les produits
-      </Pill>
+      </Item>
       {categories.map((category) => (
-        <Pill key={category.id} href={`/?category=${category.slug}`} active={category.slug === activeSlug}>
+        <Item
+          key={category.id}
+          href={`/?category=${category.slug}`}
+          active={category.slug === activeSlug}
+          Icon={categoryIcon(category)}
+        >
           {category.name}
-        </Pill>
+        </Item>
       ))}
     </nav>
   );
 }
 
-function Pill({
+function Item({
   href,
   active,
+  Icon,
   children,
 }: {
   href: string;
   active: boolean;
+  Icon: LucideIcon;
   children: React.ReactNode;
 }) {
   return (
     <Link
       href={href}
-      className={`shrink-0 rounded-full border px-4 py-1.5 text-sm transition-colors ${
-        active
-          ? "border-gold bg-gold text-white font-medium"
-          : "border-line text-ink hover:border-gold"
+      className={`flex shrink-0 items-center gap-2.5 whitespace-nowrap rounded-sm px-3 py-2 text-sm transition-colors ${
+        active ? "bg-gold-highlight font-semibold text-gold-bright" : "text-ink hover:bg-bg"
       }`}
     >
+      <Icon className="h-4 w-4 shrink-0" aria-hidden />
       {children}
     </Link>
   );

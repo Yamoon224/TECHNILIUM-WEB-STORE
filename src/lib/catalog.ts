@@ -49,6 +49,8 @@ export interface Product {
   name: string;
   slug: string;
   description: string | null;
+  /** Photo uploaded by the catalogue team; null until there is one. */
+  image_url: string | null;
   attributes: Record<string, string | number> | null;
   condition_state: "neuf" | "reconditionne" | "occasion";
   category: Category | null;

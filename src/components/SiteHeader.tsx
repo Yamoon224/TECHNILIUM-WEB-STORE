@@ -1,3 +1,4 @@
+import { CircleHelp, ShieldCheck, Truck } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 import { AccountIndicator } from "./AccountIndicator";
@@ -10,7 +11,14 @@ export function SiteHeader() {
     <header className="sticky top-0 z-30 bg-surface shadow-sm">
       <div className="bg-ink text-xs text-white">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-1.5">
-          <p>Paiement à la livraison · Produits vérifiés · Garantie sur chaque appareil</p>
+          <p className="flex flex-wrap items-center gap-x-4 gap-y-0.5">
+            <span className="flex items-center gap-1.5">
+              <Truck className="h-3.5 w-3.5" aria-hidden /> Paiement à la livraison
+            </span>
+            <span className="hidden items-center gap-1.5 sm:flex">
+              <ShieldCheck className="h-3.5 w-3.5" aria-hidden /> Produits vérifiés, garantie sur chaque appareil
+            </span>
+          </p>
           <Link href="/aide" className="hidden underline-offset-4 hover:underline sm:inline">
             Besoin d&apos;aide ?
           </Link>
@@ -32,8 +40,9 @@ export function SiteHeader() {
           <AccountIndicator />
           <Link
             href="/aide"
-            className="hidden rounded-sm px-3 py-2 text-sm font-medium text-ink transition-colors hover:bg-bg md:block"
+            className="hidden items-center gap-1.5 rounded-sm px-3 py-2 text-sm font-medium text-ink transition-colors hover:bg-bg md:flex"
           >
+            <CircleHelp className="h-5 w-5" aria-hidden />
             Aide
           </Link>
           <CartIndicator />

@@ -31,7 +31,13 @@ export function ProductCard({ product }: { product: Product }) {
     <div className="group flex h-full flex-col gap-2 rounded-sm bg-surface p-2 shadow-sm transition-shadow hover:shadow-md">
       <Link href={`/produits/${product.slug}`} className="relative flex flex-1 flex-col gap-2">
         <div className="relative">
-          <ProductTile id={product.id} brand={product.brand} categoryName={product.category?.name ?? null} />
+          <ProductTile
+            id={product.id}
+            brand={product.brand}
+            categoryName={product.category?.name ?? null}
+            imageUrl={product.image_url}
+            alt={`${product.brand} ${product.name}`}
+          />
           {percent ? (
             <span className="absolute right-2 top-2 rounded-sm bg-gold-highlight px-1.5 py-0.5 text-xs font-semibold text-gold-bright">
               -{percent}%
@@ -78,6 +84,7 @@ export function ProductCard({ product }: { product: Product }) {
           priceAmount={offer.price.amount}
           currency={offer.price.currency}
           stockQuantity={offer.stock_quantity}
+          imageUrl={product.image_url}
           compact
         />
       ) : null}

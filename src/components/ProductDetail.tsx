@@ -44,7 +44,13 @@ export async function ProductDetail({ params }: Pick<PageProps<"/produits/[slug]
 
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
         <div className="md:max-w-md">
-          <ProductTile id={product.id} brand={product.brand} categoryName={product.category?.name ?? null} />
+          <ProductTile
+            id={product.id}
+            brand={product.brand}
+            categoryName={product.category?.name ?? null}
+            imageUrl={product.image_url}
+            alt={`${product.brand} ${product.name}`}
+          />
         </div>
 
         <div className="flex flex-col gap-5">
