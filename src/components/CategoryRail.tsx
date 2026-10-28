@@ -36,7 +36,7 @@ function Pill({
       href={href}
       className={`shrink-0 rounded-full border px-4 py-1.5 text-sm transition-colors ${
         active
-          ? "border-gold bg-gold text-bg font-medium"
+          ? "border-gold bg-gold text-white font-medium"
           : "border-line text-ink hover:border-gold"
       }`}
     >

@@ -59,7 +59,7 @@ export default function HelpPage() {
 
   if (!user || !token) {
     return (
-      <main className="flex min-h-screen flex-1 flex-col items-center justify-center gap-3 px-4">
+      <main className="flex min-h-[50vh] flex-1 flex-col items-center justify-center gap-3 px-4">
         <p className="text-ink-soft">Connectez-vous pour contacter le support.</p>
         <Link href="/connexion" className="text-sm text-gold underline-offset-4 hover:underline">
           Se connecter
@@ -213,7 +213,7 @@ function NewTicketForm({
       <button
         type="submit"
         disabled={submitting}
-        className="self-start rounded-sm bg-gold px-4 py-2 text-sm font-medium text-bg transition-colors hover:bg-gold-bright disabled:opacity-60"
+        className="self-start rounded-sm bg-gold px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gold-bright disabled:opacity-60"
       >
         {submitting ? "Envoi…" : "Envoyer"}
       </button>
@@ -291,7 +291,7 @@ function Conversation({
           <button
             type="submit"
             disabled={sending || !body.trim()}
-            className="self-start rounded-sm bg-gold px-4 py-2 text-sm font-medium text-bg transition-colors hover:bg-gold-bright disabled:opacity-60"
+            className="self-start rounded-sm bg-gold px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gold-bright disabled:opacity-60"
           >
             {sending ? "Envoi…" : "Répondre"}
           </button>

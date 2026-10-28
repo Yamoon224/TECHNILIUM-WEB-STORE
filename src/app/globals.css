@@ -1,33 +1,24 @@
 @import "tailwindcss";
 
 /*
- * Palette sampled directly from the Techlium Group mark (logo.jpeg):
- * near-black field, single amber/gold accent running from a bronze
- * shadow stop to a pale highlight stop. No invented secondary hue —
- * the brand is monochrome gold-on-black, so UI hierarchy comes from
- * weight, size and gold brightness, not extra colors.
+ * Marketplace look: light page, white cards, a single orange accent for
+ * prices, calls to action and badges. Token names are kept from the former
+ * dark theme (gold = the accent) so every page follows the switch.
  */
 :root {
-  --bg: #070604;
-  --surface: #141009;
-  --surface-raised: #1d170d;
-  --ink: #f6f1e4;
-  --ink-soft: #a89a7d;
-  --line: #2b2416;
-  --gold-shadow: #5e3306;
-  --gold-deep: #d27513;
-  --gold: #ee9e0b;
-  --gold-bright: #f6cf3c;
-  --gold-highlight: #fbf28c;
-  --danger: #f87171;
-  --gold-gradient: linear-gradient(
-    135deg,
-    var(--gold-shadow) 0%,
-    var(--gold-deep) 35%,
-    var(--gold) 60%,
-    var(--gold-bright) 82%,
-    var(--gold-highlight) 100%
-  );
+  --bg: #f1f1f2;
+  --surface: #ffffff;
+  --surface-raised: #fafafa;
+  --ink: #282828;
+  --ink-soft: #75757a;
+  --line: #e0e0e0;
+  --gold-shadow: #b45f06;
+  --gold-deep: #e07b0a;
+  --gold: #f68b1e;
+  --gold-bright: #e66c00;
+  --gold-highlight: #fff3e3;
+  --danger: #d32f2f;
+  --gold-gradient: linear-gradient(135deg, #f68b1e 0%, #f68b1e 100%);
 }
 
 @theme inline {
@@ -59,23 +50,11 @@ body {
 }
 
 .product-tile-a {
-  background: linear-gradient(
-    145deg,
-    color-mix(in oklab, var(--gold) 14%, var(--surface)) 0%,
-    var(--surface) 72%
-  );
+  background: linear-gradient(145deg, #fff3e3 0%, #ffffff 80%);
 }
 .product-tile-b {
-  background: linear-gradient(
-    145deg,
-    color-mix(in oklab, var(--gold-bright) 12%, var(--surface)) 0%,
-    var(--surface) 72%
-  );
+  background: linear-gradient(145deg, #eef3ff 0%, #ffffff 80%);
 }
 .product-tile-c {
-  background: linear-gradient(
-    145deg,
-    color-mix(in oklab, var(--gold-deep) 18%, var(--surface)) 0%,
-    var(--surface) 72%
-  );
+  background: linear-gradient(145deg, #eefaf1 0%, #ffffff 80%);
 }

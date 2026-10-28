@@ -207,7 +207,7 @@ function ReviewForm({ onSubmit }: { onSubmit: (input: { rating: number; title?: 
       <button
         type="submit"
         disabled={submitting}
-        className="self-start rounded-sm bg-gold px-4 py-2 text-sm font-medium text-bg transition-colors hover:bg-gold-bright disabled:opacity-60"
+        className="self-start rounded-sm bg-gold px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gold-bright disabled:opacity-60"
       >
         {submitting ? "Envoi…" : "Publier mon avis"}
       </button>

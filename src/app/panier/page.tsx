@@ -88,7 +88,7 @@ export default function CartPage() {
 
         <Link
           href="/commande"
-          className="w-full max-w-xs rounded-sm bg-gold px-4 py-3 text-center text-sm font-medium text-bg transition-colors hover:bg-gold-bright"
+          className="w-full max-w-xs rounded-sm bg-gold px-4 py-3 text-center text-sm font-medium text-white transition-colors hover:bg-gold-bright"
         >
           Passer la commande
         </Link>

@@ -41,7 +41,7 @@ export default function AccountPage() {
 
   if (!user || !token) {
     return (
-      <main className="flex min-h-screen flex-1 flex-col items-center justify-center gap-3 px-4">
+      <main className="flex min-h-[50vh] flex-1 flex-col items-center justify-center gap-3 px-4">
         <p className="text-ink-soft">Connectez-vous pour accéder à votre compte.</p>
         <Link href="/connexion" className="text-sm text-gold underline-offset-4 hover:underline">
           Se connecter

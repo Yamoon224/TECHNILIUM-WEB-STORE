@@ -85,7 +85,7 @@ function PhoneLookupForm({
         <button
           type="submit"
           disabled={submitting}
-          className="rounded-sm bg-gold px-4 py-2 text-sm font-medium text-bg transition-colors hover:bg-gold-bright disabled:cursor-not-allowed disabled:opacity-60"
+          className="rounded-sm bg-gold px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gold-bright disabled:cursor-not-allowed disabled:opacity-60"
         >
           {submitting ? "Recherche…" : "Afficher ma commande"}
         </button>

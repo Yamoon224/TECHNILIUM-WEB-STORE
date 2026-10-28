@@ -60,7 +60,7 @@ export function AddToCartButton({
       type="button"
       onClick={handleClick}
       disabled={atStockLimit}
-      className={`w-full rounded-sm bg-gold font-medium text-bg transition-colors hover:bg-gold-bright disabled:cursor-not-allowed disabled:opacity-60 ${sizeClasses}`}
+      className={`w-full rounded-sm bg-gold font-medium text-white transition-colors hover:bg-gold-bright disabled:cursor-not-allowed disabled:opacity-60 ${sizeClasses}`}
     >
       {atStockLimit ? "Stock maximum" : added ? "Ajouté ✓" : "Ajouter au panier"}
     </button>
