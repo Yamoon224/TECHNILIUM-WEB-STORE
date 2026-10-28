@@ -1,8 +1,8 @@
 "use client";
 
-import { Check, Monitor, Moon, Palette, RotateCcw, Sun } from "lucide-react";
+import { Check, Monitor, Moon, Palette, Plus, RotateCcw, Sun } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { ACCENT_COLORS, type Language, type ThemeChoice } from "@/lib/appearance";
+import { ACCENT_COLORS, isHexColor, type Language, type ThemeChoice } from "@/lib/appearance";
 import { useAppearance } from "./AppearanceProvider";
 import { useAuth } from "./AuthProvider";
 import { Flag } from "./Flag";
@@ -98,6 +98,22 @@ export function PreferencesMenu() {
                   {appearance.accent === color ? <Check className="h-4 w-4 text-white" aria-hidden /> : null}
                 </button>
               ))}
+              <label
+                title={tr("Couleur personnalisée")}
+                style={(ACCENT_COLORS as readonly string[]).includes(appearance.accent) ? undefined : { backgroundColor: appearance.accent }}
+                className={`relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-dashed border-ink-soft text-ink-soft ${
+                  (ACCENT_COLORS as readonly string[]).includes(appearance.accent) ? "" : "ring-2 ring-ink ring-offset-2 ring-offset-surface"
+                }`}
+              >
+                <Plus className="h-4 w-4" aria-hidden />
+                <input
+                  type="color"
+                  aria-label={tr("Couleur personnalisée")}
+                  value={appearance.accent}
+                  onChange={(event) => isHexColor(event.target.value) && update({ accent: event.target.value })}
+                  className="absolute inset-0 cursor-pointer opacity-0"
+                />
+              </label>
             </div>
           </section>
 

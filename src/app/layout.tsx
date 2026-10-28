@@ -4,6 +4,7 @@ import { AppearanceProvider } from "@/components/AppearanceProvider";
 import { AccountPreferencesSync } from "@/components/AccountPreferencesSync";
 import { AuthProvider } from "@/components/AuthProvider";
 import { CartProvider } from "@/components/CartProvider";
+import { PwaSetup } from "@/components/PwaSetup";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { STORAGE_KEY } from "@/lib/appearance";
@@ -25,6 +26,9 @@ export const metadata: Metadata = {
   title: "Technilium — Produits tech authentiques, livrés chez vous",
   description:
     "Smartphones, ordinateurs et accessoires vérifiés, avec garantie et paiement à la livraison.",
+  applicationName: "Technilium",
+  appleWebApp: { capable: true, title: "Technilium", statusBarStyle: "default" },
+  formatDetection: { telephone: false },
 };
 
 export const viewport: Viewport = {
@@ -48,6 +52,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <AppearanceProvider>
           <AuthProvider>
             <AccountPreferencesSync />
+            <PwaSetup />
             <CartProvider>
               <SiteHeader />
               <div className="flex flex-1 flex-col">{children}</div>
