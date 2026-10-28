@@ -11,6 +11,8 @@ export function generateStaticParams() {
   return errorCodes().map((code) => ({ code }));
 }
 
+export const dynamicParams = false;
+
 export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 export default async function ErrorByCode({ params }: PageProps<"/erreur/[code]">) {
