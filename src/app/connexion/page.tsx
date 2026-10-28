@@ -1,5 +1,7 @@
 "use client";
 
+import { LogoMark } from "@/components/LogoMark";
+import { PasswordInput } from "@/components/PasswordInput";
 import { Tr } from "@/components/Tr";
 import { useAppearance } from "@/components/AppearanceProvider";
 import { useState, type FormEvent } from "react";
@@ -11,7 +13,7 @@ import { AuthError } from "@/lib/auth";
 type Mode = "login" | "register";
 
 export default function ConnexionPage() {
-  const { tr } = useAppearance();
+  const { tr, appearance } = useAppearance();
   const router = useRouter();
   const { login, register } = useAuth();
   const [mode, setMode] = useState<Mode>("login");
@@ -31,7 +33,7 @@ export default function ConnexionPage() {
       if (mode === "login") {
         await login(email, password);
       } else {
-        await register(String(form.get("name") ?? ""), email, password);
+        await register(String(form.get("name") ?? ""), email, password, appearance.language);
       }
       router.push("/compte");
     } catch (caught) {
@@ -42,48 +44,56 @@ export default function ConnexionPage() {
   }
 
   return (
-    <main className="mx-auto my-8 flex w-[calc(100%-2rem)] max-w-sm flex-col gap-6 rounded-sm bg-surface p-5 shadow-sm sm:p-8">
-      <h1 className="font-display text-xl font-semibold text-ink">
+    <main className="mx-auto my-8 flex w-[calc(100%-2rem)] max-w-sm flex-col gap-6 rounded-sm bg-surface p-5 shadow-card sm:p-8">
+      <div className="flex justify-center">
+        <LogoMark />
+      </div>
+
+      <h1 className="text-center font-display text-xl font-semibold text-ink">
         {mode === "login" ? <Tr>Connexion</Tr> : <Tr>Créer un compte</Tr>}
       </h1>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         {mode === "register" ? (
-          <label className="flex flex-col gap-1 text-sm text-ink-soft">
-            <Tr>Nom complet</Tr>
+          <label className="field">
             <input
+              placeholder=" "
               name="name"
               required
               className="rounded-sm border border-line bg-surface px-3 py-2 text-ink focus:border-gold focus:outline-none"
             />
+            <span className="field-label">
+              <Tr>Nom complet</Tr>
+            </span>
           </label>
         ) : null}
 
-        <label className="flex flex-col gap-1 text-sm text-ink-soft">
-          <Tr>Adresse e-mail</Tr>
+        <label className="field">
           <input
+            placeholder=" "
             name="email"
             type="email"
             required
             autoComplete="email"
             className="rounded-sm border border-line bg-surface px-3 py-2 text-ink focus:border-gold focus:outline-none"
           />
+          <span className="field-label">
+            <Tr>Adresse e-mail</Tr>
+          </span>
         </label>
 
-        <label className="flex flex-col gap-1 text-sm text-ink-soft">
-          <Tr>Mot de passe</Tr>
-          <input
-            name="password"
-            type="password"
-            required
-            minLength={8}
-            autoComplete={mode === "login" ? "current-password" : "new-password"}
-            className="rounded-sm border border-line bg-surface px-3 py-2 text-ink focus:border-gold focus:outline-none"
-          />
-          {mode === "register" ? (
-            <span className="text-xs text-ink-soft"><Tr>8 caractères minimum, avec au moins une lettre et un chiffre.</Tr></span>
-          ) : null}
-        </label>
+        <PasswordInput
+          name="password"
+          required
+          minLength={8}
+          autoComplete={mode === "login" ? "current-password" : "new-password"}
+          label={<Tr>Mot de passe</Tr>}
+        />
+        {mode === "register" ? (
+          <p className="-mt-2 text-xs text-ink-soft">
+            <Tr>8 caractères minimum, avec au moins une lettre et un chiffre.</Tr>
+          </p>
+        ) : null}
 
         {error ? <p className="text-sm text-danger">{error}</p> : null}
 
@@ -92,7 +102,7 @@ export default function ConnexionPage() {
           disabled={submitting}
           className="rounded-sm bg-gold px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gold-bright disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {submitting ? <Tr>Un instant…</Tr> : mode === "login" ? "Se connecter" : "Créer mon compte"}
+          {submitting ? <Tr>Un instant…</Tr> : mode === "login" ? <Tr>Se connecter</Tr> : <Tr>Créer mon compte</Tr>}
         </button>
       </form>
 

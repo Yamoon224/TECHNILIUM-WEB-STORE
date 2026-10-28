@@ -44,7 +44,7 @@ export function OrderReturns({ order, token }: { order: Order; token: string }) 
   const canReturnSomething = [...left.values()].some((quantity) => quantity > 0);
 
   return (
-    <section className="flex flex-col gap-4 rounded-sm bg-surface p-4 shadow-sm sm:p-6">
+    <section className="flex flex-col gap-4 rounded-sm bg-surface p-4 shadow-card sm:p-6">
       <h2 className="flex items-center gap-2 font-display text-base font-semibold text-ink">
         <Undo2 className="h-4 w-4 text-gold" aria-hidden /> <Tr>Retour d&apos;articles</Tr>
       </h2>
@@ -62,7 +62,9 @@ export function OrderReturns({ order, token }: { order: Order; token: string }) 
                 <p className="font-medium text-ink">
                   {request.number} — <Tr>{RETURN_STATUS_LABEL[request.status]}</Tr>
                 </p>
-                <p className="text-ink-soft"><Tr>Motif :</Tr> {request.reason}</p>
+                <p className="text-ink-soft">
+                  <Tr>Motif :</Tr> {request.reason}
+                </p>
                 <p className="text-ink-soft">
                   {request.status === "refunded" ? (
                     <>
@@ -74,7 +76,11 @@ export function OrderReturns({ order, token }: { order: Order; token: string }) 
                     </>
                   )}
                 </p>
-                {request.decision_note ? <p className="text-ink"><Tr>Réponse du support :</Tr> {request.decision_note}</p> : null}
+                {request.decision_note ? (
+                  <p className="text-ink">
+                    <Tr>Réponse du support :</Tr> {request.decision_note}
+                  </p>
+                ) : null}
               </li>
             );
           })}
@@ -84,7 +90,9 @@ export function OrderReturns({ order, token }: { order: Order; token: string }) 
       {loaded && canReturnSomething ? (
         <ReturnForm order={order} token={token} left={left} onSent={refresh} />
       ) : loaded && returns.length === 0 ? (
-        <p className="text-sm text-ink-soft"><Tr>Aucun article n&apos;est retournable pour cette commande.</Tr></p>
+        <p className="text-sm text-ink-soft">
+          <Tr>Aucun article n&apos;est retournable pour cette commande.</Tr>
+        </p>
       ) : null}
     </section>
   );
@@ -133,7 +141,10 @@ function ReturnForm({
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-3">
       <p className="text-sm text-ink-soft">
-        <Tr>Choisissez les articles à renvoyer et expliquez pourquoi. Le support vous répond ici ; le montant remboursé est calculé d&apos;après les articles choisis.</Tr>
+        <Tr>
+          Choisissez les articles à renvoyer et expliquez pourquoi. Le support vous répond ici ; le montant remboursé
+          est calculé d&apos;après les articles choisis.
+        </Tr>
       </p>
 
       <ul className="flex flex-col divide-y divide-line border-y border-line text-sm">
@@ -153,26 +164,32 @@ function ReturnForm({
                   )}
                 </span>
               </span>
-              <select
-                aria-label={`${tr("Quantité à retourner pour")} ${item.product_name}`}
-                value={quantities.get(item.offer_id) ?? 0}
-                disabled={available === 0}
-                onChange={(event) => setQuantities(new Map(quantities).set(item.offer_id, Number(event.target.value)))}
-                className="rounded-sm border border-line bg-surface px-2 py-1 text-ink disabled:opacity-50"
-              >
-                {Array.from({ length: available + 1 }, (_, quantity) => (
-                  <option key={quantity} value={quantity}>
-                    {quantity}
-                  </option>
-                ))}
-              </select>
+              <label className="field w-24 shrink-0">
+                <select
+                  aria-label={`${tr("Quantité à retourner pour")} ${item.product_name}`}
+                  value={quantities.get(item.offer_id) ?? 0}
+                  disabled={available === 0}
+                  onChange={(event) =>
+                    setQuantities(new Map(quantities).set(item.offer_id, Number(event.target.value)))
+                  }
+                  className="rounded-sm border border-line bg-surface px-2 text-ink disabled:opacity-50"
+                >
+                  {Array.from({ length: available + 1 }, (_, quantity) => (
+                    <option key={quantity} value={quantity}>
+                      {quantity}
+                    </option>
+                  ))}
+                </select>
+                <span className="field-label">
+                  <Tr>Qté</Tr>
+                </span>
+              </label>
             </li>
           );
         })}
       </ul>
 
-      <label className="flex flex-col gap-1 text-sm text-ink-soft">
-        <Tr>Motif du retour</Tr>
+      <label className="field">
         <textarea
           value={reason}
           onChange={(event) => setReason(event.target.value)}
@@ -183,6 +200,9 @@ function ReturnForm({
           placeholder={tr("Ex : l'écran présente une rayure à la réception")}
           className="rounded-sm border border-line bg-surface px-3 py-2 text-ink focus:border-gold focus:outline-none"
         />
+        <span className="field-label">
+          <Tr>Motif du retour</Tr>
+        </span>
       </label>
 
       {formError ? <p className="text-sm text-danger">{formError}</p> : null}

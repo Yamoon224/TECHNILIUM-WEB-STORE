@@ -7,9 +7,10 @@ const COLUMNS: { title: string; Icon: LucideIcon; links: { label: string; href: 
     title: "Besoin d'aide ?",
     Icon: CircleHelp,
     links: [
-      { label: "Centre d'aide et support", href: "/aide" },
+      { label: "Centre d'aide", href: "/aide" },
       { label: "Suivre ma commande", href: "/suivi" },
-      { label: "Retours et remboursements", href: "/aide" },
+      { label: "Retours et remboursements", href: "/aide#retours" },
+      { label: "Contacter le support", href: "/support" },
     ],
   },
   {

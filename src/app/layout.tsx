@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Sans, Space_Grotesk } from "next/font/google";
 import { AppearanceProvider } from "@/components/AppearanceProvider";
+import { AccountPreferencesSync } from "@/components/AccountPreferencesSync";
 import { AuthProvider } from "@/components/AuthProvider";
 import { CartProvider } from "@/components/CartProvider";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -46,6 +47,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col antialiased">
         <AppearanceProvider>
           <AuthProvider>
+            <AccountPreferencesSync />
             <CartProvider>
               <SiteHeader />
               <div className="flex flex-1 flex-col">{children}</div>

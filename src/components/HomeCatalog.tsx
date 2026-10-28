@@ -82,7 +82,7 @@ function Hero() {
 
       <ul className="grid grid-cols-3 gap-2 md:grid-cols-1">
         {PROMISES.map(({ title, text, Icon }) => (
-          <li key={title} className="flex items-center gap-3 rounded-sm bg-surface p-3 shadow-sm">
+          <li key={title} className="flex items-center gap-3 rounded-sm bg-surface p-3 shadow-card">
             <Icon className="hidden h-6 w-6 shrink-0 text-gold sm:block" aria-hidden />
             <span className="flex flex-col">
               <span className="text-sm font-semibold text-ink"><Tr>{title}</Tr></span>
@@ -129,7 +129,7 @@ function Shelf({
   suffix?: string;
 }) {
   return (
-    <section className="overflow-hidden rounded-sm bg-surface shadow-sm">
+    <section className="overflow-hidden rounded-sm bg-surface shadow-card">
       <div className={`flex items-center justify-between px-4 py-2.5 ${accent ? "bg-gold text-white" : "border-b border-line text-ink"}`}>
         <h2 className="flex items-center gap-2 font-display text-base font-semibold">
           {Icon ? <Icon className="h-5 w-5" aria-hidden /> : null}
@@ -172,7 +172,7 @@ function EmptyState({ search, categoryName }: { search?: string; categoryName?: 
   );
 
   return (
-    <div className="flex flex-col items-start gap-2 rounded-sm bg-surface p-6 shadow-sm">
+    <div className="flex flex-col items-start gap-2 rounded-sm bg-surface p-6 shadow-card">
       <p className="text-ink-soft">{message}</p>
       {search || categoryName ? (
         <Link href="/" className="text-sm text-gold-bright underline-offset-4 hover:underline">

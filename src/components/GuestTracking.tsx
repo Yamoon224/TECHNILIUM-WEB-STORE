@@ -29,23 +29,29 @@ export function GuestTracking() {
   }
 
   return (
-    <main className="mx-auto my-8 flex w-[calc(100%-2rem)] max-w-md flex-col gap-4 rounded-sm bg-surface p-5 shadow-sm sm:p-8">
+    <main className="mx-auto my-8 flex w-[calc(100%-2rem)] max-w-md flex-col gap-4 rounded-sm bg-surface p-5 shadow-card sm:p-8">
       <h1 className="flex items-center gap-2 font-display text-xl font-semibold text-ink">
         <Search className="h-5 w-5 text-gold" aria-hidden /> <Tr>Suivre ma commande</Tr>
       </h1>
       <p className="text-sm text-ink-soft">
-        <Tr>Pas de compte nécessaire : entrez le numéro de votre commande, puis le téléphone utilisé pour la passer.</Tr>
+        <Tr>
+          Pas de compte nécessaire : entrez le numéro de votre commande, puis le téléphone utilisé pour la passer.
+        </Tr>
       </p>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-        <input
-          name="order_number"
-          required
-          autoComplete="off"
-          placeholder="TCH-20261025-XXXXXX"
-          aria-label={tr("Numéro de commande")}
-          className="rounded-sm border border-line bg-surface px-3 py-2 uppercase text-ink focus:border-gold focus:outline-none"
-        />
+        <label className="field">
+          <input
+            name="order_number"
+            required
+            autoComplete="off"
+            placeholder="TCH-20261025-XXXXXX"
+            className="rounded-sm border border-line bg-surface px-3 py-2 uppercase text-ink focus:border-gold focus:outline-none"
+          />
+          <span className="field-label">
+            <Tr>Numéro de commande</Tr>
+          </span>
+        </label>
         {error ? <p className="text-sm text-danger">{error}</p> : null}
         <button
           type="submit"

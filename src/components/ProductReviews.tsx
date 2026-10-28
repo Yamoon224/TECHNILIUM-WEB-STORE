@@ -51,7 +51,9 @@ export function ProductReviews({ productId }: { productId: number }) {
 
   return (
     <section className="flex flex-col gap-5 border-t border-line pt-8" aria-label={tr("Avis clients")}>
-      <h2 className="font-display text-xl font-semibold text-ink"><Tr>Avis clients</Tr></h2>
+      <h2 className="font-display text-xl font-semibold text-ink">
+        <Tr>Avis clients</Tr>
+      </h2>
 
       {error ? <p className="text-sm text-danger">{error}</p> : null}
 
@@ -72,7 +74,14 @@ export function ProductReviews({ productId }: { productId: number }) {
                   {review.body ? <p className="whitespace-pre-wrap text-ink-soft">{review.body}</p> : null}
                   <p className="text-xs text-ink-soft">
                     {review.author_name}
-                    {review.verified_purchase ? <>{" · "}<Tr>Achat vérifié</Tr></> : ""}
+                    {review.verified_purchase ? (
+                      <>
+                        {" · "}
+                        <Tr>Achat vérifié</Tr>
+                      </>
+                    ) : (
+                      ""
+                    )}
                     {review.published_at ? ` · ${review.published_at.slice(0, 10)}` : ""}
                   </p>
                 </li>
@@ -81,7 +90,9 @@ export function ProductReviews({ productId }: { productId: number }) {
           ) : null}
         </>
       ) : error ? null : (
-        <p className="text-sm text-ink-soft"><Tr>Chargement…</Tr></p>
+        <p className="text-sm text-ink-soft">
+          <Tr>Chargement…</Tr>
+        </p>
       )}
 
       {notice ? <p className="text-sm text-gold">{notice}</p> : null}
@@ -116,7 +127,11 @@ export function ProductReviews({ productId }: { productId: number }) {
 function Summary({ summary }: { summary: Data["summary"] }) {
   const { tr } = useAppearance();
   if (summary.count === 0) {
-    return <p className="text-sm text-ink-soft"><Tr>Aucun avis pour l&apos;instant.</Tr></p>;
+    return (
+      <p className="text-sm text-ink-soft">
+        <Tr>Aucun avis pour l&apos;instant.</Tr>
+      </p>
+    );
   }
 
   return (
@@ -136,7 +151,10 @@ function Summary({ summary }: { summary: Data["summary"] }) {
             <li key={star} className="flex items-center gap-2">
               <span className="w-6">{star} ★</span>
               <span className="h-1.5 flex-1 rounded-[4px] bg-surface-raised">
-                <span className="block h-full rounded-[4px] bg-gold" style={{ width: `${sharePercent(count, summary.count)}%` }} />
+                <span
+                  className="block h-full rounded-[4px] bg-gold"
+                  style={{ width: `${sharePercent(count, summary.count)}%` }}
+                />
               </span>
               <span className="w-6 text-right">{count}</span>
             </li>
@@ -147,7 +165,11 @@ function Summary({ summary }: { summary: Data["summary"] }) {
   );
 }
 
-function ReviewForm({ onSubmit }: { onSubmit: (input: { rating: number; title?: string; body?: string }) => Promise<void> }) {
+function ReviewForm({
+  onSubmit,
+}: {
+  onSubmit: (input: { rating: number; title?: string; body?: string }) => Promise<void>;
+}) {
   const { tr } = useAppearance();
   const [rating, setRating] = useState(0);
   const [submitting, setSubmitting] = useState(false);
@@ -180,7 +202,9 @@ function ReviewForm({ onSubmit }: { onSubmit: (input: { rating: number; title?: 
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-      <h3 className="font-display text-lg font-semibold text-ink"><Tr>Donner votre avis</Tr></h3>
+      <h3 className="font-display text-lg font-semibold text-ink">
+        <Tr>Donner votre avis</Tr>
+      </h3>
 
       <fieldset className="flex items-center gap-1" aria-label={tr("Note")}>
         {[1, 2, 3, 4, 5].map((value) => (
@@ -197,14 +221,18 @@ function ReviewForm({ onSubmit }: { onSubmit: (input: { rating: number; title?: 
         ))}
       </fieldset>
 
-      <label className="flex flex-col gap-1 text-sm text-ink-soft">
-        <Tr>Titre (optionnel)</Tr>
-        <input name="title" maxLength={120} className={field} />
+      <label className="field">
+        <input placeholder=" " name="title" maxLength={120} className={field} />
+        <span className="field-label">
+          <Tr>Titre (optionnel)</Tr>
+        </span>
       </label>
 
-      <label className="flex flex-col gap-1 text-sm text-ink-soft">
-        <Tr>Votre avis (optionnel)</Tr>
-        <textarea name="body" rows={3} maxLength={2000} className={field} />
+      <label className="field">
+        <textarea placeholder=" " name="body" rows={3} maxLength={2000} className={field} />
+        <span className="field-label">
+          <Tr>Votre avis (optionnel)</Tr>
+        </span>
       </label>
 
       {error ? <p className="text-sm text-danger">{error}</p> : null}

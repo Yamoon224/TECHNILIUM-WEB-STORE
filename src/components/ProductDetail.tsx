@@ -62,7 +62,7 @@ export async function ProductDetail({ params }: Pick<PageProps<"/produits/[slug]
         <span className="text-ink">{product.name}</span>
       </nav>
 
-      <div className="grid grid-cols-1 gap-6 rounded-sm bg-surface p-4 shadow-sm md:grid-cols-[minmax(0,420px)_1fr] md:p-6">
+      <div className="grid grid-cols-1 gap-6 rounded-sm bg-surface p-4 shadow-card md:grid-cols-[minmax(0,420px)_1fr] md:p-6">
         <ProductGallery
           id={product.id}
           brand={product.brand}
@@ -153,7 +153,7 @@ export async function ProductDetail({ params }: Pick<PageProps<"/produits/[slug]
       </div>
 
       {hasDetails ? (
-        <section className="flex flex-col gap-4 rounded-sm bg-surface p-4 shadow-sm md:p-6">
+        <section className="flex flex-col gap-4 rounded-sm bg-surface p-4 shadow-card md:p-6">
           <h2 className="font-display text-lg font-semibold text-ink"><Tr>Détails du produit</Tr></h2>
 
           {product.description ? (
@@ -173,7 +173,7 @@ export async function ProductDetail({ params }: Pick<PageProps<"/produits/[slug]
         </section>
       ) : null}
 
-      <div className="rounded-sm bg-surface p-4 shadow-sm md:p-6">
+      <div className="rounded-sm bg-surface p-4 shadow-card md:p-6">
         <ProductReviews productId={product.id} />
       </div>
     </main>

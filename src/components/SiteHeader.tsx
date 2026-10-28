@@ -10,7 +10,7 @@ import { SearchBox } from "./SearchBox";
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-30 bg-surface shadow-sm">
+    <header className="sticky top-0 z-30 bg-surface shadow-card">
       <div className="bg-chrome text-xs text-white">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-1.5">
           <p className="flex flex-wrap items-center gap-x-4 gap-y-0.5">

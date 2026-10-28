@@ -4,6 +4,7 @@ import { Check, Monitor, Moon, Palette, RotateCcw, Sun } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { ACCENT_COLORS, type Language, type ThemeChoice } from "@/lib/appearance";
 import { useAppearance } from "./AppearanceProvider";
+import { useAuth } from "./AuthProvider";
 
 const THEMES: { value: ThemeChoice; label: string; Icon: typeof Sun }[] = [
   { value: "light", label: "Clair", Icon: Sun },
@@ -19,6 +20,7 @@ const LANGUAGES: { value: Language; label: string }[] = [
 /** Header menu: theme (light, dark, automatic), accent colour and language. */
 export function PreferencesMenu() {
   const { appearance, update, reset, tr } = useAppearance();
+  const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const root = useRef<HTMLDivElement>(null);
 
@@ -115,6 +117,10 @@ export function PreferencesMenu() {
               ))}
             </div>
           </section>
+
+          <p className="text-xs text-ink-soft">
+            {user ? tr("La langue, la couleur et le thème sont enregistrés dans votre compte.") : tr("Enregistré sur cet appareil. Connectez-vous pour le retrouver partout.")}
+          </p>
 
           <button type="button" onClick={reset} className="flex items-center gap-2 self-start text-xs text-ink-soft hover:text-ink">
             <RotateCcw className="h-3.5 w-3.5" aria-hidden /> {tr("Réinitialiser")}

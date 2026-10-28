@@ -15,7 +15,7 @@ export function CategoryRail({
   return (
     <nav
       aria-label="Catégories"
-      className="flex gap-1 overflow-x-auto rounded-sm bg-surface p-2 shadow-sm lg:flex-col lg:self-start lg:overflow-visible"
+      className="flex gap-1 overflow-x-auto rounded-sm bg-surface p-2 shadow-card lg:flex-col lg:self-start lg:overflow-visible"
     >
       <Item href="/" active={!activeSlug} Icon={LayoutGrid}>
         <Tr>Tous les produits</Tr>

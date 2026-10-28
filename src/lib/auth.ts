@@ -15,6 +15,9 @@ export interface User {
   email: string | null;
   phone: string | null;
   locale: string;
+  accent_color: string | null;
+  /** light | dark | auto; null = automatic. */
+  theme: string | null;
   roles: string[];
   created_at: string | null;
 }
@@ -33,11 +36,11 @@ async function parseErrorMessage(response: Response): Promise<string> {
   }
 }
 
-export async function register(name: string, email: string, password: string): Promise<void> {
+export async function register(name: string, email: string, password: string, locale?: string): Promise<void> {
   const response = await fetch(`${API_BASE_URL}/auth/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, email, password, password_confirmation: password }),
+    body: JSON.stringify({ name, email, password, password_confirmation: password, locale }),
   });
 
   if (!response.ok) {

@@ -36,13 +36,7 @@ export function OrderConfirmation({ params }: Pick<PageProps<"/commande/[orderNu
   return <OrderSummary order={order} />;
 }
 
-function PhoneLookupForm({
-  orderNumber,
-  onFound,
-}: {
-  orderNumber: string;
-  onFound: (order: Order) => void;
-}) {
+function PhoneLookupForm({ orderNumber, onFound }: { orderNumber: string; onFound: (order: Order) => void }) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -68,20 +62,28 @@ function PhoneLookupForm({
   }
 
   return (
-    <main className="mx-auto my-8 flex w-[calc(100%-2rem)] max-w-sm flex-col gap-4 rounded-sm bg-surface p-5 shadow-sm sm:p-8">
-      <h1 className="font-display text-xl font-semibold text-ink"><Tr>Retrouver ma commande</Tr></h1>
+    <main className="mx-auto my-8 flex w-[calc(100%-2rem)] max-w-sm flex-col gap-4 rounded-sm bg-surface p-5 shadow-card sm:p-8">
+      <h1 className="font-display text-xl font-semibold text-ink">
+        <Tr>Retrouver ma commande</Tr>
+      </h1>
       <p className="text-sm text-ink-soft">
-        <Tr>Commande</Tr> <span className="text-ink">{orderNumber}</span><Tr>. Entrez le téléphone utilisé lors de la commande pour la consulter.</Tr>
+        <Tr>Commande</Tr> <span className="text-ink">{orderNumber}</span>
+        <Tr>. Entrez le téléphone utilisé lors de la commande pour la consulter.</Tr>
       </p>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-        <input
-          name="phone"
-          type="tel"
-          required
-          placeholder="07 00 00 00 00"
-          className="rounded-sm border border-line bg-surface px-3 py-2 text-ink focus:border-gold focus:outline-none"
-        />
+        <label className="field">
+          <input
+            name="phone"
+            type="tel"
+            required
+            placeholder="07 00 00 00 00"
+            className="rounded-sm border border-line bg-surface px-3 py-2 text-ink focus:border-gold focus:outline-none"
+          />
+          <span className="field-label">
+            <Tr>Téléphone</Tr>
+          </span>
+        </label>
         {error ? <p className="text-sm text-danger">{error}</p> : null}
         <button
           type="submit"
@@ -99,9 +101,11 @@ function OrderSummary({ order }: { order: Order }) {
   const subtotal = formatMoneyParts(order.subtotal);
 
   return (
-    <main className="mx-auto my-4 flex w-[calc(100%-2rem)] max-w-2xl flex-1 flex-col gap-6 rounded-sm bg-surface p-5 shadow-sm sm:p-8">
+    <main className="mx-auto my-4 flex w-[calc(100%-2rem)] max-w-2xl flex-1 flex-col gap-6 rounded-sm bg-surface p-5 shadow-card sm:p-8">
       <div className="flex flex-col gap-1">
-        <p className="text-sm text-gold"><Tr>Commande enregistrée</Tr></p>
+        <p className="text-sm text-gold">
+          <Tr>Commande enregistrée</Tr>
+        </p>
         <h1 className="font-display text-2xl font-semibold text-ink">
           <Tr>Merci,</Tr> {order.customer_name.split(" ")[0]} !
         </h1>
@@ -114,10 +118,15 @@ function OrderSummary({ order }: { order: Order }) {
 
       {showDeliveryCode(order) ? (
         <div className="flex flex-col gap-1 rounded-sm border border-gold-deep p-4">
-          <p className="text-sm text-ink-soft"><Tr>Code de confirmation de livraison</Tr></p>
+          <p className="text-sm text-ink-soft">
+            <Tr>Code de confirmation de livraison</Tr>
+          </p>
           <p className="font-display text-3xl tracking-[0.3em] text-gold-bright">{order.delivery_code}</p>
           <p className="text-xs text-ink-soft">
-            <Tr>Ne le communiquez au livreur qu&apos;au moment de recevoir votre colis : c&apos;est votre preuve de remise.</Tr>
+            <Tr>
+              Ne le communiquez au livreur qu&apos;au moment de recevoir votre colis : c&apos;est votre preuve de
+              remise.
+            </Tr>
           </p>
         </div>
       ) : null}
@@ -140,7 +149,8 @@ function OrderSummary({ order }: { order: Order }) {
 
       {order.discount && order.discount.amount > 0 ? (
         <p className="self-end text-sm text-ink-soft">
-          <Tr>Remise</Tr>{order.coupon_code ? ` (${order.coupon_code})` : ""} : −{formatMoneyParts(order.discount).amount}{" "}
+          <Tr>Remise</Tr>
+          {order.coupon_code ? ` (${order.coupon_code})` : ""} : −{formatMoneyParts(order.discount).amount}{" "}
           {formatMoneyParts(order.discount).label}
         </p>
       ) : null}
@@ -155,7 +165,9 @@ function OrderSummary({ order }: { order: Order }) {
           <Tr>Livraison :</Tr> {order.delivery_address}
           {order.delivery_city ? `, ${order.delivery_city}` : ""}
         </p>
-        <p><Tr>Téléphone :</Tr> {order.customer_phone}</p>
+        <p>
+          <Tr>Téléphone :</Tr> {order.customer_phone}
+        </p>
       </div>
 
       <Link href="/" className="text-sm text-gold underline-offset-4 hover:underline">
