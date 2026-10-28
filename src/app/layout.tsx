@@ -1,9 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Sans, Space_Grotesk } from "next/font/google";
+import { AppearanceProvider } from "@/components/AppearanceProvider";
 import { AuthProvider } from "@/components/AuthProvider";
 import { CartProvider } from "@/components/CartProvider";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { STORAGE_KEY } from "@/lib/appearance";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -28,17 +30,29 @@ export const viewport: Viewport = {
   themeColor: "#f68b1e",
 };
 
+/**
+ * Runs before the first paint: applies the stored theme (or the system's, in
+ * automatic mode) so a dark-mode visitor never sees a white flash. The
+ * provider takes over after hydration.
+ */
+const THEME_SCRIPT = `try{var s=JSON.parse(localStorage.getItem(${JSON.stringify(STORAGE_KEY)})||"{}");var t=s.theme;if(t!=="light"&&t!=="dark"){t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}document.documentElement.dataset.theme=t}catch(e){}`;
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="fr" className={`${spaceGrotesk.variable} ${plexSans.variable} h-full`}>
+    <html lang="fr" className={`${spaceGrotesk.variable} ${plexSans.variable} h-full`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
       <body className="min-h-full flex flex-col antialiased">
-        <AuthProvider>
-          <CartProvider>
-            <SiteHeader />
-            <div className="flex flex-1 flex-col">{children}</div>
-            <SiteFooter />
-          </CartProvider>
-        </AuthProvider>
+        <AppearanceProvider>
+          <AuthProvider>
+            <CartProvider>
+              <SiteHeader />
+              <div className="flex flex-1 flex-col">{children}</div>
+              <SiteFooter />
+            </CartProvider>
+          </AuthProvider>
+        </AppearanceProvider>
       </body>
     </html>
   );

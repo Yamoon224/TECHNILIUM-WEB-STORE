@@ -1,4 +1,5 @@
 import { BadgeCheck, ShieldCheck, Store, Truck } from "lucide-react";
+import { Tr } from "@/components/Tr";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { AddToCartButton } from "@/components/AddToCartButton";
@@ -47,7 +48,7 @@ export async function ProductDetail({ params }: Pick<PageProps<"/produits/[slug]
     <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-4 px-4 py-4">
       <nav aria-label="Fil d'Ariane" className="flex flex-wrap items-center gap-1.5 text-sm text-ink-soft">
         <Link href="/" className="hover:text-gold">
-          Accueil
+          <Tr>Accueil</Tr>
         </Link>
         {product.category ? (
           <>
@@ -75,8 +76,12 @@ export async function ProductDetail({ params }: Pick<PageProps<"/produits/[slug]
             <p className="text-sm text-gold-bright">{product.brand}</p>
             <h1 className="font-display text-2xl font-semibold text-ink">{product.name}</h1>
             <p className="text-sm text-ink-soft">
-              {CONDITION_LABEL[product.condition_state]}
-              {offer && offer.warranty_months > 0 ? `, garanti ${offer.warranty_months} mois` : ""}
+              <Tr>{CONDITION_LABEL[product.condition_state]}</Tr>
+              {offer && offer.warranty_months > 0 ? (
+                <>
+                  , <Tr>garanti</Tr> {offer.warranty_months} <Tr>mois</Tr>
+                </>
+              ) : null}
             </p>
           </div>
 
@@ -99,11 +104,11 @@ export async function ProductDetail({ params }: Pick<PageProps<"/produits/[slug]
               ) : null}
             </div>
           ) : (
-            <p className="text-ink-soft">Bientôt disponible</p>
+            <p className="text-ink-soft"><Tr>Bientôt disponible</Tr></p>
           )}
 
           {offer && offer.in_stock && offer.stock_quantity <= LOW_STOCK_THRESHOLD ? (
-            <p className="text-sm font-medium text-gold-bright">Plus que {offer.stock_quantity} en stock</p>
+            <p className="text-sm font-medium text-gold-bright"><Tr>Plus que</Tr> {offer.stock_quantity} <Tr>en stock</Tr></p>
           ) : null}
 
           {offer ? (
@@ -123,22 +128,22 @@ export async function ProductDetail({ params }: Pick<PageProps<"/produits/[slug]
 
           <ul className="flex flex-col gap-2 rounded-sm bg-bg p-3 text-sm text-ink">
             <li className="flex items-center gap-2.5">
-              <Truck className="h-5 w-5 shrink-0 text-gold" aria-hidden /> Paiement à la livraison
+              <Truck className="h-5 w-5 shrink-0 text-gold" aria-hidden /> <Tr>Paiement à la livraison</Tr>
             </li>
             {offer && offer.warranty_months > 0 ? (
               <li className="flex items-center gap-2.5">
-                <ShieldCheck className="h-5 w-5 shrink-0 text-gold" aria-hidden /> Garantie de {offer.warranty_months} mois
+                <ShieldCheck className="h-5 w-5 shrink-0 text-gold" aria-hidden /> <Tr>Garantie de</Tr> {offer.warranty_months} <Tr>mois</Tr>
               </li>
             ) : null}
             {offer ? (
               <li className="flex items-center gap-2.5">
                 {offer.seller === "vendor" ? (
                   <>
-                    <BadgeCheck className="h-5 w-5 shrink-0 text-gold" aria-hidden /> Vendu par un vendeur vérifié Technilium
+                    <BadgeCheck className="h-5 w-5 shrink-0 text-gold" aria-hidden /> <Tr>Vendu par un vendeur vérifié Technilium</Tr>
                   </>
                 ) : (
                   <>
-                    <Store className="h-5 w-5 shrink-0 text-gold" aria-hidden /> Vendu et expédié par Technilium
+                    <Store className="h-5 w-5 shrink-0 text-gold" aria-hidden /> <Tr>Vendu et expédié par Technilium</Tr>
                   </>
                 )}
               </li>
@@ -149,7 +154,7 @@ export async function ProductDetail({ params }: Pick<PageProps<"/produits/[slug]
 
       {hasDetails ? (
         <section className="flex flex-col gap-4 rounded-sm bg-surface p-4 shadow-sm md:p-6">
-          <h2 className="font-display text-lg font-semibold text-ink">Détails du produit</h2>
+          <h2 className="font-display text-lg font-semibold text-ink"><Tr>Détails du produit</Tr></h2>
 
           {product.description ? (
             <p className="max-w-prose text-sm leading-relaxed text-ink-soft">{product.description}</p>
@@ -159,7 +164,7 @@ export async function ProductDetail({ params }: Pick<PageProps<"/produits/[slug]
             <dl className="flex flex-col divide-y divide-line border-y border-line text-sm md:max-w-xl">
               {[...specs, ...variantAttributes].map(([key, value]) => (
                 <div key={key} className="flex justify-between py-2">
-                  <dt className="text-ink-soft">{ATTRIBUTE_LABEL[key] ?? key}</dt>
+                  <dt className="text-ink-soft"><Tr>{ATTRIBUTE_LABEL[key] ?? key}</Tr></dt>
                   <dd className="text-ink">{String(value)}</dd>
                 </div>
               ))}

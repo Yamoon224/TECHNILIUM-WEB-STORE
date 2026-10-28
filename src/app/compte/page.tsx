@@ -1,5 +1,7 @@
 "use client";
 
+import { Tr } from "@/components/Tr";
+import { useAppearance } from "@/components/AppearanceProvider";
 import { LogOut, Package } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -12,6 +14,7 @@ import { listMyOrders, OrdersError, partialLabel, showDeliveryCode, type Order }
 import { formatOrderDate } from "@/lib/orderTimeline";
 
 export default function AccountPage() {
+  const { tr } = useAppearance();
   const router = useRouter();
   const { status, token, user, logout } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
@@ -24,9 +27,9 @@ export default function AccountPage() {
     setLoading(true);
     listMyOrders(token)
       .then(setOrders)
-      .catch((caught) => setError(caught instanceof OrdersError ? caught.message : "Commandes indisponibles."))
+      .catch((caught) => setError(caught instanceof OrdersError ? caught.message : tr("Commandes indisponibles.")))
       .finally(() => setLoading(false));
-  }, [token]);
+  }, [token, tr]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -39,15 +42,15 @@ export default function AccountPage() {
   }
 
   if (status === "checking") {
-    return <p className="px-4 py-16 text-center text-sm text-ink-soft">Vérification de la session…</p>;
+    return <p className="px-4 py-16 text-center text-sm text-ink-soft"><Tr>Vérification de la session…</Tr></p>;
   }
 
   if (!user || !token) {
     return (
       <main className="flex min-h-[50vh] flex-1 flex-col items-center justify-center gap-3 px-4">
-        <p className="text-ink-soft">Connectez-vous pour accéder à votre compte.</p>
+        <p className="text-ink-soft"><Tr>Connectez-vous pour accéder à votre compte.</Tr></p>
         <Link href="/connexion" className="text-sm text-gold underline-offset-4 hover:underline">
-          Se connecter
+          <Tr>Se connecter</Tr>
         </Link>
       </main>
     );
@@ -62,31 +65,31 @@ export default function AccountPage() {
         </div>
         <div className="flex items-center gap-3">
           <Link href="/aide" className="text-sm font-medium text-gold-bright underline-offset-4 hover:underline">
-            Un souci ? Contacter le support
+            <Tr>Un souci ? Contacter le support</Tr>
           </Link>
           <button
             type="button"
             onClick={handleLogout}
             className="flex items-center gap-1.5 rounded-sm border border-line px-3 py-1.5 text-sm text-ink transition-colors hover:border-gold"
           >
-            <LogOut className="h-4 w-4" aria-hidden /> Se déconnecter
+            <LogOut className="h-4 w-4" aria-hidden /> <Tr>Se déconnecter</Tr>
           </button>
         </div>
       </section>
 
       <h2 className="flex items-center gap-2 px-1 font-display text-lg font-semibold text-ink">
-        <Package className="h-5 w-5 text-gold" aria-hidden /> Mes commandes
+        <Package className="h-5 w-5 text-gold" aria-hidden /> <Tr>Mes commandes</Tr>
       </h2>
 
       {error ? <p className="text-sm text-danger">{error}</p> : null}
 
       {loading ? (
-        <p className="text-sm text-ink-soft">Chargement…</p>
+        <p className="text-sm text-ink-soft"><Tr>Chargement…</Tr></p>
       ) : orders.length === 0 ? (
         <p className="rounded-sm bg-surface p-6 text-sm text-ink-soft shadow-sm">
-          Aucune commande pour l&apos;instant.{" "}
+          <Tr>Aucune commande pour l&apos;instant.</Tr>{" "}
           <Link href="/" className="text-gold-bright underline-offset-4 hover:underline">
-            Voir le catalogue
+            <Tr>Voir le catalogue</Tr>
           </Link>
         </p>
       ) : (
@@ -109,10 +112,15 @@ function OrderCard({ order, token }: { order: Order; token: string }) {
     <li className="flex flex-col gap-4 rounded-sm bg-surface p-4 shadow-sm sm:p-6">
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div>
-          <p className="font-medium text-ink">Commande {order.order_number}</p>
+          <p className="font-medium text-ink"><Tr>Commande</Tr> {order.order_number}</p>
           <p className="text-xs text-ink-soft">
-            {placedOn ? `Passée le ${placedOn} · ` : ""}
-            {order.items.length} article{order.items.length > 1 ? "s" : ""}
+            {placedOn ? (
+              <>
+                <Tr>Passée le</Tr> {placedOn}
+                {" · "}
+              </>
+            ) : null}
+            {order.items.length} <Tr>{order.items.length > 1 ? "articles" : "article"}</Tr>
           </p>
         </div>
         <p className="text-lg font-semibold text-ink">
@@ -126,22 +134,22 @@ function OrderCard({ order, token }: { order: Order; token: string }) {
         href={`/compte/commandes/${encodeURIComponent(order.order_number)}`}
         className="self-start text-sm font-medium text-gold-bright underline-offset-4 hover:underline"
       >
-        Suivre cette commande en détail
+        <Tr>Suivre cette commande en détail</Tr>
       </Link>
 
       {headline ? <p className="text-sm font-medium text-gold-bright">{headline}</p> : null}
       {order.partial
         ? order.sub_orders?.map((parcel, index) => (
             <p key={parcel.id} className="-mt-2 text-xs text-ink-soft">
-              Colis {index + 1} : {STATUS_LABEL[parcel.status] ?? parcel.status}
+              <Tr>Colis</Tr> {index + 1} : <Tr>{STATUS_LABEL[parcel.status] ?? parcel.status}</Tr>
             </p>
           ))
         : null}
 
       {showDeliveryCode(order) ? (
         <p className="rounded-sm bg-gold-highlight px-3 py-2 text-sm text-gold-bright">
-          Code de livraison : <span className="font-display font-semibold tracking-widest">{order.delivery_code}</span>
-          <span className="block text-xs">À ne donner au livreur qu&apos;à la remise du colis.</span>
+          <Tr>Code de livraison :</Tr> <span className="font-display font-semibold tracking-widest">{order.delivery_code}</span>
+          <span className="block text-xs"><Tr>À ne donner au livreur qu&apos;à la remise du colis.</Tr></span>
         </p>
       ) : null}
 

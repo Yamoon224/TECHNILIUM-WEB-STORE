@@ -1,5 +1,7 @@
 "use client";
 
+import { Tr } from "@/components/Tr";
+import { useAppearance } from "@/components/AppearanceProvider";
 import { MapPin, Tag, Wallet } from "lucide-react";
 import { useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
@@ -12,6 +14,7 @@ import { CouponError, quoteCoupon, totalAfterDiscount, type CouponQuote } from "
 import { CheckoutError, placeOrder, rememberLastOrder } from "@/lib/orders";
 
 export default function CheckoutPage() {
+  const { tr } = useAppearance();
   const router = useRouter();
   const { token, user } = useAuth();
   const { items, subtotalAmount, clear, count } = useCart();
@@ -26,10 +29,10 @@ export default function CheckoutPage() {
   if (items.length === 0) {
     return (
       <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col items-start justify-center gap-3 px-4 py-16">
-        <h1 className="font-display text-2xl font-semibold text-ink">Votre panier est vide</h1>
-        <p className="text-ink-soft">Ajoutez des produits avant de passer commande.</p>
+        <h1 className="font-display text-2xl font-semibold text-ink"><Tr>Votre panier est vide</Tr></h1>
+        <p className="text-ink-soft"><Tr>Ajoutez des produits avant de passer commande.</Tr></p>
         <Link href="/" className="text-sm text-gold underline-offset-4 hover:underline">
-          Voir le catalogue
+          <Tr>Voir le catalogue</Tr>
         </Link>
       </main>
     );
@@ -90,25 +93,25 @@ export default function CheckoutPage() {
       clear();
       router.push(`/commande/${order.order_number}`);
     } catch (caught) {
-      setError(caught instanceof CheckoutError ? caught.message : "La commande n'a pas pu être enregistrée.");
+      setError(caught instanceof CheckoutError ? caught.message : tr("La commande n'a pas pu être enregistrée."));
       setSubmitting(false);
     }
   }
 
   return (
     <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-4 px-4 py-4">
-      <h1 className="font-display text-2xl font-semibold text-ink">Finaliser la commande</h1>
+      <h1 className="font-display text-2xl font-semibold text-ink"><Tr>Finaliser la commande</Tr></h1>
 
       <div className="grid items-start gap-4 lg:grid-cols-[1fr_360px]">
         <section className="flex flex-col gap-4 rounded-sm bg-surface p-4 shadow-sm sm:p-6">
           <h2 className="flex items-center gap-2 font-display text-base font-semibold text-ink">
-            <MapPin className="h-5 w-5 text-gold" aria-hidden /> Livraison
+            <MapPin className="h-5 w-5 text-gold" aria-hidden /> <Tr>Livraison</Tr>
           </h2>
 
           <form id="checkout-form" ref={formRef} onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="grid gap-4 sm:grid-cols-2">
               <label className="flex flex-col gap-1 text-sm text-ink-soft">
-                Nom complet
+                <Tr>Nom complet</Tr>
                 <input
                   name="customer_name"
                   required
@@ -118,7 +121,7 @@ export default function CheckoutPage() {
               </label>
 
               <label className="flex flex-col gap-1 text-sm text-ink-soft">
-                Téléphone
+                <Tr>Téléphone</Tr>
                 <input
                   name="customer_phone"
                   type="tel"
@@ -131,38 +134,38 @@ export default function CheckoutPage() {
             </div>
 
             <label className="flex flex-col gap-1 text-sm text-ink-soft">
-              E-mail (facultatif — pour recevoir le suivi de votre commande)
+              <Tr>E-mail (facultatif — pour recevoir le suivi de votre commande)</Tr>
               <input
                 name="customer_email"
                 type="email"
                 defaultValue={user?.email ?? undefined}
-                placeholder="vous@exemple.com"
+                placeholder={tr("vous@exemple.com")}
                 className="rounded-sm border border-line bg-surface px-3 py-2 text-ink focus:border-gold focus:outline-none"
               />
             </label>
 
             <label className="flex flex-col gap-1 text-sm text-ink-soft">
-              Adresse de livraison (quartier, repères)
+              <Tr>Adresse de livraison (quartier, repères)</Tr>
               <textarea
                 name="delivery_address"
                 required
                 rows={2}
-                placeholder="Ex : Cocody Angré, non loin de la pharmacie du carrefour"
+                placeholder={tr("Ex : Cocody Angré, non loin de la pharmacie du carrefour")}
                 className="rounded-sm border border-line bg-surface px-3 py-2 text-ink focus:border-gold focus:outline-none"
               />
             </label>
 
             <label className="flex flex-col gap-1 text-sm text-ink-soft">
-              Ville
+              <Tr>Ville</Tr>
               <input
                 name="delivery_city"
-                placeholder="Abidjan"
+                placeholder={tr("Abidjan")}
                 className="rounded-sm border border-line bg-surface px-3 py-2 text-ink focus:border-gold focus:outline-none"
               />
             </label>
 
             <label className="flex flex-col gap-1 text-sm text-ink-soft">
-              Notes (optionnel)
+              <Tr>Notes (optionnel)</Tr>
               <textarea
                 name="notes"
                 rows={2}
@@ -174,13 +177,13 @@ export default function CheckoutPage() {
           <div className="flex items-center gap-3 rounded-sm bg-bg p-3 text-sm text-ink">
             <Wallet className="h-5 w-5 shrink-0 text-gold" aria-hidden />
             <span>
-              <span className="font-semibold">Paiement à la livraison.</span> Vous payez au livreur, à la remise du colis.
+              <span className="font-semibold"><Tr>Paiement à la livraison.</Tr></span> <Tr>Vous payez au livreur, à la remise du colis.</Tr>
             </span>
           </div>
         </section>
 
         <aside className="flex flex-col gap-4 rounded-sm bg-surface p-4 shadow-sm lg:sticky lg:top-28">
-          <h2 className="font-display text-base font-semibold text-ink">Récapitulatif ({count})</h2>
+          <h2 className="font-display text-base font-semibold text-ink"><Tr>Récapitulatif (</Tr>{count})</h2>
 
           <ul className="flex flex-col divide-y divide-line border-y border-line text-sm">
             {items.map((item) => {
@@ -204,14 +207,14 @@ export default function CheckoutPage() {
           <div className="flex flex-col gap-2 rounded-sm border border-line p-3">
             <label className="flex flex-col gap-1 text-sm text-ink-soft">
               <span className="flex items-center gap-1.5">
-                <Tag className="h-4 w-4" aria-hidden /> Code promotionnel
+                <Tag className="h-4 w-4" aria-hidden /> <Tr>Code promotionnel</Tr>
               </span>
               <span className="flex gap-2">
                 <input
                   value={couponInput}
                   onChange={(event) => setCouponInput(event.target.value)}
                   disabled={quote !== null}
-                  placeholder="BIENVENUE10"
+                  placeholder={tr("BIENVENUE10")}
                   className="min-w-0 flex-1 rounded-sm border border-line bg-surface px-3 py-2 uppercase text-ink focus:border-gold focus:outline-none disabled:opacity-60"
                 />
                 {quote ? (
@@ -220,7 +223,7 @@ export default function CheckoutPage() {
                     onClick={handleRemoveCoupon}
                     className="rounded-sm border border-line px-3 py-2 text-sm text-ink transition-colors hover:border-gold"
                   >
-                    Retirer
+                    <Tr>Retirer</Tr>
                   </button>
                 ) : (
                   <button
@@ -229,7 +232,7 @@ export default function CheckoutPage() {
                     disabled={checkingCoupon || !couponInput.trim()}
                     className="rounded-sm border border-gold px-3 py-2 text-sm text-gold transition-colors disabled:opacity-50"
                   >
-                    Appliquer
+                    <Tr>Appliquer</Tr>
                   </button>
                 )}
               </span>
@@ -237,28 +240,28 @@ export default function CheckoutPage() {
             {couponError ? <p className="text-sm text-danger">{couponError}</p> : null}
             {quote && discount ? (
               <p className="text-sm text-ink-soft">
-                Code {quote.code} appliqué : −{discount.amount} {discount.label}
+                <Tr>Code</Tr> {quote.code} <Tr>appliqué : −</Tr>{discount.amount} {discount.label}
               </p>
             ) : null}
           </div>
 
           <div className="flex flex-col gap-1 border-t border-line pt-3 text-sm">
             <p className="flex justify-between text-ink-soft">
-              <span>Sous-total</span>
+              <span><Tr>Sous-total</Tr></span>
               <span>
                 {subtotal.amount} {subtotal.label}
               </span>
             </p>
             {quote && discount ? (
               <p className="flex justify-between text-ink-soft">
-                <span>Remise</span>
+                <span><Tr>Remise</Tr></span>
                 <span>
                   −{discount.amount} {discount.label}
                 </span>
               </p>
             ) : null}
             <p className="flex justify-between text-lg font-semibold text-ink">
-              <span>Total</span>
+              <span><Tr>Total</Tr></span>
               <span>
                 {total.amount} {total.label}
               </span>
@@ -273,7 +276,7 @@ export default function CheckoutPage() {
             disabled={submitting}
             className="rounded-sm bg-gold px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-gold-bright disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {submitting ? "Envoi…" : "Confirmer la commande"}
+            {submitting ? <Tr>Envoi…</Tr> : <Tr>Confirmer la commande</Tr>}
           </button>
         </aside>
       </div>

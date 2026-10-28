@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Tr } from "@/components/Tr";
 import { formatMoneyParts } from "@/lib/money";
 import { discountPercent } from "@/lib/pricing";
 import type { Product } from "@/lib/catalog";
@@ -19,13 +20,6 @@ export function ProductCard({ product }: { product: Product }) {
   const price = offer ? formatMoneyParts(offer.price) : null;
   const reference = offer?.compare_at_price ? formatMoneyParts(offer.compare_at_price) : null;
   const percent = offer ? discountPercent(offer) : null;
-
-  const conditionLine = [
-    CONDITION_LABEL[product.condition_state],
-    offer && offer.warranty_months > 0 ? `garanti ${offer.warranty_months} mois` : null,
-  ]
-    .filter(Boolean)
-    .join(", ");
 
   return (
     <div className="group flex h-full flex-col gap-2 rounded-sm bg-surface p-2 shadow-sm transition-shadow hover:shadow-md">
@@ -61,18 +55,25 @@ export function ProductCard({ product }: { product: Product }) {
             ) : null}
           </div>
         ) : (
-          <p className="text-sm text-ink-soft">Bientôt disponible</p>
+          <p className="text-sm text-ink-soft"><Tr>Bientôt disponible</Tr></p>
         )}
 
         {offer && !offer.in_stock ? (
-          <p className="text-xs font-medium text-danger">Rupture de stock</p>
+          <p className="text-xs font-medium text-danger"><Tr>Rupture de stock</Tr></p>
         ) : offer && offer.stock_quantity <= LOW_STOCK_THRESHOLD ? (
-          <p className="text-xs font-medium text-gold-bright">{offer.stock_quantity} article{offer.stock_quantity > 1 ? "s" : ""} restant{offer.stock_quantity > 1 ? "s" : ""}</p>
+          <p className="text-xs font-medium text-gold-bright">{offer.stock_quantity} <Tr>{offer.stock_quantity > 1 ? "articles restants" : "article restant"}</Tr></p>
         ) : null}
 
-        <p className="text-xs text-ink-soft">{conditionLine}</p>
+        <p className="text-xs text-ink-soft">
+          <Tr>{CONDITION_LABEL[product.condition_state]}</Tr>
+          {offer && offer.warranty_months > 0 ? (
+            <>
+              , <Tr>garanti</Tr> {offer.warranty_months} <Tr>mois</Tr>
+            </>
+          ) : null}
+        </p>
 
-        {offer && offer.seller === "vendor" ? <p className="text-xs text-gold-bright">Vendeur vérifié</p> : null}
+        {offer && offer.seller === "vendor" ? <p className="text-xs text-gold-bright"><Tr>Vendeur vérifié</Tr></p> : null}
       </Link>
 
       {offer ? (

@@ -1,5 +1,6 @@
 "use client";
 
+import { Tr } from "@/components/Tr";
 import { useState } from "react";
 import { useCart } from "./CartProvider";
 import type { CurrencyCode } from "@/lib/money";
@@ -52,7 +53,7 @@ export function AddToCartButton({
         disabled
         className={`w-full cursor-not-allowed rounded-sm border border-line bg-surface text-ink-soft ${sizeClasses}`}
       >
-        Rupture de stock
+        <Tr>Rupture de stock</Tr>
       </button>
     );
   }
@@ -64,7 +65,7 @@ export function AddToCartButton({
       disabled={atStockLimit}
       className={`w-full rounded-sm bg-gold font-medium text-white transition-colors hover:bg-gold-bright disabled:cursor-not-allowed disabled:opacity-60 ${sizeClasses}`}
     >
-      {atStockLimit ? "Stock maximum" : added ? "Ajouté ✓" : "Ajouter au panier"}
+      {atStockLimit ? <Tr>Stock maximum</Tr> : added ? "Ajouté ✓" : "Ajouter au panier"}
     </button>
   );
 }

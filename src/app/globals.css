@@ -1,9 +1,11 @@
 @import "tailwindcss";
 
 /*
- * Marketplace look: light page, white cards, a single orange accent for
- * prices, calls to action and badges. Token names are kept from the former
- * dark theme (gold = the accent) so every page follows the switch.
+ * Marketplace look: light page, white cards, a single accent (orange by
+ * default; "gold" is the token name kept from the former brand theme) for
+ * prices, calls to action and badges. The dark theme applies under
+ * [data-theme="dark"], set before paint by an inline script in the layout;
+ * the accent can be changed at runtime from the preferences menu.
  */
 :root {
   --bg: #f1f1f2;
@@ -12,13 +14,30 @@
   --ink: #282828;
   --ink-soft: #75757a;
   --line: #e0e0e0;
-  --gold-shadow: #b45f06;
-  --gold-deep: #e07b0a;
   --gold: #f68b1e;
   --gold-bright: #e66c00;
+  --gold-deep: #e07b0a;
   --gold-highlight: #fff3e3;
   --danger: #d32f2f;
-  --gold-gradient: linear-gradient(135deg, #f68b1e 0%, #f68b1e 100%);
+  /* Header strip and footer: dark in both themes. */
+  --chrome: #1d1d1f;
+
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --bg: #0e1116;
+  --surface: #171b22;
+  --surface-raised: #1d222b;
+  --ink: #eceef2;
+  --ink-soft: #98a1b2;
+  --line: #2a313c;
+  --gold-bright: #ffa94d;
+  --gold-highlight: #3a2610;
+  --danger: #f87171;
+  --chrome: #0a0c10;
+
+  color-scheme: dark;
 }
 
 @theme inline {
@@ -31,6 +50,8 @@
   --color-gold: var(--gold);
   --color-gold-bright: var(--gold-bright);
   --color-gold-deep: var(--gold-deep);
+  --color-gold-highlight: var(--gold-highlight);
+  --color-chrome: var(--chrome);
   --color-danger: var(--danger);
   --font-display: var(--font-space-grotesk);
   --font-sans: var(--font-plex-sans);
@@ -43,18 +64,15 @@ body {
 }
 
 .gold-text {
-  background: var(--gold-gradient);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  color: var(--gold);
 }
 
 .product-tile-a {
-  background: linear-gradient(145deg, #fff3e3 0%, #ffffff 80%);
+  background: linear-gradient(145deg, var(--gold-highlight) 0%, var(--surface) 80%);
 }
 .product-tile-b {
-  background: linear-gradient(145deg, #eef3ff 0%, #ffffff 80%);
+  background: linear-gradient(145deg, color-mix(in oklab, #3b82f6 12%, var(--surface)) 0%, var(--surface) 80%);
 }
 .product-tile-c {
-  background: linear-gradient(145deg, #eefaf1 0%, #ffffff 80%);
+  background: linear-gradient(145deg, color-mix(in oklab, #10b981 12%, var(--surface)) 0%, var(--surface) 80%);
 }

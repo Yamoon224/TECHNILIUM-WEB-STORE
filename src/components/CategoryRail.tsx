@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Tr } from "@/components/Tr";
 import { LayoutGrid, type LucideIcon } from "lucide-react";
 import type { Category } from "@/lib/catalog";
 import { categoryIcon } from "@/lib/categoryIcons";
@@ -17,7 +18,7 @@ export function CategoryRail({
       className="flex gap-1 overflow-x-auto rounded-sm bg-surface p-2 shadow-sm lg:flex-col lg:self-start lg:overflow-visible"
     >
       <Item href="/" active={!activeSlug} Icon={LayoutGrid}>
-        Tous les produits
+        <Tr>Tous les produits</Tr>
       </Item>
       {categories.map((category) => (
         <Item

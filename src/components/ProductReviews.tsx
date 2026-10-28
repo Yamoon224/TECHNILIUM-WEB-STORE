@@ -1,5 +1,7 @@
 "use client";
 
+import { Tr } from "@/components/Tr";
+import { useAppearance } from "@/components/AppearanceProvider";
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useAuth } from "@/components/AuthProvider";
@@ -23,6 +25,7 @@ import {
  * purchase check; this only decides whether to show the form.
  */
 export function ProductReviews({ productId }: { productId: number }) {
+  const { tr } = useAppearance();
   const { token, status } = useAuth();
   const [data, setData] = useState<Data | null>(null);
   const [eligibility, setEligibility] = useState<Eligibility | null>(null);
@@ -32,8 +35,8 @@ export function ProductReviews({ productId }: { productId: number }) {
   const load = useCallback(() => {
     getProductReviews(productId)
       .then(setData)
-      .catch((caught) => setError(caught instanceof ReviewsError ? caught.message : "Avis indisponibles."));
-  }, [productId]);
+      .catch((caught) => setError(caught instanceof ReviewsError ? caught.message : tr("Avis indisponibles.")));
+  }, [productId, tr]);
 
   useEffect(() => {
     load();
@@ -47,8 +50,8 @@ export function ProductReviews({ productId }: { productId: number }) {
   }, [token, productId]);
 
   return (
-    <section className="flex flex-col gap-5 border-t border-line pt-8" aria-label="Avis clients">
-      <h2 className="font-display text-xl font-semibold text-ink">Avis clients</h2>
+    <section className="flex flex-col gap-5 border-t border-line pt-8" aria-label={tr("Avis clients")}>
+      <h2 className="font-display text-xl font-semibold text-ink"><Tr>Avis clients</Tr></h2>
 
       {error ? <p className="text-sm text-danger">{error}</p> : null}
 
@@ -69,7 +72,7 @@ export function ProductReviews({ productId }: { productId: number }) {
                   {review.body ? <p className="whitespace-pre-wrap text-ink-soft">{review.body}</p> : null}
                   <p className="text-xs text-ink-soft">
                     {review.author_name}
-                    {review.verified_purchase ? " · Achat vérifié" : ""}
+                    {review.verified_purchase ? <Tr> · Achat vérifié</Tr> : ""}
                     {review.published_at ? ` · ${review.published_at.slice(0, 10)}` : ""}
                   </p>
                 </li>
@@ -78,7 +81,7 @@ export function ProductReviews({ productId }: { productId: number }) {
           ) : null}
         </>
       ) : error ? null : (
-        <p className="text-sm text-ink-soft">Chargement…</p>
+        <p className="text-sm text-ink-soft"><Tr>Chargement…</Tr></p>
       )}
 
       {notice ? <p className="text-sm text-gold">{notice}</p> : null}
@@ -86,9 +89,9 @@ export function ProductReviews({ productId }: { productId: number }) {
       {status === "checking" ? null : !token ? (
         <p className="text-sm text-ink-soft">
           <Link href="/connexion" className="text-gold underline-offset-4 hover:underline">
-            Connectez-vous
+            <Tr>Connectez-vous</Tr>
           </Link>{" "}
-          pour donner votre avis si vous avez reçu ce produit.
+          <Tr>pour donner votre avis si vous avez reçu ce produit.</Tr>
         </p>
       ) : eligibility === null ? null : eligibility.can_review ? (
         <ReviewForm
@@ -98,7 +101,7 @@ export function ProductReviews({ productId }: { productId: number }) {
             setNotice(
               result.status === "pending"
                 ? "Merci ! Votre avis sera publié après vérification par notre équipe."
-                : "Merci ! Votre avis est publié.",
+                : tr("Merci ! Votre avis est publié."),
             );
             load();
           }}
@@ -111,8 +114,9 @@ export function ProductReviews({ productId }: { productId: number }) {
 }
 
 function Summary({ summary }: { summary: Data["summary"] }) {
+  const { tr } = useAppearance();
   if (summary.count === 0) {
-    return <p className="text-sm text-ink-soft">Aucun avis pour l&apos;instant.</p>;
+    return <p className="text-sm text-ink-soft"><Tr>Aucun avis pour l&apos;instant.</Tr></p>;
   }
 
   return (
@@ -125,7 +129,7 @@ function Summary({ summary }: { summary: Data["summary"] }) {
         <span className="text-xs text-ink-soft">{countLabel(summary.count)}</span>
       </p>
 
-      <ul className="flex flex-1 flex-col gap-1 text-xs text-ink-soft" aria-label="Répartition des notes">
+      <ul className="flex flex-1 flex-col gap-1 text-xs text-ink-soft" aria-label={tr("Répartition des notes")}>
         {[5, 4, 3, 2, 1].map((star) => {
           const count = summary.distribution[star] ?? 0;
           return (
@@ -144,6 +148,7 @@ function Summary({ summary }: { summary: Data["summary"] }) {
 }
 
 function ReviewForm({ onSubmit }: { onSubmit: (input: { rating: number; title?: string; body?: string }) => Promise<void> }) {
+  const { tr } = useAppearance();
   const [rating, setRating] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -166,7 +171,7 @@ function ReviewForm({ onSubmit }: { onSubmit: (input: { rating: number; title?: 
         body: String(form.get("body") ?? "") || undefined,
       });
     } catch (caught) {
-      setError(caught instanceof ReviewsError ? caught.message : "Votre avis n'a pas pu être envoyé.");
+      setError(caught instanceof ReviewsError ? caught.message : tr("Votre avis n'a pas pu être envoyé."));
       setSubmitting(false);
     }
   }
@@ -175,15 +180,15 @@ function ReviewForm({ onSubmit }: { onSubmit: (input: { rating: number; title?: 
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-      <h3 className="font-display text-lg font-semibold text-ink">Donner votre avis</h3>
+      <h3 className="font-display text-lg font-semibold text-ink"><Tr>Donner votre avis</Tr></h3>
 
-      <fieldset className="flex items-center gap-1" aria-label="Note">
+      <fieldset className="flex items-center gap-1" aria-label={tr("Note")}>
         {[1, 2, 3, 4, 5].map((value) => (
           <button
             key={value}
             type="button"
             onClick={() => setRating(value)}
-            aria-label={`${value} sur 5`}
+            aria-label={`${value} ${tr("sur")} 5`}
             aria-pressed={rating === value}
             className={`text-2xl leading-none ${value <= rating ? "text-gold-bright" : "text-ink-soft"}`}
           >
@@ -193,12 +198,12 @@ function ReviewForm({ onSubmit }: { onSubmit: (input: { rating: number; title?: 
       </fieldset>
 
       <label className="flex flex-col gap-1 text-sm text-ink-soft">
-        Titre (optionnel)
+        <Tr>Titre (optionnel)</Tr>
         <input name="title" maxLength={120} className={field} />
       </label>
 
       <label className="flex flex-col gap-1 text-sm text-ink-soft">
-        Votre avis (optionnel)
+        <Tr>Votre avis (optionnel)</Tr>
         <textarea name="body" rows={3} maxLength={2000} className={field} />
       </label>
 
@@ -209,7 +214,7 @@ function ReviewForm({ onSubmit }: { onSubmit: (input: { rating: number; title?: 
         disabled={submitting}
         className="self-start rounded-sm bg-gold px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gold-bright disabled:opacity-60"
       >
-        {submitting ? "Envoi…" : "Publier mon avis"}
+        {submitting ? <Tr>Envoi…</Tr> : <Tr>Publier mon avis</Tr>}
       </button>
     </form>
   );

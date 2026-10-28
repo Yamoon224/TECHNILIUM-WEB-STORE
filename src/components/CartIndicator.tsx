@@ -1,5 +1,6 @@
 "use client";
 
+import { Tr } from "@/components/Tr";
 import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
 import { useCart } from "./CartProvider";
@@ -20,7 +21,7 @@ export function CartIndicator() {
           </span>
         ) : null}
       </span>
-      <span className="hidden sm:inline">Panier</span>
+      <span className="hidden sm:inline"><Tr>Panier</Tr></span>
     </Link>
   );
 }

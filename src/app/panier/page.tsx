@@ -1,5 +1,7 @@
 "use client";
 
+import { Tr } from "@/components/Tr";
+import { useAppearance } from "@/components/AppearanceProvider";
 import { ShoppingCart, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useCart } from "@/components/CartProvider";
@@ -7,19 +9,20 @@ import { ProductTile } from "@/components/ProductTile";
 import { formatMoneyParts } from "@/lib/money";
 
 export default function CartPage() {
+  const { tr } = useAppearance();
   const { items, updateQuantity, remove, subtotalAmount, count } = useCart();
 
   if (items.length === 0) {
     return (
       <main className="mx-auto my-4 flex w-[calc(100%-2rem)] max-w-3xl flex-col items-center gap-3 rounded-sm bg-surface p-10 text-center shadow-sm">
         <ShoppingCart className="h-12 w-12 text-gold" aria-hidden />
-        <h1 className="font-display text-2xl font-semibold text-ink">Votre panier est vide</h1>
-        <p className="text-ink-soft">Parcourez le catalogue pour y ajouter des produits.</p>
+        <h1 className="font-display text-2xl font-semibold text-ink"><Tr>Votre panier est vide</Tr></h1>
+        <p className="text-ink-soft"><Tr>Parcourez le catalogue pour y ajouter des produits.</Tr></p>
         <Link
           href="/"
           className="rounded-sm bg-gold px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-gold-bright"
         >
-          Voir le catalogue
+          <Tr>Voir le catalogue</Tr>
         </Link>
       </main>
     );
@@ -33,7 +36,7 @@ export default function CartPage() {
       <div className="grid items-start gap-4 lg:grid-cols-[1fr_320px]">
         <section className="overflow-hidden rounded-sm bg-surface shadow-sm">
           <h1 className="border-b border-line px-4 py-3 font-display text-lg font-semibold text-ink">
-            Panier ({count})
+            <Tr>Panier (</Tr>{count})
           </h1>
 
           <ul className="flex flex-col divide-y divide-line">
@@ -58,7 +61,7 @@ export default function CartPage() {
                       {item.brand} {item.productName}
                     </Link>
                     <p className="text-xs text-ink-soft">
-                      Prix unitaire : {unit.amount} {unit.label}
+                      <Tr>Prix unitaire :</Tr> {unit.amount} {unit.label}
                     </p>
 
                     <div className="mt-2 flex items-center gap-2">
@@ -66,7 +69,7 @@ export default function CartPage() {
                         type="button"
                         onClick={() => updateQuantity(item.offerId, item.quantity - 1)}
                         className="h-8 w-8 rounded-sm border border-line text-ink hover:border-gold"
-                        aria-label="Diminuer la quantité"
+                        aria-label={tr("Diminuer la quantité")}
                       >
                         −
                       </button>
@@ -76,7 +79,7 @@ export default function CartPage() {
                         onClick={() => updateQuantity(item.offerId, item.quantity + 1)}
                         disabled={item.quantity >= item.maxQuantity}
                         className="h-8 w-8 rounded-sm border border-line text-ink hover:border-gold disabled:cursor-not-allowed disabled:opacity-40"
-                        aria-label="Augmenter la quantité"
+                        aria-label={tr("Augmenter la quantité")}
                       >
                         +
                       </button>
@@ -85,7 +88,7 @@ export default function CartPage() {
                         onClick={() => remove(item.offerId)}
                         className="ml-3 flex items-center gap-1 text-xs font-medium text-gold-bright underline-offset-4 hover:underline"
                       >
-                        <Trash2 className="h-3.5 w-3.5" aria-hidden /> Retirer
+                        <Trash2 className="h-3.5 w-3.5" aria-hidden /> <Tr>Retirer</Tr>
                       </button>
                     </div>
                   </div>
@@ -100,20 +103,20 @@ export default function CartPage() {
         </section>
 
         <aside className="flex flex-col gap-3 rounded-sm bg-surface p-4 shadow-sm lg:sticky lg:top-28">
-          <h2 className="font-display text-base font-semibold text-ink">Récapitulatif</h2>
+          <h2 className="font-display text-base font-semibold text-ink"><Tr>Récapitulatif</Tr></h2>
           <div className="flex items-center justify-between border-b border-line pb-3 text-sm">
-            <span className="text-ink-soft">Sous-total</span>
+            <span className="text-ink-soft"><Tr>Sous-total</Tr></span>
             <span className="text-lg font-semibold text-ink">
               {subtotal.amount} {subtotal.label}
             </span>
           </div>
-          <p className="text-xs text-ink-soft">Paiement à la livraison. Le code promo se saisit à l&apos;étape suivante.</p>
+          <p className="text-xs text-ink-soft"><Tr>Paiement à la livraison. Le code promo se saisit à l&apos;étape suivante.</Tr></p>
 
           <Link
             href="/commande"
             className="rounded-sm bg-gold px-4 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-gold-bright"
           >
-            Passer la commande
+            <Tr>Passer la commande</Tr>
           </Link>
         </aside>
       </div>

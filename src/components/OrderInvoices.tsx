@@ -1,5 +1,7 @@
 "use client";
 
+import { Tr } from "@/components/Tr";
+import { useAppearance } from "@/components/AppearanceProvider";
 import { useState } from "react";
 import {
   downloadInvoicePdf,
@@ -10,6 +12,7 @@ import {
 
 /** Loads an order's invoices on demand, so the account page makes no request per order up front. */
 export function OrderInvoices({ token, orderNumber }: { token: string; orderNumber: string }) {
+  const { tr } = useAppearance();
   const [documents, setDocuments] = useState<CustomerInvoice[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -25,7 +28,7 @@ export function OrderInvoices({ token, orderNumber }: { token: string; orderNumb
     try {
       setDocuments(await listOrderInvoices(token, orderNumber));
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Factures indisponibles.");
+      setError(caught instanceof Error ? caught.message : tr("Factures indisponibles."));
     } finally {
       setLoading(false);
     }
@@ -36,7 +39,7 @@ export function OrderInvoices({ token, orderNumber }: { token: string; orderNumb
     try {
       await downloadInvoicePdf(token, invoice);
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Le PDF n'a pas pu être téléchargé.");
+      setError(caught instanceof Error ? caught.message : tr("Le PDF n'a pas pu être téléchargé."));
     }
   }
 
@@ -48,10 +51,10 @@ export function OrderInvoices({ token, orderNumber }: { token: string; orderNumb
         disabled={loading}
         className="self-start text-gold underline-offset-4 hover:underline disabled:opacity-50"
       >
-        {documents === null ? "Mes factures" : "Masquer les factures"}
+        {documents === null ? <Tr>Mes factures</Tr> : <Tr>Masquer les factures</Tr>}
       </button>
 
-      {documents?.length === 0 ? <span className="text-ink-soft">Aucune facture émise pour le moment.</span> : null}
+      {documents?.length === 0 ? <span className="text-ink-soft"><Tr>Aucune facture émise pour le moment.</Tr></span> : null}
 
       {documents?.map((invoice) => (
         <button
@@ -60,7 +63,7 @@ export function OrderInvoices({ token, orderNumber }: { token: string; orderNumb
           onClick={() => download(invoice)}
           className="self-start text-ink underline-offset-4 hover:text-gold hover:underline"
         >
-          {INVOICE_TYPE_LABEL[invoice.type]} {invoice.number} (PDF)
+          <Tr>{INVOICE_TYPE_LABEL[invoice.type]}</Tr> {invoice.number} <Tr>(PDF)</Tr>
         </button>
       ))}
 

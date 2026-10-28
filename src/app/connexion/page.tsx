@@ -1,5 +1,7 @@
 "use client";
 
+import { Tr } from "@/components/Tr";
+import { useAppearance } from "@/components/AppearanceProvider";
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -9,6 +11,7 @@ import { AuthError } from "@/lib/auth";
 type Mode = "login" | "register";
 
 export default function ConnexionPage() {
+  const { tr } = useAppearance();
   const router = useRouter();
   const { login, register } = useAuth();
   const [mode, setMode] = useState<Mode>("login");
@@ -32,7 +35,7 @@ export default function ConnexionPage() {
       }
       router.push("/compte");
     } catch (caught) {
-      setError(caught instanceof AuthError ? caught.message : "Une erreur est survenue. Réessayez.");
+      setError(caught instanceof AuthError ? caught.message : tr("Une erreur est survenue. Réessayez."));
     } finally {
       setSubmitting(false);
     }
@@ -41,13 +44,13 @@ export default function ConnexionPage() {
   return (
     <main className="mx-auto my-8 flex w-[calc(100%-2rem)] max-w-sm flex-col gap-6 rounded-sm bg-surface p-5 shadow-sm sm:p-8">
       <h1 className="font-display text-xl font-semibold text-ink">
-        {mode === "login" ? "Connexion" : "Créer un compte"}
+        {mode === "login" ? <Tr>Connexion</Tr> : <Tr>Créer un compte</Tr>}
       </h1>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         {mode === "register" ? (
           <label className="flex flex-col gap-1 text-sm text-ink-soft">
-            Nom complet
+            <Tr>Nom complet</Tr>
             <input
               name="name"
               required
@@ -57,7 +60,7 @@ export default function ConnexionPage() {
         ) : null}
 
         <label className="flex flex-col gap-1 text-sm text-ink-soft">
-          Adresse e-mail
+          <Tr>Adresse e-mail</Tr>
           <input
             name="email"
             type="email"
@@ -68,7 +71,7 @@ export default function ConnexionPage() {
         </label>
 
         <label className="flex flex-col gap-1 text-sm text-ink-soft">
-          Mot de passe
+          <Tr>Mot de passe</Tr>
           <input
             name="password"
             type="password"
@@ -78,7 +81,7 @@ export default function ConnexionPage() {
             className="rounded-sm border border-line bg-surface px-3 py-2 text-ink focus:border-gold focus:outline-none"
           />
           {mode === "register" ? (
-            <span className="text-xs text-ink-soft">8 caractères minimum, avec au moins une lettre et un chiffre.</span>
+            <span className="text-xs text-ink-soft"><Tr>8 caractères minimum, avec au moins une lettre et un chiffre.</Tr></span>
           ) : null}
         </label>
 
@@ -89,7 +92,7 @@ export default function ConnexionPage() {
           disabled={submitting}
           className="rounded-sm bg-gold px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gold-bright disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {submitting ? "Un instant…" : mode === "login" ? "Se connecter" : "Créer mon compte"}
+          {submitting ? <Tr>Un instant…</Tr> : mode === "login" ? "Se connecter" : "Créer mon compte"}
         </button>
       </form>
 
@@ -101,11 +104,11 @@ export default function ConnexionPage() {
         }}
         className="text-sm text-ink-soft underline-offset-4 hover:text-gold hover:underline"
       >
-        {mode === "login" ? "Pas encore de compte ? En créer un" : "Déjà un compte ? Se connecter"}
+        {mode === "login" ? <Tr>Pas encore de compte ? En créer un</Tr> : <Tr>Déjà un compte ? Se connecter</Tr>}
       </button>
 
       <Link href="/" className="text-sm text-ink-soft hover:text-gold">
-        ← Retour au catalogue
+        <Tr>← Retour au catalogue</Tr>
       </Link>
     </main>
   );

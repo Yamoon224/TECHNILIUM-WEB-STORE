@@ -1,5 +1,6 @@
 "use client";
 
+import { useAppearance } from "@/components/AppearanceProvider";
 import { useState } from "react";
 import { ProductTile } from "./ProductTile";
 
@@ -25,6 +26,7 @@ export function ProductGallery({
   alt: string;
   images: GalleryImage[];
 }) {
+  const { tr } = useAppearance();
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const selected = images.find((image) => image.id === selectedId) ?? images[0];
 
@@ -33,13 +35,13 @@ export function ProductGallery({
       <ProductTile id={id} brand={brand} categoryName={categoryName} imageUrl={selected?.url} alt={alt} />
 
       {images.length > 1 ? (
-        <ul className="flex flex-wrap gap-2" aria-label="Photos du produit">
+        <ul className="flex flex-wrap gap-2" aria-label={tr("Photos du produit")}>
           {images.map((image, index) => (
             <li key={image.id}>
               <button
                 type="button"
                 onClick={() => setSelectedId(image.id)}
-                aria-label={`Voir la photo ${index + 1}`}
+                aria-label={`${tr("Voir la photo")} ${index + 1}`}
                 aria-current={image.id === selected?.id}
                 className={`block h-16 w-16 overflow-hidden rounded-sm border bg-white transition-colors ${
                   image.id === selected?.id ? "border-gold" : "border-line hover:border-gold"

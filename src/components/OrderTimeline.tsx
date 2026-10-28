@@ -1,4 +1,5 @@
 import { CheckCircle2, ClipboardCheck, PackageCheck, Truck, XCircle, type LucideIcon } from "lucide-react";
+import { Tr } from "@/components/Tr";
 import { formatStepDate, timelineFor, type TimelineStep } from "@/lib/orderTimeline";
 
 const STEP_ICON: Record<TimelineStep["status"], LucideIcon> = {
@@ -21,7 +22,7 @@ export function OrderTimeline({
   if (steps === null) {
     return status === "cancelled" ? (
       <p className="flex items-center gap-2 text-sm text-ink-soft">
-        <XCircle className="h-5 w-5 text-danger" aria-hidden /> Cette commande a été annulée.
+        <XCircle className="h-5 w-5 text-danger" aria-hidden /> <Tr>Cette commande a été annulée.</Tr>
       </p>
     ) : null;
   }
@@ -49,7 +50,7 @@ export function OrderTimeline({
             >
               <Icon className="h-4 w-4" aria-hidden />
             </span>
-            <span className={`text-xs ${active ? "font-medium text-ink" : "text-ink-soft"}`}>{step.label}</span>
+            <span className={`text-xs ${active ? "font-medium text-ink" : "text-ink-soft"}`}><Tr>{step.label}</Tr></span>
             {formatStepDate(step.at) ? <span className="text-[11px] text-ink-soft">{formatStepDate(step.at)}</span> : null}
             <span className="sr-only">
               {step.state === "done" ? "terminé" : step.state === "current" ? "en cours" : "à venir"}

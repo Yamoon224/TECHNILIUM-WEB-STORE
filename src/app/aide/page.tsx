@@ -1,5 +1,7 @@
 "use client";
 
+import { Tr } from "@/components/Tr";
+import { useAppearance } from "@/components/AppearanceProvider";
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useAuth } from "@/components/AuthProvider";
@@ -19,6 +21,7 @@ import {
 } from "@/lib/support";
 
 export default function HelpPage() {
+  const { tr } = useAppearance();
   const { status, token, user } = useAuth();
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
@@ -29,8 +32,8 @@ export default function HelpPage() {
     if (!token) return;
     listTickets(token)
       .then(setTickets)
-      .catch((caught) => setError(caught instanceof SupportError ? caught.message : "Tickets indisponibles."));
-  }, [token]);
+      .catch((caught) => setError(caught instanceof SupportError ? caught.message : tr("Tickets indisponibles.")));
+  }, [token, tr]);
 
   useEffect(() => {
     refresh();
@@ -49,20 +52,20 @@ export default function HelpPage() {
     try {
       setSelected(await getTicket(token, ticket.id));
     } catch (caught) {
-      setError(caught instanceof SupportError ? caught.message : "Conversation indisponible.");
+      setError(caught instanceof SupportError ? caught.message : tr("Conversation indisponible."));
     }
   }
 
   if (status === "checking") {
-    return <p className="px-4 py-16 text-center text-sm text-ink-soft">Vérification de la session…</p>;
+    return <p className="px-4 py-16 text-center text-sm text-ink-soft"><Tr>Vérification de la session…</Tr></p>;
   }
 
   if (!user || !token) {
     return (
       <main className="flex min-h-[50vh] flex-1 flex-col items-center justify-center gap-3 px-4">
-        <p className="text-ink-soft">Connectez-vous pour contacter le support.</p>
+        <p className="text-ink-soft"><Tr>Connectez-vous pour contacter le support.</Tr></p>
         <Link href="/connexion" className="text-sm text-gold underline-offset-4 hover:underline">
-          Se connecter
+          <Tr>Se connecter</Tr>
         </Link>
       </main>
     );
@@ -71,9 +74,9 @@ export default function HelpPage() {
   return (
     <main className="mx-auto my-4 flex w-[calc(100%-2rem)] max-w-2xl flex-1 flex-col gap-8 rounded-sm bg-surface p-5 shadow-sm sm:p-8">
       <div className="flex items-center justify-between">
-        <h1 className="font-display text-2xl font-semibold text-ink">Aide et support</h1>
+        <h1 className="font-display text-2xl font-semibold text-ink"><Tr>Aide et support</Tr></h1>
         <Link href="/compte" className="text-sm text-gold underline-offset-4 hover:underline">
-          Mon compte
+          <Tr>Mon compte</Tr>
         </Link>
       </div>
 
@@ -102,9 +105,9 @@ export default function HelpPage() {
           />
 
           <section className="flex flex-col gap-3">
-            <h2 className="font-display text-lg font-semibold text-ink">Mes demandes</h2>
+            <h2 className="font-display text-lg font-semibold text-ink"><Tr>Mes demandes</Tr></h2>
             {tickets.length === 0 ? (
-              <p className="text-sm text-ink-soft">Aucune demande pour l&apos;instant.</p>
+              <p className="text-sm text-ink-soft"><Tr>Aucune demande pour l&apos;instant.</Tr></p>
             ) : (
               <ul className="flex flex-col divide-y divide-line border-y border-line text-sm">
                 {tickets.map((ticket) => (
@@ -117,11 +120,11 @@ export default function HelpPage() {
                       <span className="flex flex-col gap-0.5">
                         <span className="text-ink">{ticket.subject}</span>
                         <span className="text-xs text-ink-soft">
-                          {ticket.number} · {CATEGORY_LABEL[ticket.category]}
+                          {ticket.number} · <Tr>{CATEGORY_LABEL[ticket.category]}</Tr>
                         </span>
                       </span>
                       <span className={`text-xs ${needsYourReply(ticket.status) ? "text-gold-bright" : "text-ink-soft"}`}>
-                        {TICKET_STATUS_LABEL[ticket.status]}
+                        <Tr>{TICKET_STATUS_LABEL[ticket.status]}</Tr>
                       </span>
                     </button>
                   </li>
@@ -142,6 +145,7 @@ function NewTicketForm({
   orders: Order[];
   onSubmit: (input: { subject: string; category: TicketCategory; message: string; order_number?: string }) => Promise<void>;
 }) {
+  const { tr } = useAppearance();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -161,7 +165,7 @@ function NewTicketForm({
       });
       form.reset();
     } catch (caught) {
-      setError(caught instanceof SupportError ? caught.message : "Votre demande n'a pas pu être envoyée.");
+      setError(caught instanceof SupportError ? caught.message : tr("Votre demande n'a pas pu être envoyée."));
     } finally {
       setSubmitting(false);
     }
@@ -171,29 +175,29 @@ function NewTicketForm({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-      <h2 className="font-display text-lg font-semibold text-ink">Nouvelle demande</h2>
+      <h2 className="font-display text-lg font-semibold text-ink"><Tr>Nouvelle demande</Tr></h2>
 
       <label className="flex flex-col gap-1 text-sm text-ink-soft">
-        Sujet
+        <Tr>Sujet</Tr>
         <input name="subject" required minLength={3} maxLength={150} className={field} />
       </label>
 
       <div className="grid gap-3 sm:grid-cols-2">
         <label className="flex flex-col gap-1 text-sm text-ink-soft">
-          Catégorie
+          <Tr>Catégorie</Tr>
           <select name="category" defaultValue="other" className={field}>
             {Object.entries(CATEGORY_LABEL).map(([value, label]) => (
               <option key={value} value={value}>
-                {label}
+                <Tr>{label}</Tr>
               </option>
             ))}
           </select>
         </label>
 
         <label className="flex flex-col gap-1 text-sm text-ink-soft">
-          Commande concernée (optionnel)
+          <Tr>Commande concernée (optionnel)</Tr>
           <select name="order_number" defaultValue="" className={field}>
-            <option value="">Aucune</option>
+            <option value=""><Tr>Aucune</Tr></option>
             {orders.map((order) => (
               <option key={order.order_number} value={order.order_number}>
                 {order.order_number}
@@ -204,7 +208,7 @@ function NewTicketForm({
       </div>
 
       <label className="flex flex-col gap-1 text-sm text-ink-soft">
-        Votre message
+        <Tr>Votre message</Tr>
         <textarea name="message" required minLength={3} maxLength={5000} rows={4} className={field} />
       </label>
 
@@ -215,7 +219,7 @@ function NewTicketForm({
         disabled={submitting}
         className="self-start rounded-sm bg-gold px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gold-bright disabled:opacity-60"
       >
-        {submitting ? "Envoi…" : "Envoyer"}
+        {submitting ? <Tr>Envoi…</Tr> : <Tr>Envoyer</Tr>}
       </button>
     </form>
   );
@@ -230,6 +234,7 @@ function Conversation({
   onBack: () => void;
   onReply: (body: string) => Promise<void>;
 }) {
+  const { tr } = useAppearance();
   const [body, setBody] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -243,7 +248,7 @@ function Conversation({
       await onReply(body.trim());
       setBody("");
     } catch (caught) {
-      setError(caught instanceof SupportError ? caught.message : "Le message n'a pas pu être envoyé.");
+      setError(caught instanceof SupportError ? caught.message : tr("Le message n'a pas pu être envoyé."));
     } finally {
       setSending(false);
     }
@@ -252,14 +257,19 @@ function Conversation({
   return (
     <section className="flex flex-col gap-4">
       <button type="button" onClick={onBack} className="self-start text-sm text-gold underline-offset-4 hover:underline">
-        ← Mes demandes
+        <Tr>← Mes demandes</Tr>
       </button>
 
       <div>
         <h2 className="font-display text-lg font-semibold text-ink">{ticket.subject}</h2>
         <p className="text-xs text-ink-soft">
-          {ticket.number} · {TICKET_STATUS_LABEL[ticket.status]}
-          {ticket.order_number ? ` · commande ${ticket.order_number}` : ""}
+          {ticket.number} · <Tr>{TICKET_STATUS_LABEL[ticket.status]}</Tr>
+          {ticket.order_number ? (
+            <>
+              {" · "}
+              <Tr>commande</Tr> {ticket.order_number}
+            </>
+          ) : null}
         </p>
       </div>
 
@@ -271,7 +281,7 @@ function Conversation({
               message.from === "customer" ? "self-end bg-surface" : "self-start"
             }`}
           >
-            <p className="mb-1 text-xs text-ink-soft">{message.from === "customer" ? "Vous" : "Support Technilium"}</p>
+            <p className="mb-1 text-xs text-ink-soft">{message.from === "customer" ? <Tr>Vous</Tr> : <Tr>Support Technilium</Tr>}</p>
             <p className="whitespace-pre-wrap text-ink">{message.body}</p>
           </li>
         ))}
@@ -293,11 +303,11 @@ function Conversation({
             disabled={sending || !body.trim()}
             className="self-start rounded-sm bg-gold px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gold-bright disabled:opacity-60"
           >
-            {sending ? "Envoi…" : "Répondre"}
+            {sending ? <Tr>Envoi…</Tr> : <Tr>Répondre</Tr>}
           </button>
         </form>
       ) : (
-        <p className="text-sm text-ink-soft">Cette demande est close. Ouvrez-en une nouvelle si besoin.</p>
+        <p className="text-sm text-ink-soft"><Tr>Cette demande est close. Ouvrez-en une nouvelle si besoin.</Tr></p>
       )}
     </section>
   );

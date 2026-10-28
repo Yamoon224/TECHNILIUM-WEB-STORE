@@ -1,5 +1,6 @@
 "use client";
 
+import { Tr } from "@/components/Tr";
 import { use, useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { OrderTimeline } from "./OrderTimeline";
@@ -68,10 +69,9 @@ function PhoneLookupForm({
 
   return (
     <main className="mx-auto my-8 flex w-[calc(100%-2rem)] max-w-sm flex-col gap-4 rounded-sm bg-surface p-5 shadow-sm sm:p-8">
-      <h1 className="font-display text-xl font-semibold text-ink">Retrouver ma commande</h1>
+      <h1 className="font-display text-xl font-semibold text-ink"><Tr>Retrouver ma commande</Tr></h1>
       <p className="text-sm text-ink-soft">
-        Commande <span className="text-ink">{orderNumber}</span>. Entrez le téléphone utilisé lors de la commande
-        pour la consulter.
+        <Tr>Commande</Tr> <span className="text-ink">{orderNumber}</span><Tr>. Entrez le téléphone utilisé lors de la commande pour la consulter.</Tr>
       </p>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
@@ -88,7 +88,7 @@ function PhoneLookupForm({
           disabled={submitting}
           className="rounded-sm bg-gold px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gold-bright disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {submitting ? "Recherche…" : "Afficher ma commande"}
+          {submitting ? <Tr>Recherche…</Tr> : <Tr>Afficher ma commande</Tr>}
         </button>
       </form>
     </main>
@@ -101,12 +101,12 @@ function OrderSummary({ order }: { order: Order }) {
   return (
     <main className="mx-auto my-4 flex w-[calc(100%-2rem)] max-w-2xl flex-1 flex-col gap-6 rounded-sm bg-surface p-5 shadow-sm sm:p-8">
       <div className="flex flex-col gap-1">
-        <p className="text-sm text-gold">Commande enregistrée</p>
+        <p className="text-sm text-gold"><Tr>Commande enregistrée</Tr></p>
         <h1 className="font-display text-2xl font-semibold text-ink">
-          Merci, {order.customer_name.split(" ")[0]} !
+          <Tr>Merci,</Tr> {order.customer_name.split(" ")[0]} !
         </h1>
         <p className="text-ink-soft">
-          Commande <span className="text-ink">{order.order_number}</span> — paiement à la livraison.
+          <Tr>Commande</Tr> <span className="text-ink">{order.order_number}</span> <Tr>— paiement à la livraison.</Tr>
         </p>
       </div>
 
@@ -114,10 +114,10 @@ function OrderSummary({ order }: { order: Order }) {
 
       {showDeliveryCode(order) ? (
         <div className="flex flex-col gap-1 rounded-sm border border-gold-deep p-4">
-          <p className="text-sm text-ink-soft">Code de confirmation de livraison</p>
+          <p className="text-sm text-ink-soft"><Tr>Code de confirmation de livraison</Tr></p>
           <p className="font-display text-3xl tracking-[0.3em] text-gold-bright">{order.delivery_code}</p>
           <p className="text-xs text-ink-soft">
-            Ne le communiquez au livreur qu&apos;au moment de recevoir votre colis : c&apos;est votre preuve de remise.
+            <Tr>Ne le communiquez au livreur qu&apos;au moment de recevoir votre colis : c&apos;est votre preuve de remise.</Tr>
           </p>
         </div>
       ) : null}
@@ -140,26 +140,26 @@ function OrderSummary({ order }: { order: Order }) {
 
       {order.discount && order.discount.amount > 0 ? (
         <p className="self-end text-sm text-ink-soft">
-          Remise{order.coupon_code ? ` (${order.coupon_code})` : ""} : −{formatMoneyParts(order.discount).amount}{" "}
+          <Tr>Remise</Tr>{order.coupon_code ? ` (${order.coupon_code})` : ""} : −{formatMoneyParts(order.discount).amount}{" "}
           {formatMoneyParts(order.discount).label}
         </p>
       ) : null}
 
       <p className="self-end font-display text-lg">
-        Total : <span className="gold-text font-semibold">{subtotal.amount}</span>{" "}
+        <Tr>Total :</Tr> <span className="gold-text font-semibold">{subtotal.amount}</span>{" "}
         <span className="text-ink-soft">{subtotal.label}</span>
       </p>
 
       <div className="flex flex-col gap-1 border-t border-line pt-4 text-sm text-ink-soft">
         <p>
-          Livraison : {order.delivery_address}
+          <Tr>Livraison :</Tr> {order.delivery_address}
           {order.delivery_city ? `, ${order.delivery_city}` : ""}
         </p>
-        <p>Téléphone : {order.customer_phone}</p>
+        <p><Tr>Téléphone :</Tr> {order.customer_phone}</p>
       </div>
 
       <Link href="/" className="text-sm text-gold underline-offset-4 hover:underline">
-        Continuer mes achats
+        <Tr>Continuer mes achats</Tr>
       </Link>
     </main>
   );

@@ -1,4 +1,5 @@
 import { BadgeCheck, ShieldCheck, Wallet, Zap, type LucideIcon } from "lucide-react";
+import { Tr } from "@/components/Tr";
 import Link from "next/link";
 import { CategoryRail } from "@/components/CategoryRail";
 import { ProductCard } from "@/components/ProductCard";
@@ -40,12 +41,17 @@ export async function HomeCatalog({ searchParams }: Pick<PageProps<"/">, "search
 
           {catalogUnavailable ? (
             <p className="py-12 text-ink-soft">
-              Le catalogue est momentanément indisponible. Réessayez dans un instant.
+              <Tr>Le catalogue est momentanément indisponible. Réessayez dans un instant.</Tr>
             </p>
           ) : products.length === 0 ? (
             <EmptyState search={search} categoryName={activeCategoryName} />
           ) : filtered ? (
-            <Shelf title={search ? `Résultats pour « ${search} »` : (activeCategoryName ?? "Produits")} products={products} grid />
+            <Shelf
+              title={search ? "Résultats pour" : (activeCategoryName ?? "Produits")}
+              suffix={search ? ` « ${search} »` : undefined}
+              products={products}
+              grid
+            />
           ) : (
             <Shelves products={products} />
           )}
@@ -65,12 +71,12 @@ function Hero() {
   return (
     <section className="grid gap-4 md:grid-cols-[1fr_220px]" aria-label="À la une">
       <div className="flex min-h-48 flex-col justify-center gap-3 rounded-sm bg-gold p-6 text-white sm:p-8">
-        <p className="text-sm font-medium uppercase tracking-wide opacity-90">Technilium</p>
+        <p className="text-sm font-medium uppercase tracking-wide opacity-90"><Tr>Technilium</Tr></p>
         <h1 className="font-display text-2xl font-bold leading-tight sm:text-4xl">
-          Le marché tech où chaque produit est authentique et garanti
+          <Tr>Le marché tech où chaque produit est authentique et garanti</Tr>
         </h1>
         <p className="max-w-md text-sm opacity-95">
-          Smartphones, ordinateurs et accessoires vérifiés avant expédition, livrés chez vous.
+          <Tr>Smartphones, ordinateurs et accessoires vérifiés avant expédition, livrés chez vous.</Tr>
         </p>
       </div>
 
@@ -79,8 +85,8 @@ function Hero() {
           <li key={title} className="flex items-center gap-3 rounded-sm bg-surface p-3 shadow-sm">
             <Icon className="hidden h-6 w-6 shrink-0 text-gold sm:block" aria-hidden />
             <span className="flex flex-col">
-              <span className="text-sm font-semibold text-ink">{title}</span>
-              <span className="text-xs text-ink-soft">{text}</span>
+              <span className="text-sm font-semibold text-ink"><Tr>{title}</Tr></span>
+              <span className="text-xs text-ink-soft"><Tr>{text}</Tr></span>
             </span>
           </li>
         ))}
@@ -111,6 +117,7 @@ function Shelf({
   accent = false,
   grid = false,
   Icon,
+  suffix,
 }: {
   title: string;
   products: Product[];
@@ -118,17 +125,20 @@ function Shelf({
   accent?: boolean;
   grid?: boolean;
   Icon?: LucideIcon;
+  /** Text shown after the translated title (e.g. the search term). */
+  suffix?: string;
 }) {
   return (
     <section className="overflow-hidden rounded-sm bg-surface shadow-sm">
       <div className={`flex items-center justify-between px-4 py-2.5 ${accent ? "bg-gold text-white" : "border-b border-line text-ink"}`}>
         <h2 className="flex items-center gap-2 font-display text-base font-semibold">
           {Icon ? <Icon className="h-5 w-5" aria-hidden /> : null}
-          {title}
+          <Tr>{title}</Tr>
+          {suffix}
         </h2>
         {href ? (
           <Link href={href} className={`text-sm font-medium underline-offset-4 hover:underline ${accent ? "" : "text-gold-bright"}`}>
-            Voir plus
+            <Tr>Voir plus</Tr>
           </Link>
         ) : null}
       </div>
@@ -149,18 +159,24 @@ function Shelf({
 }
 
 function EmptyState({ search, categoryName }: { search?: string; categoryName?: string }) {
-  const message = search
-    ? `Aucun produit ne correspond à « ${search} ».`
-    : categoryName
-      ? `Aucun produit disponible dans ${categoryName} pour le moment.`
-      : "Le catalogue est vide pour le moment.";
+  const message = search ? (
+    <>
+      <Tr>Aucun produit ne correspond à</Tr> « {search} ».
+    </>
+  ) : categoryName ? (
+    <>
+      <Tr>Aucun produit disponible dans</Tr> {categoryName} <Tr>pour le moment.</Tr>
+    </>
+  ) : (
+    <Tr>Le catalogue est vide pour le moment.</Tr>
+  );
 
   return (
     <div className="flex flex-col items-start gap-2 rounded-sm bg-surface p-6 shadow-sm">
       <p className="text-ink-soft">{message}</p>
       {search || categoryName ? (
         <Link href="/" className="text-sm text-gold-bright underline-offset-4 hover:underline">
-          Voir tous les produits
+          <Tr>Voir tous les produits</Tr>
         </Link>
       ) : null}
     </div>
