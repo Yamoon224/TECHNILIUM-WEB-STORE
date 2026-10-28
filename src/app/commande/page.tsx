@@ -75,6 +75,7 @@ export default function CheckoutPage() {
           items: items.map((item) => ({ offer_id: item.offerId, quantity: item.quantity })),
           customer_name: String(form.get("customer_name") ?? ""),
           customer_phone: String(form.get("customer_phone") ?? ""),
+          customer_email: String(form.get("customer_email") ?? "").trim() || undefined,
           delivery_address: String(form.get("delivery_address") ?? ""),
           delivery_city: String(form.get("delivery_city") ?? "") || undefined,
           notes: String(form.get("notes") ?? "") || undefined,
@@ -180,6 +181,17 @@ export default function CheckoutPage() {
             required
             defaultValue={user?.phone ?? undefined}
             placeholder="07 00 00 00 00"
+            className="rounded-sm border border-line bg-surface px-3 py-2 text-ink focus:border-gold focus:outline-none"
+          />
+        </label>
+
+        <label className="flex flex-col gap-1 text-sm text-ink-soft">
+          E-mail (facultatif — pour recevoir le suivi de votre commande)
+          <input
+            name="customer_email"
+            type="email"
+            defaultValue={user?.email ?? undefined}
+            placeholder="vous@exemple.com"
             className="rounded-sm border border-line bg-surface px-3 py-2 text-ink focus:border-gold focus:outline-none"
           />
         </label>

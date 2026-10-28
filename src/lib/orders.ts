@@ -64,6 +64,8 @@ export interface PlaceOrderInput {
   items: { offer_id: number; quantity: number }[];
   customer_name: string;
   customer_phone: string;
+  /** Optional: also receive order updates by e-mail. */
+  customer_email?: string;
   delivery_address: string;
   delivery_city?: string;
   notes?: string;
