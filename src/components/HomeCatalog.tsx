@@ -77,7 +77,7 @@ function Hero({ slides }: { slides: BannerSlide[] }) {
   return (
     <section className="grid gap-4 md:grid-cols-[1fr_220px]" aria-labelledby="hero-title">
       {slides.length > 0 ? (
-        <BannerCarousel slides={slides} label="Technilium" className="min-h-48" />
+        <BannerCarousel slides={slides} label="Technilium" />
       ) : (
       <div className="flex min-h-48 flex-col justify-center gap-3 rounded-sm bg-gold p-6 text-white sm:p-8">
         <p className="text-sm font-medium uppercase tracking-wide opacity-90"><Tr>Technilium</Tr></p>
