@@ -51,12 +51,12 @@ function Item({
   return (
     <Link
       href={href}
-      className={`flex shrink-0 items-center gap-2.5 whitespace-nowrap rounded-sm px-3 py-2 text-sm transition-colors ${
+      className={`flex shrink-0 items-center gap-2.5 whitespace-nowrap rounded-sm px-3 py-2 text-sm transition-colors lg:min-w-0 lg:shrink lg:whitespace-normal lg:break-words ${
         active ? "bg-gold-highlight font-semibold text-gold-bright" : "text-ink hover:bg-bg"
       }`}
     >
       <Icon className="h-4 w-4 shrink-0" aria-hidden />
-      {children}
+      <span className="lg:min-w-0">{children}</span>
     </Link>
   );
 }

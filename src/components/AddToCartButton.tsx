@@ -2,6 +2,7 @@
 
 import { Tr } from "@/components/Tr";
 import { useState } from "react";
+import { ShoppingCart } from "lucide-react";
 import { useCart } from "./CartProvider";
 import type { CurrencyCode } from "@/lib/money";
 
@@ -63,8 +64,9 @@ export function AddToCartButton({
       type="button"
       onClick={handleClick}
       disabled={atStockLimit}
-      className={`w-full rounded-sm bg-gold font-medium text-white transition-colors hover:bg-gold-bright disabled:cursor-not-allowed disabled:opacity-60 ${sizeClasses}`}
+      className={`inline-flex w-full items-center justify-center gap-2 rounded-sm bg-gold font-medium text-white transition-colors hover:bg-gold-bright disabled:cursor-not-allowed disabled:opacity-60 ${sizeClasses}`}
     >
+      {!atStockLimit && !added && <ShoppingCart className="h-4 w-4 shrink-0" aria-hidden />}
       {atStockLimit ? <Tr>Stock maximum</Tr> : added ? <Tr>Ajouté ✓</Tr> : <Tr>Ajouter au panier</Tr>}
     </button>
   );
