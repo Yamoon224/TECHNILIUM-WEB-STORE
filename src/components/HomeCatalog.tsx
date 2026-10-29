@@ -139,10 +139,16 @@ function Shelf({
   suffix?: string;
 }) {
   return (
-    <section className="overflow-hidden rounded-sm bg-surface shadow-card border-b-4 border-b-gold">
-      <div className={`flex items-center justify-between px-4 py-2.5 ${accent ? "bg-gold text-white" : "border-b border-line text-ink"}`}>
+    <section className={`overflow-hidden rounded-sm bg-surface shadow-card border-b-4 ${accent ? "border-b-[#e11d48]" : "border-b-gold"}`}>
+      {/* The flash sale keeps its own hot colours, whatever accent colour the visitor picked. */}
+      <div
+        className={`flex items-center justify-between px-4 py-2.5 ${accent ? "text-white" : "border-b border-line text-ink"}`}
+        style={accent ? { backgroundImage: "linear-gradient(100deg, #e11d48 0%, #be123c 45%, #7e22ce 100%)" } : undefined}
+      >
         <h2 className="flex items-center gap-2 font-display text-base font-semibold">
-          {Icon ? <Icon className="h-5 w-5" aria-hidden /> : null}
+          {Icon ? (
+            <Icon className={`h-5 w-5 ${accent ? "fill-yellow-300 text-yellow-300 motion-safe:animate-pulse" : ""}`} aria-hidden />
+          ) : null}
           <Tr>{title}</Tr>
           {suffix}
         </h2>
