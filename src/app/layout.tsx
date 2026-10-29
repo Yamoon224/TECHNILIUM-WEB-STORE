@@ -5,6 +5,8 @@ import { AccountPreferencesSync } from "@/components/AccountPreferencesSync";
 import { AuthProvider } from "@/components/AuthProvider";
 import { CartProvider } from "@/components/CartProvider";
 import { PwaSetup } from "@/components/PwaSetup";
+import { Suspense } from "react";
+import { FooterBanner } from "@/components/FooterBanner";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { STORAGE_KEY } from "@/lib/appearance";
@@ -56,6 +58,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <CartProvider>
               <SiteHeader />
               <div className="flex flex-1 flex-col">{children}</div>
+              <Suspense fallback={null}>
+                <FooterBanner />
+              </Suspense>
               <SiteFooter />
             </CartProvider>
           </AuthProvider>

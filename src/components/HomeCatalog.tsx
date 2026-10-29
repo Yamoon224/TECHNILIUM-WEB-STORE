@@ -1,5 +1,7 @@
 import { BadgeCheck, ShieldCheck, Wallet, Zap, type LucideIcon } from "lucide-react";
 import { Tr } from "@/components/Tr";
+import { BannerCarousel } from "@/components/BannerCarousel";
+import { getBanners, type BannerSlide } from "@/lib/banners";
 import Link from "next/link";
 import { CategoryRail } from "@/components/CategoryRail";
 import { ProductCard } from "@/components/ProductCard";
@@ -21,6 +23,7 @@ export async function HomeCatalog({ searchParams }: Pick<PageProps<"/">, "search
   let categories: Category[] = [];
   let products: Product[] = [];
   let catalogUnavailable = false;
+  const heroSlides = category || search ? [] : await getBanners("hero");
 
   try {
     [categories, products] = await Promise.all([
@@ -40,7 +43,7 @@ export async function HomeCatalog({ searchParams }: Pick<PageProps<"/">, "search
         <CategoryRail categories={categories} activeSlug={category} />
 
         <div className="flex min-w-0 flex-col gap-6">
-          {!filtered ? <Hero /> : null}
+          {!filtered ? <Hero slides={heroSlides} /> : null}
 
           {catalogUnavailable ? (
             <p className="py-12 text-ink-soft">
@@ -70,9 +73,12 @@ const PROMISES: { title: string; text: string; Icon: LucideIcon }[] = [
   { title: "Vendeurs vérifiés", text: "Des offres contrôlées", Icon: BadgeCheck },
 ];
 
-function Hero() {
+function Hero({ slides }: { slides: BannerSlide[] }) {
   return (
     <section className="grid gap-4 md:grid-cols-[1fr_220px]" aria-labelledby="hero-title">
+      {slides.length > 0 ? (
+        <BannerCarousel slides={slides} label="Technilium" className="min-h-48" />
+      ) : (
       <div className="flex min-h-48 flex-col justify-center gap-3 rounded-sm bg-gold p-6 text-white sm:p-8">
         <p className="text-sm font-medium uppercase tracking-wide opacity-90"><Tr>Technilium</Tr></p>
         <h1 id="hero-title" className="font-display text-2xl font-bold leading-tight sm:text-4xl">
@@ -82,6 +88,7 @@ function Hero() {
           <Tr>Smartphones, ordinateurs et accessoires vérifiés avant expédition, livrés chez vous.</Tr>
         </p>
       </div>
+      )}
 
       <ul className="grid grid-cols-3 gap-2 md:grid-cols-1">
         {PROMISES.map(({ title, text, Icon }) => (

@@ -82,6 +82,9 @@ export const PHRASES_EN: Record<string, string> = {
   "Vendu et expédié par Technilium": "Sold and shipped by Technilium",
   "Détails du produit": "Product details",
   "Photos du produit": "Product photos",
+  "Image précédente": "Previous image",
+  "Image suivante": "Next image",
+  "Aller à l'image": "Go to image",
   "Voir la photo": "See photo",
   "← Retour au catalogue": "← Back to the catalogue",
 
