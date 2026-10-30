@@ -60,7 +60,7 @@ export function OrderReturns({ order, token }: { order: Order; token: string }) 
             return (
               <li key={request.id} className="flex flex-col gap-1 rounded-sm bg-bg p-3 text-sm">
                 <p className="font-medium text-ink">
-                  {request.number} — <Tr>{RETURN_STATUS_LABEL[request.status]}</Tr>
+                  {request.number} - <Tr>{RETURN_STATUS_LABEL[request.status]}</Tr>
                 </p>
                 <p className="text-ink-soft">
                   <Tr>Motif :</Tr> {request.reason}

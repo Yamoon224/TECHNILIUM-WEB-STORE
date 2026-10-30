@@ -39,7 +39,7 @@ export interface Order {
   coupon_code?: string | null;
   items: OrderItem[];
   sub_orders?: SubOrder[];
-  /** Six-digit code to give the courier at handover — keep it private until then. */
+  /** Six-digit code to give the courier at handover - keep it private until then. */
   delivery_code?: string | null;
   /** True when the parcels are at different stages. */
   partial?: boolean;
@@ -86,14 +86,14 @@ const LAST_ORDER_STORAGE_KEY = "technilium_last_order";
 
 /**
  * Hands the just-placed order to the confirmation page via sessionStorage
- * instead of the URL — putting the checkout phone in a query string would
+ * instead of the URL - putting the checkout phone in a query string would
  * land it in browser history, server access logs and any shared link.
  */
 export function rememberLastOrder(order: Order): void {
   try {
     window.sessionStorage.setItem(LAST_ORDER_STORAGE_KEY, JSON.stringify(order));
   } catch {
-    // Storage unavailable — the confirmation page falls back to asking for the phone.
+    // Storage unavailable - the confirmation page falls back to asking for the phone.
   }
 }
 
@@ -112,7 +112,7 @@ export function recallLastOrder(orderNumber: string): Order | null {
 /**
  * `token` is optional: guest checkout (cahier §5.1) stays fully supported.
  * When present, the backend attaches the order to that customer's account
- * so it shows up in listMyOrders() — the whole reason this is a parameter
+ * so it shows up in listMyOrders() - the whole reason this is a parameter
  * here rather than a hardcoded anonymous request.
  */
 export async function placeOrder(input: PlaceOrderInput, token?: string | null): Promise<Order> {
@@ -150,7 +150,7 @@ export async function listMyOrders(token: string): Promise<Order[]> {
 }
 
 /**
- * The order number alone isn't a secret — the API requires the phone used at
+ * The order number alone isn't a secret - the API requires the phone used at
  * checkout as proof of ownership, returning 404 (not 403) on a mismatch so a
  * guessed order number can't be confirmed to exist.
  */
@@ -171,9 +171,9 @@ export async function getOrder(orderNumber: string, phone: string): Promise<Orde
   return response.json() as Promise<Order>;
 }
 
-/** "Colis 2 — vendeur vérifié" / "Colis 1 — Technilium": the parcel's seller, as the customer sees it. */
+/** "Colis 2 - vendeur vérifié" / "Colis 1 - Technilium": the parcel's seller, as the customer sees it. */
 export function parcelLabel(parcel: Pick<SubOrder, "vendor_id">, index: number): string {
-  return `Colis ${index + 1} — ${parcel.vendor_id === null ? "expédié par Technilium" : "vendeur vérifié"}`;
+  return `Colis ${index + 1} - ${parcel.vendor_id === null ? "expédié par Technilium" : "vendeur vérifié"}`;
 }
 
 /** One order of the signed-in customer, with its parcels and histories; null when it is not theirs. */

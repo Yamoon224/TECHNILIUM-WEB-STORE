@@ -1,7 +1,7 @@
 /**
  * What the public help page takes from the server (backend `GET /help`): the
- * figures that must stay true — the return window, the support's first-response
- * target — and the contact channels the company has configured.
+ * figures that must stay true - the return window, the support's first-response
+ * target - and the contact channels the company has configured.
  */
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000/api/v1";

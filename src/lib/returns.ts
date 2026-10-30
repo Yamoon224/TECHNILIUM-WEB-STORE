@@ -38,7 +38,7 @@ export const RETURN_STATUS_LABEL: Record<ReturnStatus, string> = {
 /**
  * How many of each offer the customer may still ask to return: what the order
  * sold, minus what their other (not rejected) returns already claim. A hint to
- * shape the form — the server decides.
+ * shape the form - the server decides.
  */
 export function returnableQuantities(
   items: readonly { offer_id: number; quantity: number }[],

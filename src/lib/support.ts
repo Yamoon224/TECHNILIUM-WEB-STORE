@@ -18,7 +18,7 @@ export const CATEGORY_LABEL: Record<TicketCategory, string> = {
 };
 
 export const TICKET_STATUS_LABEL: Record<TicketStatus, string> = {
-  open: "Reçu — en cours de traitement",
+  open: "Reçu - en cours de traitement",
   pending_customer: "En attente de votre réponse",
   resolved: "Résolu",
   closed: "Clos",

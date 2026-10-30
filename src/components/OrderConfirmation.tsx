@@ -112,7 +112,7 @@ function OrderSummary({ order }: { order: Order }) {
           <Tr>Merci,</Tr> {order.customer_name.split(" ")[0]} !
         </h1>
         <p className="text-ink-soft">
-          <Tr>Commande</Tr> <span className="text-ink">{order.order_number}</span> <Tr>— paiement à la livraison.</Tr>
+          <Tr>Commande</Tr> <span className="text-ink">{order.order_number}</span> <Tr>- paiement à la livraison.</Tr>
         </p>
       </div>
 

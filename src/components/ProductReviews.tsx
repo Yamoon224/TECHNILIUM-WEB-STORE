@@ -20,8 +20,8 @@ import {
 } from "@/lib/reviews";
 
 /**
- * Rating summary, published reviews, and — for a signed-in customer who
- * received the product — the form to add one. The server enforces the
+ * Rating summary, published reviews, and - for a signed-in customer who
+ * received the product - the form to add one. The server enforces the
  * purchase check; this only decides whether to show the form.
  */
 export function ProductReviews({ productId }: { productId: number }) {

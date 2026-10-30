@@ -15,7 +15,7 @@ import { formatOrderDate } from "@/lib/orderTimeline";
 
 /**
  * Detailed tracking of one of the signed-in customer's orders: the overall
- * timeline, and — when the order is split between sellers — one timeline per
+ * timeline, and - when the order is split between sellers - one timeline per
  * parcel. Receives `params` unresolved and reads it inside the page's
  * Suspense boundary (see OrderConfirmation).
  */
@@ -113,7 +113,7 @@ function Tracking({ order, token }: { order: Order; token: string }) {
             return (
               <section key={parcel.id} className="flex flex-col gap-3 rounded-sm bg-surface p-4 shadow-card border-b-4 border-b-gold sm:p-6">
                 <div className="flex flex-wrap items-start justify-between gap-2">
-                  <h2 className="font-display text-base font-semibold text-ink"><Tr>Colis</Tr> {index + 1} — <Tr>{parcel.vendor_id === null ? "expédié par Technilium" : "vendeur vérifié"}</Tr>
+                  <h2 className="font-display text-base font-semibold text-ink"><Tr>Colis</Tr> {index + 1} - <Tr>{parcel.vendor_id === null ? "expédié par Technilium" : "vendeur vérifié"}</Tr>
                   </h2>
                   <p className="text-sm font-medium text-ink">
                     {subtotal.amount} {subtotal.label}
@@ -162,7 +162,7 @@ function Tracking({ order, token }: { order: Order; token: string }) {
           <MapPin className="h-4 w-4 text-gold" aria-hidden /> <Tr>Livraison</Tr>
         </h2>
         <p className="text-ink">
-          {order.customer_name} — {order.customer_phone}
+          {order.customer_name} - {order.customer_phone}
           <br />
           {order.delivery_address}
           {order.delivery_city ? `, ${order.delivery_city}` : ""}

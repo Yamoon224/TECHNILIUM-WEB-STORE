@@ -1,6 +1,6 @@
 /**
  * Product reviews (backend Customers module, `/reviews`). Reading is public;
- * writing needs a verified purchase, which the server decides — the
+ * writing needs a verified purchase, which the server decides - the
  * eligibility call only tells the form whether to show.
  */
 
@@ -43,7 +43,7 @@ export const INELIGIBLE_MESSAGE: Record<IneligibleReason, string> = {
 
 export class ReviewsError extends Error {}
 
-/** "4,3" — a French decimal comma, one decimal. */
+/** "4,3" - a French decimal comma, one decimal. */
 export function formatAverage(average: number): string {
   return average.toFixed(1).replace(".", ",");
 }

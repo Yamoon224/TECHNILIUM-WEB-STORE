@@ -36,7 +36,7 @@ export function saveCart(items: CartItem[]): void {
   try {
     window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
   } catch {
-    // Storage unavailable (private browsing, quota) — the cart just won't persist.
+    // Storage unavailable (private browsing, quota) - the cart just won't persist.
   }
 }
 
