@@ -4,7 +4,16 @@ import { X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useAppearance } from "@/components/AppearanceProvider";
-import { dismissalValue, DISMISSED_KEY, isDismissed, type Announcement } from "@/lib/announcements";
+import { closeDecision, decideDisplay, SESSION_KEY, STATE_KEY, type Announcement } from "@/lib/announcements";
+
+function remember(state: string | null, session: string | null) {
+  try {
+    if (state !== null) window.localStorage.setItem(STATE_KEY, state);
+    if (session !== null) window.sessionStorage.setItem(SESSION_KEY, session);
+  } catch {
+    // Not remembered.
+  }
+}
 
 /**
  * The flash announcement: an image in a pop-up, shown on the home page after
@@ -19,12 +28,17 @@ export function AnnouncementModal({ announcement }: { announcement: Announcement
 
   useEffect(() => {
     let stored: string | null = null;
+    let session: string | null = null;
     try {
-      stored = window.localStorage.getItem(DISMISSED_KEY);
+      stored = window.localStorage.getItem(STATE_KEY);
+      session = window.sessionStorage.getItem(SESSION_KEY);
     } catch {
-      // Storage blocked: the announcement is simply shown on each visit.
+      // Storage blocked: the announcement is simply shown on each page load.
     }
-    if (isDismissed(announcement, stored)) return;
+
+    const decision = decideDisplay(announcement, stored, session);
+    if (!decision.show) return;
+    remember(decision.state, decision.session);
 
     const timer = window.setTimeout(() => setOpen(true), Math.max(0, announcement.delay_seconds) * 1000);
     return () => window.clearTimeout(timer);
@@ -32,11 +46,14 @@ export function AnnouncementModal({ announcement }: { announcement: Announcement
 
   function close() {
     setOpen(false);
+    let stored: string | null = null;
     try {
-      window.localStorage.setItem(DISMISSED_KEY, dismissalValue(announcement));
+      stored = window.localStorage.getItem(STATE_KEY);
     } catch {
       // Not remembered, shown again next visit.
     }
+    const next = closeDecision(announcement, stored);
+    remember(next.state, next.session);
   }
 
   useEffect(() => {
